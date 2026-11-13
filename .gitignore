@@ -5,3 +5,5 @@ hyperframes/renders/
 .hyperframes/
 .DS_Store
 .env
+remotion/public/hf/.*hf-transaction*/
+remotion/public/hf/work-*/
