@@ -3,9 +3,8 @@ import { Img, staticFile } from "remotion";
 import { BODY, C, WA } from "../design/tokens";
 import assets from "../content/assets.json";
 import { SH, SW } from "./SmartphoneHero";
-import { Icon, WhatsAppMark } from "./Icon";
+import { WhatsAppMark } from "./Icon";
 import { clamp01 } from "../motion/util";
-import { ICONS } from "../icons";
 
 /** WhatsApp-style chat, built from live elements (no screenshot). Logical size SW×SH. No timestamps. */
 export const HEADER_Y = 56;
@@ -27,13 +26,13 @@ export const StatusBar: React.FC = () => (
   </>
 );
 
-export const ChatHeader: React.FC = () => (
+export const ChatHeader: React.FC<{ logoOpacity?: number }> = ({ logoOpacity = 1 }) => (
   <div style={{ position: "absolute", left: 0, top: HEADER_Y, width: SW, height: HEADER_H, background: WA.head, display: "flex", alignItems: "center" }}>
     <svg width={30} height={30} viewBox="0 0 24 24" style={{ marginLeft: 8 }}>
       <path d="M15 5 L8 12 L15 19" stroke={WA.text} strokeWidth={2.4} fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
     <div style={{ width: 46, height: 46, borderRadius: 23, background: C.yellow, display: "flex", alignItems: "center", justifyContent: "center", marginLeft: 2 }}>
-      <Img src={staticFile(assets.dhl_logo.src)} style={{ width: 38, height: (38 * assets.dhl_logo.h) / assets.dhl_logo.w }} />
+      <Img src={staticFile(assets.dhl_logo.src)} style={{ width: 38, height: (38 * assets.dhl_logo.h) / assets.dhl_logo.w, opacity: logoOpacity }} />
     </div>
     <div style={{ marginLeft: 12, fontFamily: BODY, color: WA.text }}>
       <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.2 }}>DHL Express Service Point</div>
@@ -82,7 +81,7 @@ export const InputBar: React.FC<{ typed?: string; caret?: boolean; sendGlow?: nu
   </div>
 );
 
-export type Msg = { side: "out" | "in"; text?: string; rows?: { icon: keyof typeof ICONS; k: string; v: string; p: number }[]; h: number; p: number };
+export type Msg = { side: "out" | "in"; text?: string; rows?: { k: string; v: string; p: number }[]; h: number; p: number };
 
 /** Messages stacked from the bottom; a newly arriving message pushes the others up as it grows. */
 export const ChatBody: React.FC<{ msgs: Msg[]; hideFirst?: boolean }> = ({ msgs, hideFirst }) => {
@@ -146,8 +145,7 @@ export const ChatBody: React.FC<{ msgs: Msg[]; hideFirst?: boolean }> = ({ msgs,
                   borderTop: j ? "1px solid rgba(255,255,255,0.1)" : undefined,
                 }}
               >
-                <Icon name={r.icon} size={20} color={C.yellow} />
-                <span style={{ fontSize: 12.5, fontWeight: 800, letterSpacing: "0.08em", color: C.yellow, width: 52 }}>{r.k}</span>
+                <span style={{ fontSize: 12.5, fontWeight: 800, letterSpacing: "0.08em", color: C.yellow, width: 56 }}>{r.k}</span>
                 <span style={{ fontSize: 16 }}>{r.v}</span>
               </div>
             ))}

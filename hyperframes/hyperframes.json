@@ -8,5 +8,12 @@
   },
   "media": {
     "autoProxy": true
-  }
+  },
+  "registryItems": [
+    {
+      "name": "split-flap-board",
+      "type": "hyperframes:block",
+      "target": "compositions/split-flap-board.html"
+    }
+  ]
 }

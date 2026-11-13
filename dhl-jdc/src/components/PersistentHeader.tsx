@@ -9,12 +9,13 @@ export const PersistentHeader: React.FC = () => {
   const lh = (lw * assets.dhl_logo.h) / assets.dhl_logo.w;
   const top = 24;
   return (
-    <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 132, pointerEvents: "none" }}>
+    <div style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 140, pointerEvents: "none" }}>
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background: `linear-gradient(180deg, ${C.yellow} 0%, ${C.yellow} 86%, rgba(255,204,0,0) 100%)`,
+          background: C.yellow,
+          boxShadow: "0 6px 14px rgba(110,60,0,0.12)",
         }}
       />
       <Img src={staticFile(assets.dhl_logo.src)} style={{ position: "absolute", left: 540 - lw / 2, top, width: lw, height: lh }} />

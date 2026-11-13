@@ -1,6 +1,6 @@
 # DHL Express Service Point JDC Cengkareng — vertical motion commercial
 
-Remotion (React/TypeScript) project. 1080×1920, 30 fps, 86.4 s. Concept and storyboard: `CONCEPT.md`.
+Remotion (React/TypeScript) project. 1080×1920, 30 fps, 76.8 s. Concept and storyboard: `CONCEPT.md`.
 
 ## Rebuild from scratch
 
@@ -25,12 +25,12 @@ If Remotion cannot download its browser, pass `--browser-executable=/path/to/chr
 - `src/content/copy.ts` — service point name, WhatsApp number, address (single source).
 - `src/content/timeline.json` — scene windows and VO start times (used by Remotion and the audio scripts).
 - `src/design/tokens.ts` — DHL colours (#FFCC00, #D40511, #191919, #FFFFFF), fonts, layout zones.
-- `src/components/LivingRibbon.tsx` — the procedural red ribbon (spline + twist + 3-D shading).
+- `src/components/Flap.tsx` — split-flap board + flap-wipe transition (ported from the HyperFrames registry block `split-flap-board`).
 - `src/scenes/S01…S08` — one file per scene; each documents its choreography at the top.
 - `src/components/PersistentHeader.tsx / PersistentFooter.tsx` — fixed layers outside every scene camera.
 
 ## Licences
 
-Fonts: Archivo and Inter (SIL OFL, `public/fonts`). Icons: Phosphor (MIT), WhatsApp glyph from Simple Icons (CC0;
+Fonts: Archivo and Inter (SIL OFL, `public/fonts`). WhatsApp glyph from Simple Icons (CC0;
 the WhatsApp mark is a trademark of WhatsApp LLC). Music and SFX are synthesised in `scripts/` and carry no
 third-party rights. Voice: Kokoro-82M (Apache-2.0). DHL logo and product renders are supplied by the client.

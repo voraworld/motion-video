@@ -48,12 +48,13 @@ def fit(x):
 
 vo = np.zeros((N, 2))
 for s in TL["scenes"]:
-    x = read(os.path.join(ROOT, "public/audio/vo", f"{s['vo']}.wav"))
-    j = int(s["voAt"] * SR)
-    e = min(N, j + len(x))
-    vo[j:e] += x[: e - j]
-    end = s["voAt"] + len(x) / SR
-    print(f"{s['id']} VO {s['voAt']:.2f}-{end:.2f}s  (scene ends {s['end']:.2f})", "OVERRUN" if end > s["end"] else "")
+    for v in s["vo"]:
+        x = read(os.path.join(ROOT, "public/audio/vo", f"{v['id']}.wav"))
+        j = int(v["at"] * SR)
+        e = min(N, j + len(x))
+        vo[j:e] += x[: e - j]
+        end = v["at"] + len(x) / SR
+        print(f"{s['id']} {v['id']} {v['at']:.2f}-{end:.2f}s  (scene ends {s['end']:.2f})", "OVERRUN" if end > s["end"] else "")
 
 music = fit(read(os.path.join(ROOT, "public/audio/stems/music.wav")))
 sfx = fit(read(os.path.join(ROOT, "public/audio/stems/sfx.wav")))
@@ -71,8 +72,8 @@ for i in range(N):  # one-pole attack/release follower
     x = active[i]
     g = a * g + (1 - a) * x if x > g else r * g + (1 - r) * x
     envl[i] = g
-duck = 1 - envl * (1 - 10 ** (-9 / 20))
-mix = music * duck[:, None] * 0.9 + vo * 1.0 + sfx * 0.75
+duck = 1 - envl * (1 - 10 ** (-7 / 20))
+mix = music * duck[:, None] * 1.0 + vo * 1.0 + sfx * 0.75
 
 os.makedirs(os.path.join(ROOT, "public/audio/stems"), exist_ok=True)
 write(os.path.join(ROOT, "public/audio/stems/vo.wav"), vo)

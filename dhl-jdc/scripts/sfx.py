@@ -13,7 +13,8 @@ import numpy as np
 SR = 48000
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 RNG = np.random.default_rng(23)
-DUR = 86.4
+import json
+DUR = json.load(open(os.path.join(ROOT, "src/content/timeline.json")))["duration"]
 
 
 def bp(x, lo=None, hi=None):
@@ -160,49 +161,68 @@ def rush(sec=1.2):  # tunnel / passthrough: rising airy swell
     return n * (t / sec) ** 2.5 * np.exp(-np.maximum(0, t - sec * 0.92) / 0.03)
 
 
+def flutter(sec=0.5, rate=34, bright=1.0):
+    """Split-flap cascade: a dense run of small plastic clacks that thins out as the cells land."""
+    n = int(sec * SR)
+    out = np.zeros(n + int(0.05 * SR))
+    tt = 0.0
+    i = 0
+    while tt < sec:
+        j = int(tt * SR)
+        m = int(0.018 * SR)
+        x = np.arange(m) / SR
+        amp = (0.55 + 0.45 * RNG.random()) * (1 - 0.6 * tt / sec)
+        click = bp(RNG.standard_normal(m), lo=1800 * bright, hi=7500) * np.exp(-x / 0.0025)
+        tone = np.sin(2 * np.pi * (1100 + 300 * RNG.random()) * x) * np.exp(-x / 0.004) * 0.4
+        out[j: j + m] += (click + tone) * amp
+        tt += (1 / rate) * (0.6 + 0.8 * RNG.random()) * (1 + 0.8 * tt / sec)
+        i += 1
+    return out
+
+
 SHOTS = {
     "seam": seam_cut, "whoosh": whoosh, "whoosh_s": lambda: whoosh(0.32, 600, 7000, 0.45), "thud": thud,
     "paper": paper, "paper_big": lambda: paper(0.7, 0.8), "stamp": stamp, "tick": tick, "key": key, "pop": pop,
     "notify": notify, "tape": tape, "conveyor": conveyor, "beep": beep, "jet": jet, "glint": glint, "clack": clack,
     "rush": rush, "rush_long": lambda: rush(1.6),
+    "flap_s": lambda: flutter(0.35), "flap": lambda: flutter(0.6), "flap_l": lambda: flutter(0.95, 46), "flap_xl": lambda: flutter(1.0, 60),
 }
 
 # (time s, shot, gain) — every cue follows a visual event
 CUES = [
-    (0.0, "seam", 0.9), (0.02, "whoosh_s", 0.5), (0.1, "whoosh_s", 0.4), (0.18, "whoosh_s", 0.35),
-    (0.45, "whoosh", 0.45), (0.92, "thud", 0.85),
-    (2.05, "whoosh_s", 0.3),
-    (2.45, "paper", 0.5), (2.65, "paper", 0.45), (2.85, "paper", 0.45), (3.05, "paper", 0.4),
-    (2.88, "stamp", 0.7), (3.84, "stamp", 0.75),
-    *[(4.25 + i * 0.12, "tick", 0.25) for i in range(6)],
-    (6.24, "stamp", 0.8),
-    (7.68, "whoosh", 0.35), (7.95, "whoosh", 0.55), (8.05, "paper_big", 0.6),
-    (9.6, "glint", 0.5),
-    (12.4, "whoosh_s", 0.4), (12.6, "whoosh", 0.35),
-    (16.25, "whoosh", 0.4), (16.6, "rush_long", 0.55),
-    (17.35, "whoosh_s", 0.35),
-    (18.68, "tick", 0.35), (19.53, "tick", 0.35), (20.13, "tick", 0.35),
-    *[(20.98 + i * 0.055, "key", 0.22) for i in range(31)],
-    (27.18, "pop", 0.45), (27.55, "rush_long", 0.5),
-    (28.9, "whoosh", 0.4), (29.6, "whoosh_s", 0.25),
-    (31.8, "tick", 0.25), (32.0, "tick", 0.22), (32.25, "tick", 0.22),
-    (37.2, "rush", 0.6), (38.4, "whoosh", 0.35),
-    (40.6, "whoosh_s", 0.3),
-    *[(43.4 + i * 0.16, "paper", 0.32) for i in range(6)],
-    (43.4, "clack", 0.6), (44.95, "pop", 0.4), (45.4, "notify", 0.32),
-    (50.4, "paper_big", 0.5), (50.6, "whoosh", 0.4),
-    (51.84, "pop", 0.5),
-    (53.74, "pop", 0.45), (54.29, "pop", 0.45), (54.44, "tick", 0.3), (55.39, "tick", 0.3), (56.34, "tick", 0.3),
-    (57.79, "notify", 0.4),
-    (58.55, "thud", 0.5), (58.9, "clack", 0.35), (59.03, "clack", 0.35), (59.16, "clack", 0.35),
-    (64.75, "whoosh", 0.6),
-    (65.3, "tick", 0.3), (65.4, "tick", 0.3), (65.5, "tick", 0.3),
-    (66.25, "tape", 0.75), (66.5, "thud", 0.45),
-    (66.85, "conveyor", 0.5), (68.73, "beep", 0.5),
-    (69.4, "jet", 0.55),
-    (73.7, "whoosh", 0.4), (74.3, "rush", 0.4),
-    (77.75, "whoosh_s", 0.3), (78.15, "clack", 0.3), (78.27, "clack", 0.3), (78.39, "clack", 0.3),
-    (82.56, "glint", 0.6),
+    # S01
+    (0.0, "flap_l", 0.75), (0.0, "seam", 0.6), (0.62, "whoosh_s", 0.35), (0.78, "thud", 0.85),
+    (2.3, "whoosh_s", 0.3),
+    (3.3, "flap", 0.55), (3.6, "flap_s", 0.5), (4.26, "flap", 0.55), (4.56, "flap_s", 0.5), (5.22, "flap", 0.55), (5.52, "flap_s", 0.5),
+    (6.24, "stamp", 0.85),
+    (7.2, "flap_xl", 0.8), (7.25, "whoosh", 0.35),
+    # S02
+    (8.13, "whoosh_s", 0.2), (10.13, "whoosh_s", 0.2), (10.48, "flap", 0.6), (12.03, "flap", 0.55), (13.23, "flap", 0.55),
+    (15.06, "whoosh", 0.6),
+    # S03
+    (16.11, "flap_s", 0.5), (16.81, "flap_s", 0.5), (17.46, "flap_s", 0.5), (18.66, "flap", 0.55),
+    *[(19.06 + i * 0.045, "key", 0.2) for i in range(31)],
+    (20.81, "pop", 0.5), (21.86, "whoosh", 0.4), (22.25, "rush", 0.6),
+    # S04
+    (23.14, "whoosh", 0.45), (25.24, "tick", 0.25), (25.44, "tick", 0.22), (25.64, "tick", 0.22), (28.0, "whoosh", 0.5),
+    # S05
+    (29.6, "whoosh_s", 0.3), (30.95, "whoosh_s", 0.3), (33.65, "clack", 0.6),
+    *[(33.65 + i * 0.15, "paper", 0.3) for i in range(6)],
+    (35.35, "pop", 0.4), (35.6, "notify", 0.3), (36.7, "whoosh_s", 0.2),
+    (38.95, "paper_big", 0.5), (39.05, "whoosh", 0.4), (40.28, "pop", 0.5),
+    # S06
+    (41.87, "pop", 0.45), (42.32, "pop", 0.45), (42.47, "tick", 0.3), (43.47, "tick", 0.3), (44.52, "tick", 0.3),
+    (45.47, "notify", 0.4), (45.72, "whoosh", 0.35), (46.23, "flap_l", 0.7),
+    (53.28, "flap_xl", 0.8), (53.3, "whoosh", 0.35),
+    # S07
+    (54.0, "tick", 0.3), (54.12, "tick", 0.3), (54.24, "tick", 0.3), (54.11, "flap", 0.5),
+    (54.81, "tape", 0.75), (54.98, "thud", 0.45), (55.26, "conveyor", 0.5), (55.36, "flap", 0.5),
+    (56.61, "beep", 0.45), (57.3, "jet", 0.55), (57.36, "flap", 0.5),
+    (60.96, "flap_xl", 0.8), (61.0, "whoosh", 0.35),
+    # S08
+    (61.69, "whoosh_s", 0.2), (62.3, "thud", 0.5), (62.94, "whoosh_s", 0.2), (64.04, "flap_l", 0.65), (65.19, "flap", 0.6),
+    (69.19, "whoosh_s", 0.18),
+    (74.88, "flap_xl", 0.85), (74.88, "glint", 0.5),
 ]
 
 

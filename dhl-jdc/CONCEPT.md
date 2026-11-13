@@ -1,20 +1,21 @@
-# Konsep — DHL Express Service Point JDC Cengkareng
+# Konsep v3 — "CGK DEPARTURES"
 
-**Ide besar:** "Dari ribet booking ke tinggal kirim pesan." Satu pita merah DHL ("Living Red Ribbon") mengalir sepanjang video dan berubah fungsi di tiap adegan: jadi lipatan, papan nama, jalur rute, tali tag harga, garis bawah nomor, jejak pesawat, sampai jadi bingkai penutup. Jadi videonya terasa satu gerakan kamera yang nyambung, bukan kumpulan slide.
+**Ide besar:** JDC Cengkareng ada di kawasan Bandara Soekarno-Hatta (CGK). Videonya dibangun sebagai papan keberangkatan bandara (split-flap/Solari): kirimanmu adalah "penumpang"-nya. Teks kunci, status, dan nomor WhatsApp muncul huruf per huruf di papan yang berputar dan berbunyi "clack". Itu yang jadi ritme dag-dug-nya, ditambah kick musik dan dua detak jantung sebelum reveal. Signage bandara memang kuning-hitam, jadi nyambung sama warna DHL.
 
-**Format:** vertikal 1080×1920, 30 fps, 86,4 detik. VO dan teks bahasa Inggris. Musik orisinal 125 BPM, cinematic pop yang ceria.
-**Header:** logo DHL resmi, "EXPRESS" di tengah, nempel di atas (tanpa safe area).
-**Footer (selalu tampil):** DHL EXPRESS SERVICE POINT JDC CENGKARENG · +62 877 7589 7478 · Soewarna Business Park, Lot 7A-7B, Soekarno-Hatta International Airport Area.
+**Format:** 1080×1920 (9:16), 30 fps, 76,8 detik = 40 bar musik 125 BPM. VO dan teks bahasa Inggris.
+**Header:** logo DHL resmi, "EXPRESS" di tengah.
+**Footer (selalu tampil):** [SERVICE POINT JDC CENGKARENG] [WA +62 877 7589 7478], dua pil sejajar. Di bawahnya satu pil panjang berisi alamat.
+**Ikon:** tidak ada ikon gambar. Yang dipakai cuma logo WhatsApp resmi. Info disampaikan lewat papan dan tipografi.
 
-| # | Waktu | Adegan | Teks layar | Gerak utama |
+| # | Waktu | Adegan | Yang terjadi | Transisi keluar |
 |---|---|---|---|---|
-| 1 | 0:00–0:09.6 | Pain point | GOT A SHIPMENT TO SEND? · ANOTHER LOGIN? · ANOTHER FORM? · NOT IN THE MOOD? | Frame 0 dibelah seam merah, judul nembus seam dari dua arah, paket jatuh, panel form/login abstrak membuka dari paket. Hening sejenak, lalu layar dilipat setengah di sepanjang garis pita. |
-| 2 | 0:09.6–0:17.3 | Solusi | THERE'S AN EASIER WAY. · DHL EXPRESS SERVICE POINT / JDC CENGKARENG | Pita terangkat jadi lengkung arsitektural, lalu memipih jadi papan nama miring. Keluarnya: pita melilit paket, melesat jadi rute, kamera menyelam ke terowongan cincin. |
-| 3 | 0:17.3–0:28.8 | Anywhere, anytime | ANYWHERE. ANYTIME. · START YOUR BOOKING VIA WHATSAPP. | HP muncul dari titik hilang. AT HOME / AT WORK / ON THE GO berputar di lintasan lengkung 3D, tersambung ke HP lewat rute merah. Kamera menembus layar, garisnya jadi tali tag. |
-| 4 | 0:28.8–0:38.4 | Harga | COMPETITIVE SHIPPING RATES. · SPECIAL PROMOTIONAL DISCOUNTS (dicetak di tag) · Terms apply. | Tag berayun seperti bandul sungguhan, makro ke eyelet, lalu kamera terbang menembus lubang eyelet. |
-| 5 | 0:38.4–0:51.8 | Tanpa akun | NO MYDHL+ REGISTRATION. → (prisma berputar) ACCOUNT NEEDED. · WHEN YOU BOOK THROUGH OUR SERVICE POINT. | Ruang merah. Baris-baris form terlipat satu per satu dan menyusut jadi satu bubble chat. Ruang merah terlipat ke atas, bubble terbang masuk ke HP. |
-| 6 | 0:51.8–1:05.3 | Kirim pesan | JUST MESSAGE US. · TELL US WHAT YOU NEED TO SHIP. · REACH US NOW ON +62 877 7589 7478 | Chat ala WhatsApp dibangun dari elemen hidup (tanpa screenshot, tanpa timestamp). Nomor tampil sekitar 6 detik, digarisbawahi pita. Detail kiriman lepas jadi chip, lalu whip-pan. |
-| 7 | 1:05.3–1:14.9 | Kami urus | WE HANDLE THE REST. · 01 SHARE YOUR DETAILS → 02 WE PREPARE → 03 WE ARRANGE | Satu kamera menerus: chip masuk kotak terbuka, sapuan pita menutup kotak, kotak jalan di konveyor masuk mesin X-ray, kamera tilt ke pesawat yang naik dengan jejak pita. |
-| 8 | 1:14.9–1:26.4 | CTA | READY TO SHIP? · ONE MESSAGE. WE HANDLE THE REST. · REACH US NOW ON +62 877 7589 7478 · DHL EXPRESS SERVICE POINT JDC CENGKARENG | Jejak pesawat menutup jadi loop (gestur pita dari aset), melingkari paket dan HP. Nomor di atas pita merah datar. Hit terakhir 1:22.6, glint, lalu diam. |
+| 1 | 0:00–0:07.7 | Pain point | Frame 0 langsung papan GOT A / SHIPMENT / TO SEND? yang sedang berputar, paket jatuh. Papan status: LOGIN, PORTAL, BOOKING FORMS masing-masing berubah jadi DELAYED (merah) tepat di ketukan. Stempel NOT IN THE MOOD?, lalu 2 detak jantung. | Flap wipe: seluruh layar membalik seperti papan |
+| 2 | 0:07.7–0:15.4 | Solusi | THERE'S AN EASIER WAY. muncul per kata. Papan mengumumkan DHL EXPRESS SERVICE POINT / JDC CENGKARENG, lalu baris merah A SIMPLER WAY → TO GET STARTED. | Whip vertikal |
+| 3 | 0:15.4–0:23.0 | Anywhere | ANYWHERE. ANYTIME., lalu satu baris papan FROM HOME → FROM WORK → ON THE GO → VIA WHATSAPP. Di HP pesan diketik dan dikirim. | Kamera menyelam ke avatar DHL kuning di chat |
+| 4 | 0:23.0–0:28.8 | Harga | Tag bagasi DHL berayun di talinya. COMPETITIVE SHIPPING RATES. dan SPECIAL PROMOTIONAL DISCOUNTS dicetak di tag, plus "Terms apply." | Colour flood merah dari lipatan tag |
+| 5 | 0:28.8–0:40.3 | Tanpa akun | Ruang merah. Form terlipat jadi bubble chat. NO MYDHL+ REGISTRATION. → prisma → ACCOUNT NEEDED. · WHEN YOU BOOK THROUGH OUR SERVICE POINT. | Ruang terlipat ke atas, bubble terbang masuk HP |
+| 6 | 0:40.3–0:53.8 | WhatsApp | Chat terbangun (tanpa timestamp). Lalu REACH US NOW ON dan nomor +62 877 7589 7478 muncul di papan sambil VO membacakan nomornya. | Flap wipe diagonal |
+| 7 | 0:53.8–1:01.4 | Kami urus | Detail kiriman masuk kotak, ditutup lakban merah, jalan di konveyor masuk X-ray, pesawat lepas landas. Status 01 DETAILS IN → 02 PREPARING → 03 ARRANGED. | Flap wipe dari tengah |
+| 8 | 1:01.4–1:16.8 | CTA | READY TO SHIP? · ONE MESSAGE. WE HANDLE THE REST. Paket + HP, nomor di papan, SERVICE POINT JDC CENGKARENG, lalu alamat dibacakan VO. Hit akhir di 1:14.9: semua baris papan berputar ulang dan mendarat lagi, lalu diam. | — |
 
-**Akurasi klaim:** "No registration" dan "no account" selalu disebut MyDHL+ dan dikualifikasi "when you book through our Service Point". Tidak ada angka diskon, janji jemput, 24 jam, atau waktu respons. Diskon diberi catatan "Terms apply." Mesin X-ray dan pesawat cuma ilustrasi konsep.
+**Akurasi klaim:** MyDHL+ selalu dikualifikasi "when you book through our Service Point". Tidak ada angka diskon, janji jemput, 24 jam, atau waktu respons; diskon dicatat "Terms apply." Mesin X-ray dan pesawat hanya ilustrasi konsep.

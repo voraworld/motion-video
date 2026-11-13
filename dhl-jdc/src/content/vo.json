@@ -38,6 +38,12 @@
       "spoken": "Just WhatsApp us. Tell us what you're sending, where it's going, and any special requirements."
     },
     {
+      "id": "s06b",
+      "speed": 0.9,
+      "text": "Reach us now on +62 877 7589 7478.",
+      "spoken": "Reach us now on... plus six two, eight seven seven, seven five eight nine, seven four seven eight."
+    },
+    {
       "id": "s07",
       "speed": 0.9,
       "text": "Our team will help prepare and coordinate your shipment, guiding the arrangements from start to finish.",
@@ -48,6 +54,12 @@
       "speed": 0.9,
       "text": "Ready to ship? Message DHL Express Service Point JDC Cengkareng on WhatsApp today.",
       "spoken": "Ready to ship? Message DHL Express Service Point, J D C Chengkahreng, on WhatsApp today."
+    },
+    {
+      "id": "s08b",
+      "speed": 0.92,
+      "text": "Find us at Soewarna Business Park, in the Soekarno-Hatta airport area.",
+      "spoken": "Find us at Suwarna Business Park, in the Sukarno Hatta airport area."
     }
   ]
 }

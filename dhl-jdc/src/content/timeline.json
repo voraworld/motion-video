@@ -1,15 +1,17 @@
 {
   "fps": 30,
   "bpm": 125,
-  "duration": 86.4,
+  "duration": 76.8,
   "scenes": [
-    { "id": "S01", "name": "Pain point",         "start": 0.0,   "end": 9.6,   "vo": "s01", "voAt": 0.35 },
-    { "id": "S02", "name": "Solution reveal",    "start": 9.6,   "end": 17.28, "vo": "s02", "voAt": 10.2 },
-    { "id": "S03", "name": "Anywhere anytime",   "start": 17.28, "end": 28.8,  "vo": "s03", "voAt": 18.7 },
-    { "id": "S04", "name": "Competitive rates",  "start": 28.8,  "end": 38.4,  "vo": "s04", "voAt": 29.9 },
-    { "id": "S05", "name": "No MyDHL+ account",  "start": 38.4,  "end": 51.84, "vo": "s05", "voAt": 39.3 },
-    { "id": "S06", "name": "One WhatsApp message","start": 51.84, "end": 65.28, "vo": "s06", "voAt": 52.7 },
-    { "id": "S07", "name": "We handle the rest", "start": 65.28, "end": 74.88, "vo": "s07", "voAt": 66.0 },
-    { "id": "S08", "name": "Final call to action","start": 74.88, "end": 86.4,  "vo": "s08", "voAt": 76.1 }
-  ]
+    { "id": "S01", "name": "Pain point",          "start": 0.0,   "end": 7.68,  "vo": [{ "id": "s01", "at": 0.3 }] },
+    { "id": "S02", "name": "Solution reveal",     "start": 7.68,  "end": 15.36, "vo": [{ "id": "s02", "at": 8.2 }] },
+    { "id": "S03", "name": "Anywhere anytime",    "start": 15.36, "end": 23.04, "vo": [{ "id": "s03", "at": 16.15 }] },
+    { "id": "S04", "name": "Competitive rates",   "start": 23.04, "end": 28.8,  "vo": [{ "id": "s04", "at": 23.5 }] },
+    { "id": "S05", "name": "No MyDHL+ account",   "start": 28.8,  "end": 40.32, "vo": [{ "id": "s05", "at": 29.6 }] },
+    { "id": "S06", "name": "One WhatsApp message","start": 40.32, "end": 53.76, "vo": [{ "id": "s06", "at": 40.75 }, { "id": "s06b", "at": 46.75 }] },
+    { "id": "S07", "name": "We handle the rest",  "start": 53.76, "end": 61.44, "vo": [{ "id": "s07", "at": 54.25 }] },
+    { "id": "S08", "name": "Final call to action","start": 61.44, "end": 76.8,  "vo": [{ "id": "s08", "at": 62.2 }, { "id": "s08b", "at": 69.25 }] }
+  ],
+  "heartbeats": [6.56, 6.78, 7.04, 7.24],
+  "hits": [0.0, 7.68, 15.36, 23.04, 28.8, 40.32, 46.08, 53.76, 61.44, 74.88]
 }

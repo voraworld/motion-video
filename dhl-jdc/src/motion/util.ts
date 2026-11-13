@@ -46,3 +46,36 @@ export const rnd = (seed: number) => {
   const s = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
   return s - Math.floor(s);
 };
+
+// ---------- beat grid (shared with scripts/music.py: 125 BPM, one bar = 1.92 s) ----------
+export const BEAT = 60 / timeline.bpm;
+export const BAR = BEAT * 4;
+export const HEARTBEATS: number[] = timeline.heartbeats;
+export const HITS: number[] = timeline.hits;
+/** How hard the picture pumps with the kick, per section (mirrors the arrangement). */
+export const energy = (t: number) => {
+  const segs: [number, number, number][] = [
+    [0, 6.24, 1],
+    [6.24, 7.68, 0],
+    [7.68, 15.36, 0.55],
+    [15.36, 28.8, 1],
+    [28.8, 38.4, 0.25],
+    [38.4, 40.32, 0.5],
+    [40.32, 53.76, 0.8],
+    [53.76, 74.88, 1],
+    [74.88, 99, 0],
+  ];
+  for (const [a, b, e] of segs) if (t >= a && t < b) return e;
+  return 0;
+};
+const decay = (dt: number, k: number) => (dt >= 0 ? Math.exp(-dt * k) : 0);
+/** 1 on every kick, decaying. */
+export const beatPulse = (t: number) => decay(t - Math.floor(t / BEAT) * BEAT, 9);
+/** 1 on every bar downbeat, decaying. */
+export const barPulse = (t: number) => decay(t - Math.floor(t / BAR) * BAR, 6);
+/** Heartbeat thumps ("dag-dug"). */
+export const heartPulse = (t: number) => HEARTBEATS.reduce((m, h) => Math.max(m, decay(t - h, 10)), 0);
+/** Impact frames at scene hits. */
+export const hitPulse = (t: number) => HITS.reduce((m, h) => Math.max(m, decay(t - h, 14)), 0);
+/** Bar index (for deterministic per-bar variation). */
+export const barIndex = (t: number) => Math.floor(t / BAR);

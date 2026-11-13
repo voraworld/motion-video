@@ -116,6 +116,15 @@ def taiko(vel=1.0, pitch=72):
     return np.tanh(1.3 * (body + skin)) * vel
 
 
+def heartbeat(vel=1.0):
+    """'dag-dug': a low, felt thump with a soft skin click."""
+    n = int(0.42 * SR)
+    t = np.arange(n) / SR
+    body = np.sin(2 * np.pi * (48 * t + (40 / 16) * (1 - np.exp(-16 * t)))) * np.exp(-t * 11)
+    skin = fft_filter(RNG.standard_normal(n), lo=60, hi=600) * np.exp(-t * 45) * 0.6
+    return np.tanh(2.0 * (body + skin)) * vel
+
+
 def tom(pitch=110, vel=1.0):
     n = int(0.4 * SR)
     t = np.arange(n) / SR
@@ -307,15 +316,15 @@ def compose():
         j = min(mix.n, i + m)
         pump[i:j] = np.minimum(pump[i:j], 1 - depth * (1 - np.linspace(0, 1, j - i)) ** 2)
 
-    # ---------- HOOK (bars 0-3, until the 6.24 s accent) ----------
-    hits = [0.0, 2.88, 3.84, 6.24]
+    # ---------- HOOK (bars 0-3): board slams on 0 / 3.36 / 4.32 / 5.28, accent 6.24 ----------
+    hits = [0.0, 3.36, 4.32, 5.28, 6.24]
     for h in hits:
-        mix.add("fx", boom(2.0 if h < 6 else 2.6), h, 0.9 if h in (0.0, 6.24) else 0.6)
-        mix.add("drums", crash(2.2), h, 0.5 if h in (0.0, 6.24) else 0.28)
-    for h in hits:
+        big = h in (0.0, 6.24)
+        mix.add("fx", boom(2.4 if big else 1.6), h, 0.9 if big else 0.55)
+        mix.add("drums", crash(2.2), h, 0.5 if big else 0.25)
         b = int(h / BAR)
         r, iv = HOOK[b % 4]
-        mix.add("lead", brass([D3 + r + x for x in iv] + [D3 + 12 + r + iv[0]], 0.7, 1.3), h, 1.0)
+        mix.add("lead", brass([D3 + r + x for x in iv] + [D3 + 12 + r + iv[0]], 0.7, 1.3), h, 1.0 if big else 0.75)
     hook_end = 6.24
     t, step = 0.0, 0
     while t < hook_end - 1e-6:
@@ -323,30 +332,29 @@ def compose():
         b = int(t / BAR)
         r, iv = HOOK[b % 4]
         if p % 4 == 0:
-            mix.add("drums", kick(1.0), t, 0.85)
+            mix.add("drums", kick(1.0), t, 1.0)
             duck_at(t, 0.45)
         if p in (4, 12):
-            mix.add("drums", clap(), t, 0.5)
-            mix.add("drums", snare(0.9), t, 0.45)
+            mix.add("drums", clap(), t, 0.55)
+            mix.add("drums", snare(0.9), t, 0.5)
         if p in (2, 6, 10, 14):
-            mix.add("drums", taiko(0.7, 80 if p < 8 else 66), t, 0.45, pan=-0.2 if p < 8 else 0.2)
+            mix.add("drums", taiko(0.7, 80 if p < 8 else 66), t, 0.5, pan=-0.2 if p < 8 else 0.2)
         mix.add("drums", hat(vel=0.9 if p % 2 == 0 else 0.55), t, 0.35, pan=0.3)
         mix.add("bass", bass_note(D3 - 12 + r, S16 * 0.9, drive=1.6), t, 0.55)
         t += S16
         step += 1
-    # hook pad under it all
     for b in range(4):
         r, iv = HOOK[b]
         start = bar_t(b)
         if start >= hook_end:
             break
-        mix.add("pad", strings([D3 + 12 + r + x for x in iv], min(BAR, hook_end - start) + 0.3, cutoff=2600), start, 0.32)
-    # near-silence, then riser into the reveal (7.68 -> 9.6)
-    mix.add("pad", pad([D3 + 12 + 4 + x for x in (-8, -4, -1)], 1.92 + 0.2, cutoff=900, attack=1.2), 7.68, 0.25)
-    mix.add("fx", reverse_cymbal(1.92), 9.6 - 1.92, 0.75)
-    mix.add("fx", riser(1.92), 9.6 - 1.92, 0.55)
-    for k in range(8):  # accelerating toms during the fold
-        mix.add("drums", tom(90 + k * 12, 0.25 + k * 0.08), 8.64 + k * 0.12, 0.6, pan=-0.4 + k * 0.1)
+        mix.add("pad", strings([D3 + 12 + r + x for x in iv], min(BAR, hook_end - start) + 0.3, cutoff=2600), start, 0.3)
+    # near-silence with heartbeats, then riser + toms under the flap wipe into the reveal
+    mix.add("pad", pad([D3 + 12 + 4 + x for x in (-8, -4, -1)], 1.6, cutoff=800, attack=0.9), 6.4, 0.2)
+    mix.add("fx", reverse_cymbal(0.96), 7.68 - 0.96, 0.8)
+    mix.add("fx", riser(0.96), 7.68 - 0.96, 0.55)
+    for k in range(8):
+        mix.add("drums", tom(95 + k * 12, 0.3 + k * 0.08), 7.2 + k * 0.06, 0.55, pan=-0.4 + k * 0.1)
 
     # ---------- generic groove writer ----------
     def groove(b0, b1, prog, *, kick4=True, half=False, clapv=0.5, hats=True, openhat=True, bassv=0.55,
@@ -356,17 +364,22 @@ def compose():
         t, step = t0, 0
         while t < t1 - 1e-6:
             p = step % 16
-            bi = int(round((t - t0) / BAR - 0.4999)) if False else int((t - t0 + 1e-6) / BAR)
+            bi = int((t - t0 + 1e-6) / BAR)
             r, iv = prog[bi % len(prog)]
             if kick4 and p % 4 == 0:
-                mix.add("drums", kick(1.0), t, 0.9)
+                mix.add("drums", kick(1.0), t, 1.08)
+                mix.add("bass", bass_note(D3 - 24 + r, BEAT * 0.45, drive=2.2), t, 0.22)
                 duck_at(t, pumpd)
             if half and p == 0:
-                mix.add("drums", kick(1.0), t, 0.9)
+                mix.add("drums", kick(1.0), t, 1.0)
                 duck_at(t, pumpd)
             if half and p == 8:
                 mix.add("drums", snare(1.0), t, 0.5)
                 mix.add("drums", clap(), t, 0.4)
+            bar_no = int((t - t0 + 1e-6) / BAR)
+            if kick4 and bar_no % 4 == 3 and p >= 12:
+                mix.add("drums", snare(0.5 + (p - 12) * 0.15), t, 0.55)
+                mix.add("drums", tom(150 - (p - 12) * 18, 0.7), t, 0.4, pan=0.3 - (p - 12) * 0.2)
             if not half and p in (4, 12) and clapv:
                 mix.add("drums", clap(), t, clapv)
                 mix.add("drums", snare(0.6), t, clapv * 0.6)
@@ -391,8 +404,8 @@ def compose():
             step += 1
         if lead or marim:
             for pb in range(b0, b1, 2):
-                for (s, d, ln) in (mel if (pb // 2) % 2 == 0 else HOOK_MEL_B):
-                    nt = bar_t(pb) + s * S16
+                for (s_, d, ln) in (mel if (pb // 2) % 2 == 0 else HOOK_MEL_B):
+                    nt = bar_t(pb) + s_ * S16
                     if nt >= t1:
                         continue
                     if lead:
@@ -400,90 +413,95 @@ def compose():
                     if marim:
                         mix.add("lead", marimba(deg(d, 2), 0.5), nt, marim, pan=-0.15)
 
-    # ---------- REVEAL (bars 5-8) ----------
-    r, iv = POP[0]
-    mix.add("lead", brass([D3 + 12 + x for x in (0, 4, 7)] + [D3 + 24], 1.2, 1.5), 9.6, 1.0)
-    mix.add("drums", crash(3.0), 9.6, 0.65)
-    mix.add("fx", boom(), 9.6, 0.7)
-    mix.add("lead", bell(deg(4, 2)), 9.6, 0.25)
-    groove(5, 9, POP, kick4=False, half=True, arp=0.16, arp_bright=3000, padv=0.3, padcut=1800, stringv=0.18,
-           openhat=False, bassv=0.45)
-    mix.add("fx", reverse_cymbal(1.2), 17.28 - 1.2, 0.5)
+    # ---------- REVEAL (bars 4-7) ----------
+    mix.add("lead", brass([D3 + 12 + x for x in (0, 4, 7)] + [D3 + 24], 1.2, 1.5), bar_t(4), 1.0)
+    mix.add("drums", crash(3.0), bar_t(4), 0.65)
+    mix.add("fx", boom(), bar_t(4), 0.7)
+    mix.add("lead", bell(deg(4, 2)), bar_t(4), 0.25)
+    groove(4, 8, POP, kick4=False, half=True, arp=0.16, arp_bright=3000, padv=0.3, padcut=1800, stringv=0.18, openhat=False, bassv=0.45)
+    mix.add("fx", reverse_cymbal(0.9), bar_t(8) - 0.9, 0.6)
 
-    # ---------- GROOVE (bars 9-19) ----------
-    mix.add("drums", crash(2.4), 17.28, 0.55)
-    groove(9, 15, POP, arp=0.13, lead=0.0, padv=0.24, shake=0.0)
-    mix.add("drums", crash(2.4), 28.8, 0.6)
-    mix.add("lead", brass([D3 + 12 + x for x in (0, 4, 7)], 0.6), 28.8, 0.8)
-    groove(15, 20, POP, arp=0.12, lead=0.0, marim=0.12, padv=0.24, shake=0.25)
-    # short lead hook phrases in the narration gaps
-    for gb in (13, 18):
-        for (s, d, ln) in HOOK_MEL:
-            nt = bar_t(gb) + s * S16
-            mix.add("lead", supersaw_lead(deg(d, 1), ln * S16 * 0.95), nt, 0.16)
-    mix.add("fx", reverse_cymbal(1.92), 38.4 - 1.92, 0.5)
+    # ---------- GROOVE (bars 8-14: anywhere + rates) ----------
+    mix.add("drums", crash(2.4), bar_t(8), 0.55)
+    groove(8, 12, POP, arp=0.13, padv=0.24)
+    mix.add("drums", crash(2.4), bar_t(12), 0.6)
+    mix.add("lead", brass([D3 + 12 + x for x in (0, 4, 7)], 0.6), bar_t(12), 0.8)
+    groove(12, 15, POP, arp=0.12, marim=0.12, padv=0.24, shake=0.25)
+    for (s_, d, ln) in HOOK_MEL:
+        mix.add("lead", supersaw_lead(deg(d, 1), ln * S16 * 0.95), bar_t(10) + s_ * S16, 0.14)
+    mix.add("fx", reverse_cymbal(1.2), bar_t(15) - 1.2, 0.55)
 
-    # ---------- SPACE (bars 20-26) ----------
-    mix.add("drums", crash(3.0), 38.4, 0.45)
-    mix.add("fx", boom(), 38.4, 0.45)
-    groove(20, 27, SPACE, kick4=False, clapv=0, hats=False, bassv=0.0, arp=0.09, arp_bright=1800, padv=0.3,
-           padcut=1000, stringv=0.12, shake=0.12)
-    for b in range(22, 27):  # soft sub on bar downbeats
-        r, iv = SPACE[(b - 20) % 4]
+    # ---------- SPACE (bars 15-20: no MyDHL+ account) ----------
+    mix.add("drums", crash(3.0), bar_t(15), 0.45)
+    mix.add("fx", boom(), bar_t(15), 0.45)
+    groove(15, 21, SPACE, kick4=False, clapv=0, hats=False, bassv=0.0, arp=0.09, arp_bright=1800, padv=0.3, padcut=1000, stringv=0.12, shake=0.12)
+    for b in range(16, 21):
+        r, iv = SPACE[(b - 15) % 4]
         mix.add("bass", bass_note(D3 - 12 + r, BAR * 0.9), bar_t(b), 0.3)
-    mix.add("fx", riser(1.92), 51.84 - 1.92, 0.45)
+    for b in range(17, 20):  # a felt kick on the downbeats keeps the pulse alive under the narration
+        mix.add("drums", kick(0.8), bar_t(b), 0.6)
+        mix.add("drums", kick(0.6), bar_t(b) + BEAT * 2, 0.45)
+    mix.add("fx", riser(1.92), bar_t(21) - 1.92, 0.45)
     for k in range(16):
-        mix.add("drums", snare(0.25 + k * 0.045), 51.84 - 1.92 + k * S16, 0.45)
+        mix.add("drums", snare(0.25 + k * 0.045), bar_t(21) - 1.92 + k * S16, 0.45)
 
-    # ---------- PLAYFUL (bars 27-33) ----------
-    mix.add("drums", crash(2.4), 51.84, 0.55)
-    groove(27, 34, POP, arp=0.0, marim=0.2, padv=0.22, shake=0.28, openhat=True, clapv=0.45)
-    # chime on the number reveal (~58.6 s)
+    # ---------- PLAYFUL (bars 21-27: WhatsApp) ----------
+    mix.add("drums", crash(2.4), bar_t(21), 0.55)
+    groove(21, 28, POP, marim=0.2, padv=0.22, shake=0.28, clapv=0.45)
     for k, d in enumerate((4, 7, 9, 11)):
-        mix.add("lead", bell(deg(d, 2), 1.4), 58.56 + k * 0.12, 0.22)
+        mix.add("lead", bell(deg(d, 2), 1.4), 46.08 + k * 0.12, 0.22)
 
-    # ---------- BUILD (bars 34-38) ----------
-    mix.add("drums", crash(2.4), 65.28, 0.55)
-    groove(34, 39, POP, arp=0.13, padv=0.2, stringv=0.22, shake=0.2)
-    t = 65.28
-    while t < 74.88 - 1e-6:  # string ostinato 8ths
-        b = int((t - 65.28 + 1e-6) / BAR)
+    # ---------- BUILD (bars 28-31: we handle the rest) ----------
+    mix.add("drums", crash(2.4), bar_t(28), 0.55)
+    groove(28, 32, POP, arp=0.13, padv=0.2, stringv=0.22, shake=0.2)
+    t = bar_t(28)
+    while t < bar_t(32) - 1e-6:
+        b = int((t - bar_t(28) + 1e-6) / BAR)
         r, iv = POP[b % 4]
-        mix.add("lead", strings([D3 + 24 + r + iv[(int((t - 65.28) / (BEAT / 2))) % 3]], BEAT / 2 * 0.9, cutoff=5000), t, 0.16)
+        mix.add("lead", strings([D3 + 24 + r + iv[(int((t - bar_t(28)) / (BEAT / 2))) % 3]], BEAT / 2 * 0.9, cutoff=5000), t, 0.16)
         t += BEAT / 2
     for k in range(16):
-        mix.add("drums", snare(0.3 + k * 0.04), 72.96 + k * S16, 0.5)
+        mix.add("drums", snare(0.3 + k * 0.04), bar_t(31) + k * S16, 0.5)
         if k % 2 == 0:
-            mix.add("drums", tom(100 + k * 6, 0.6), 72.96 + k * S16, 0.45)
-    mix.add("fx", riser(3.84), 74.88 - 3.84, 0.5)
-    mix.add("fx", reverse_cymbal(1.92), 74.88 - 1.92, 0.6)
+            mix.add("drums", tom(100 + k * 6, 0.6), bar_t(31) + k * S16, 0.45)
+    mix.add("fx", riser(3.84), bar_t(32) - 3.84, 0.5)
+    mix.add("fx", reverse_cymbal(1.92), bar_t(32) - 1.92, 0.6)
 
-    # ---------- FINALE (bars 39-42) ----------
-    mix.add("drums", crash(3.0), 74.88, 0.7)
-    mix.add("fx", boom(), 74.88, 0.8)
-    mix.add("lead", brass([D3 + 12 + x for x in (0, 4, 7)] + [D3 + 24], 0.9, 1.5), 74.88, 0.9)
-    groove(39, 43, POP, arp=0.13, lead=0.15, padv=0.24, stringv=0.2, shake=0.22)
-    for b in range(39, 43):
-        r, iv = POP[(b - 39) % 4]
+    # ---------- FINALE (bars 32-38) ----------
+    mix.add("drums", crash(3.0), bar_t(32), 0.7)
+    mix.add("fx", boom(), bar_t(32), 0.8)
+    mix.add("lead", brass([D3 + 12 + x for x in (0, 4, 7)] + [D3 + 24], 0.9, 1.5), bar_t(32), 0.9)
+    groove(32, 39, POP, arp=0.13, lead=0.15, padv=0.24, stringv=0.2, shake=0.22)
+    for b in range(32, 39):
+        r, iv = POP[(b - 32) % 4]
         mix.add("lead", brass([D3 + 12 + r + x for x in iv], 0.35), bar_t(b) + BEAT * 1.5, 0.4)
 
-    # ---------- BUTTON (bar 43 -> end) ----------
-    bt = bar_t(43)
+    # ---------- BUTTON (bar 39 -> end) ----------
+    bt = bar_t(39)
     chord = [D3 + x for x in (0, 7)] + [D3 + 12 + x for x in (0, 4, 7)] + [D3 + 24]
-    mix.add("lead", brass(chord, 2.6, bright=1.6), bt, 1.0)
-    mix.add("lead", strings([D3 + 12 + x for x in (0, 4, 7)] + [D3 + 24 + 4], 3.6, cutoff=5000), bt, 0.4)
-    mix.add("pad", pad([D3 + x for x in (0, 4, 7)], 3.6, cutoff=1600, attack=0.01), bt, 0.3)
-    mix.add("bass", bass_note(D3 - 12, 2.6), bt, 0.6)
-    mix.add("fx", boom(3.4), bt, 0.9)
-    mix.add("drums", crash(3.6), bt, 0.7)
+    mix.add("lead", brass(chord, 1.9, bright=1.6), bt, 1.0)
+    mix.add("lead", strings([D3 + 12 + x for x in (0, 4, 7)] + [D3 + 24 + 4], 1.9, cutoff=5000), bt, 0.4)
+    mix.add("pad", pad([D3 + x for x in (0, 4, 7)], 1.9, cutoff=1600, attack=0.01), bt, 0.3)
+    mix.add("bass", bass_note(D3 - 12, 1.8), bt, 0.6)
+    mix.add("fx", boom(1.9), bt, 0.9)
+    mix.add("drums", crash(1.9), bt, 0.7)
     mix.add("drums", kick(1.0), bt, 1.0)
-    mix.add("lead", bell(deg(7, 2), 3.0), bt, 0.25)
+    mix.add("lead", bell(deg(7, 2), 1.9), bt, 0.25)
+
+    # ---------- heartbeats + scene impacts (shared with the visuals via timeline.json) ----------
+    for i, hb in enumerate(TL["heartbeats"]):
+        mix.add("fx", heartbeat(1.0 if i % 2 == 0 else 0.8), hb, 1.0)
+    for h in TL["hits"]:
+        if h in (0.0, 7.68, 61.44, 74.88, 46.08):
+            continue
+        mix.add("fx", boom(1.8), h, 0.55)
+        mix.add("drums", kick(1.0, punch=1.3), h, 1.0)
 
     # ---------- bus processing ----------
     pump_s = pump[:, None]
     mix.bus["pad"] *= pump_s
     mix.bus["bass"] *= np.sqrt(pump_s)
-    gains = {"drums": 0.85, "bass": 0.8, "pad": 0.75, "lead": 0.78, "fx": 0.8}
+    gains = {"drums": 1.05, "bass": 0.9, "pad": 0.6, "lead": 0.74, "fx": 0.9}
     out = np.zeros((mix.n, 2))
     for k, b in mix.bus.items():
         if k in ("pad", "lead"):
@@ -499,7 +517,7 @@ def compose():
         out[:, c] -= hi * 0.35
     out = np.tanh(out * 1.15) / 1.15
     out /= max(1e-9, np.max(np.abs(out))) / 0.9
-    fade = int(0.6 * SR)
+    fade = int(0.35 * SR)
     out[-fade:] *= np.linspace(1, 0, fade)[:, None] ** 1.5
     return out
 

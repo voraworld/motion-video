@@ -21,7 +21,7 @@ export const WA = { bg: "#0B141A", head: "#1F2C34", out: "#005C4B", in: "#202C33
 export const W = 1080;
 export const H = 1920;
 /** Persistent layout zones (no social-UI safe area, by request: header high, footer low). */
-export const ZONE = { headerBottom: 132, footerTop: 1676, contentTop: 150, contentBottom: 1660 } as const;
+export const ZONE = { headerBottom: 132, footerTop: 1712, contentTop: 150, contentBottom: 1690 } as const;
 
 // Fonts ship in public/fonts (SIL Open Font License), so renders never need the network.
 export const DISPLAY = "Archivo";
