@@ -14,5 +14,6 @@ Aset dari chat (2026-11-13). Semua PNG RGBA (punya transparansi). Brief/perintah
 | dhl_phone.png | 1024×1536 | Smartphone layar hitam kosong (untuk mockup layar), rim light |
 | dhl_tag.png | 1774×887 | Tag/label kuning dengan tali merah, sudut terlipat merah, kosong |
 | dhl_ribbon.png | 1254×1254 | Pita merah 3D melengkung, cutout |
+| dhl_ribbon-s-curve.png | 1024×1536 | Pita merah 3D bentuk S vertikal, glow merah, latar gelap |
 
 Catatan: label kardus, tag dan layar ponsel sengaja kosong. Teks diisi di kode.
