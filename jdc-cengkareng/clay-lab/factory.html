@@ -154,7 +154,9 @@ const B={
  A13:()=>{const s=rrShape(1.5,.75,.18),h=new THREE.Path();h.absarc(-.55,0,.09,0,Math.PI*2,true);s.holes.push(h);return at(ext(s,.06,.04,M.W),0,.4,0,-.25,-.35,.05)},
  A14:()=>{const s=new THREE.Shape();s.moveTo(0,1.15);s.lineTo(.75,.65);s.lineTo(.75,-1.0);s.quadraticCurveTo(.75,-1.15,.6,-1.15);s.lineTo(-.6,-1.15);s.quadraticCurveTo(-.75,-1.15,-.75,-1.0);s.lineTo(-.75,.65);s.closePath();
    const h=new THREE.Path();h.absarc(0,.7,.13,0,Math.PI*2,true);s.holes.push(h);const g=grp(ext(s,.1,.07,M.Y));
-   g.add(tube([V(-.06,.7,.0),V(-.1,.95,.04),V(0,1.5,.05),V(.1,2.1,0),V(.05,2.6,-.05)],.025,M.G));
+   const loop=[V(0,.79,0),V(0,.86,.2),V(0,1.12,.17),V(0,1.36,.03),V(0,1.36,-.03),V(0,1.12,-.17),V(0,.86,-.2)];
+   g.add(tube(loop,.022,M.G,true));g.add(at(sph(.05,M.G),0,1.37,0));
+   g.add(tube([V(0,1.38,0),V(.02,1.7,0),V(-.03,2.1,0),V(0,2.6,0)],.022,M.G));
    return at(g,0,1.3,0,0,-.4,.12)},
  A15:()=>{const ch=1.0,R0=.8;const base=new THREE.Shape();base.absarc(0,0,R0,ch,2*Math.PI-ch,false);base.closePath();
    const seg=new THREE.Shape();seg.absarc(0,0,R0,-ch,ch,false);seg.closePath();
@@ -210,7 +212,11 @@ const B={
    g.add(at(rbox(.07,.42,.04,.03,M.R),0,1.06,.27));g.add(at(rbox(.07,.3,.04,.03,M.R),.1,.86,.27,0,0,-1.2));g.add(at(sph(.06,M.G),0,.9,.28));
    [-1,1].forEach(s=>{g.add(at(sph(.24,M.Yd),s*.45,1.62,0));g.add(at(cyl(.04,.05,.3,M.G),s*.42,.15,0,0,0,s*.4))});g.add(at(rbox(.06,.3,.06,.03,M.G),0,1.75,0));return g},
  I03:()=>{const s=new THREE.Shape();s.moveTo(0,.75);s.lineTo(.5,.42);s.lineTo(.5,-.7);s.lineTo(-.5,-.7);s.lineTo(-.5,.42);s.closePath();const h=new THREE.Path();h.absarc(0,.42,.1,0,Math.PI*2,true);s.holes.push(h);
-   const g=grp(ext(s,.1,.07,M.Y));g.add(at(new THREE.Mesh(new THREE.TorusGeometry(.22,.06,16,48),M.R),0,.62,0,0,.0,.0));g.add(at(new THREE.Mesh(new THREE.TorusGeometry(.18,.06,16,48),M.R),-.28,.86,0,0,0,.6));g.add(at(new THREE.Mesh(new THREE.TorusGeometry(.18,.06,16,48),M.R),.28,.86,0,0,0,-.6));
+   const g=grp(ext(s,.1,.07,M.Y));
+   g.add(tube([V(0,.42,0),V(0,.45,.19),V(0,.66,.18),V(0,.84,.04),V(0,.84,-.04),V(0,.66,-.18),V(0,.45,-.19)],.045,M.R,true));
+   g.add(at(sph(.075,M.R),0,.86,.02));
+   [-1,1].forEach(sd=>{const lp=new THREE.Mesh(new THREE.TorusGeometry(.16,.05,16,48),M.R);lp.scale.set(1.25,.75,1);g.add(at(lp,sd*.22,.93,.02,0,0,sd*.45));
+     g.add(tube([V(0,.86,.05),V(sd*.1,.74,.1),V(sd*.2,.6,.12),V(sd*.24,.5,.1)],.035,M.R))});
    return at(g,0,.95,0,0,-.35,.15)},
  I04:()=>{const g=grp(rbox(1.2,1.6,.1,.12,M.W),at(rbox(.5,.2,.18,.08,M.G),0,.8,.03));[.35,.1,-.15,-.4].forEach(y=>g.add(at(rbox(.8,.08,.03,.04,M.Gy),0,y,.06)));
    g.add(at(rbox(1.5,.26,.05,.02,M.R),0,0,.12,0,0,-.7));return at(g,0,1.0,0,-.15,-.35,0)},
