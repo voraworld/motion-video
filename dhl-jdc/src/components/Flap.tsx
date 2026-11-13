@@ -31,8 +31,9 @@ const cellState = (t: number, start: number, from: string, to: string, flip: num
   return { cur: DRUM[(startIdx + k) % N], next: DRUM[(startIdx + k + 1) % N], p: s - k, done: false };
 };
 
-const Half: React.FC<{ ch: string; w: number; h: number; top: boolean; st: FlapStyle; font: number; style?: React.CSSProperties }> = ({
+const Half: React.FC<{ ch: string; w: number; h: number; top: boolean; st: FlapStyle; font: number; style?: React.CSSProperties; shade?: boolean }> = ({
   ch,
+  shade,
   w,
   h,
   top,
@@ -72,8 +73,8 @@ const Half: React.FC<{ ch: string; w: number; h: number; top: boolean; st: FlapS
     >
       {ch}
     </div>
-    {/* subtle shading so each half reads as a separate leaf */}
-    <div style={{ position: "absolute", inset: 0, background: top ? "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.12))" : "linear-gradient(180deg, rgba(0,0,0,0.18), rgba(255,255,255,0.03))" }} />
+    {/* depth shading only while a leaf is moving; a landed character reads clean */}
+    {shade ? <div style={{ position: "absolute", inset: 0, background: top ? "rgba(0,0,0,0.12)" : "rgba(0,0,0,0.18)" }} /> : null}
   </div>
 );
 
@@ -91,18 +92,43 @@ export const FlapCell: React.FC<{ t: number; start: number; from?: string; to: s
   const { cur, next, p } = cellState(t, start, from, to, flip, seed);
   const font = h * 0.74;
   const th = 180 * p * p;
+  if (p <= 0) {
+    // at rest: one solid cell, no seam, nothing between the reader and the character
+    return (
+      <div
+        style={{
+          position: "relative",
+          width: w,
+          height: h,
+          flex: "0 0 auto",
+          background: st.bg,
+          borderRadius: w * 0.1,
+          lineHeight: `${h}px`,
+          textAlign: "center",
+          fontFamily: DISPLAY,
+          fontWeight: 800,
+          fontStretch: "78%",
+          fontSize: font,
+          color: st.fg,
+          whiteSpace: "pre",
+          filter: "drop-shadow(0 6px 8px rgba(70,40,0,0.28))",
+        }}
+      >
+        {cur}
+      </div>
+    );
+  }
   return (
     <div style={{ position: "relative", width: w, height: h, perspective: h * 6, flex: "0 0 auto", filter: "drop-shadow(0 6px 8px rgba(70,40,0,0.28))" }}>
       {/* static: next char's top, current char's bottom */}
       <Half ch={p > 0 ? next : cur} w={w} h={h} top st={st} font={font} />
       <Half ch={cur} w={w} h={h} top={false} st={st} font={font} />
       {p > 0 && th < 90 ? (
-        <Half ch={cur} w={w} h={h} top st={st} font={font} style={{ transformOrigin: "50% 100%", transform: `rotateX(${-th}deg)`, zIndex: 3 }} />
+        <Half ch={cur} w={w} h={h} top st={st} font={font} style={{ transformOrigin: "50% 100%", transform: `rotateX(${-th}deg)`, zIndex: 3 }} shade />
       ) : null}
       {p > 0 && th >= 90 ? (
-        <Half ch={next} w={w} h={h} top={false} st={st} font={font} style={{ transformOrigin: "50% 0%", transform: `rotateX(${180 - th}deg)`, zIndex: 3 }} />
+        <Half ch={next} w={w} h={h} top={false} st={st} font={font} style={{ transformOrigin: "50% 0%", transform: `rotateX(${180 - th}deg)`, zIndex: 3 }} shade />
       ) : null}
-      <div style={{ position: "absolute", left: 0, top: h / 2 - Math.max(1.5, h * 0.012), width: w, height: Math.max(3, h * 0.024), background: st.seam ?? "#050506", zIndex: 4 }} />
     </div>
   );
 };
