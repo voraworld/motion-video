@@ -22,7 +22,7 @@ scripts/             ingest, manifest, sfx, stills, vo.
 3. Klip HyperFrames dibangun dan dirender (`hyperframes/<eXX-klip>/index.html` → `remotion/public/hf/<eXX-klip>.webm`).
 4. Komposisi Remotion episode dibangun (`remotion/src/episodes/`), lalu didaftarkan di `BESPOKE` pada `remotion/src/Root.tsx`.
 5. Gambar cek: `node scripts/stills.mjs E01 0.3,1.5,5` → `remotion/out/stills/`.
-6. Draft dan final: `cd remotion && npx remotion render E01 out/e01-draft.mp4`.
+6. Draft dan final: `bash scripts/render.sh E01 draft` (render + audio -14 LUFS) → `remotion/out/e01-draft.mp4`.
 
 ## Perintah
 
