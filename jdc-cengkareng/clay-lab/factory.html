@@ -65,8 +65,14 @@ function bubbleObj(o={}){const bw=o.w||1.7,bh=o.h||1.05,br=.42,s=new THREE.Shape
   const g=grp(ext(s,.18,.16,o.m||M.W,10));
   if(o.lines!==false)[[-.18,.16,.95],[-.34,-.14,.62]].forEach(([x,y,w])=>g.add(at(rbox(w,.14,.06,.06,M.Gy),x,y,.27)));return g}
 const platform=(rad=1.6)=>at(puck(rad,.28,.12,M.W),0,.14,0);
-const tapeRoll=(s=1)=>{const ri=.36,ro=.62,h=.42,rr=.08,p=[[ri+rr,-h/2],[ro-rr,-h/2],[ro,-h/2+rr],[ro,h/2-rr],[ro-rr,h/2],[ri+rr,h/2],[ri,h/2-rr],[ri,-h/2+rr],[ri+rr,-h/2]].map(q=>V2(q[0],q[1]));
-  const g=grp(mesh(new THREE.LatheGeometry(p,96),M.R));const c=new THREE.CylinderGeometry(.36,.36,.44,64,1,true);g.add(mesh(c,M.W));g.add(mesh(new THREE.CylinderGeometry(.29,.29,.445,64,1,true),M.Wd));g.scale.setScalar(s);return g};
+const tapeRoll=(s=1)=>{ // realistic packing tape: wide flat band, thin kraft core, crisp edges
+  const ri=.46,ro=.74,h=.56,rr=.025,core=.05;
+  const tp=[[ri+rr,-h/2],[ro-rr,-h/2],[ro,-h/2+rr],[ro,h/2-rr],[ro-rr,h/2],[ri+rr,h/2],[ri,h/2-rr],[ri,-h/2+rr],[ri+rr,-h/2]].map(q=>V2(q[0],q[1]));
+  const g=grp(mesh(new THREE.LatheGeometry(tp,128),M.R));
+  for(let k=1;k<5;k++)g.add(at(new THREE.Mesh(new THREE.TorusGeometry(ri+k*(ro-ri)/5,.0035,6,128),M.Rm),0,h/2+.001,0,Math.PI/2,0,0));
+  const cp=[[ri-core,-h/2-.005],[ri,-h/2-.005],[ri,h/2+.005],[ri-core,h/2+.005],[ri-core,-h/2-.005]].map(q=>V2(q[0],q[1]));
+  g.add(mesh(new THREE.LatheGeometry(cp,128),clay('#C9A066',{sheen:'#fff1c2'})));
+  g.scale.setScalar(s);return g};
 
 /* ---------- asset builders ---------- */
 let FONT=null;
@@ -100,7 +106,9 @@ const B={
    g.add(at(ext(teeth,.03,.01,M.G2),1.36,.4,0,0,Math.PI/2,-.9));
    g.add(ribbon([V(.05,hub.y-RR+.005,0),V(.6,.6,0),V(1.1,.41,0),V(1.24,.39,0),V(1.4,.32,0),V(1.55,.12,0)],.42,.025,M.R,V(0,1,0)));
    return at(g,0,0,0,0,-.18,0)},
- A05:()=>{const g=grp(at(tapeRoll(),0,.62,0,Math.PI/2-.25,0,.15));g.add(ribbon([V(.6,.36,.18),V(.95,.08,.25),V(1.35,.03,.3),V(1.75,.06,.32)],.4,.03,M.R,V(0,1,0)));return at(g,0,0,0,0,-.4,0)},
+ A05:()=>{const g=grp(at(tapeRoll(1),0,.28,0));
+   g.add(ribbon([V(.74,.28,.0),V(.78,.12,.18),V(.95,.02,.45),V(1.35,.016,.7),V(1.8,.016,.85)],.56,.02,M.R,V(0,1,0)));
+   return at(g,0,0,0,0,-.3,0)},
  A06:()=>{const g=grp();
    g.add(at(rbox(2.0,1.05,1.6,.3,M.W),0,.52,0));
    g.add(at(rbox(1.9,.32,1.5,.16,M.G),0,1.02,-.02));
@@ -246,7 +254,7 @@ window.renderAsset=async(code,W=1024,H=1024)=>{
   const obj=B[code]();sc.add(obj);
   const box=new THREE.Box3().setFromObject(obj);obj.position.y-=box.min.y;box.setFromObject(obj);
   const sp=box.getBoundingSphere(new THREE.Sphere());
-  const EL={A07:42,A21:40,A19:55,A15:50,D01:32,A09:32,A10:32,A11:34};const el=THREE.MathUtils.degToRad(EL[code]||28),dir=V(0,Math.sin(el),Math.cos(el));
+  const EL={A05:38,A07:42,A21:40,A19:55,A15:50,D01:32,A09:32,A10:32,A11:34};const el=THREE.MathUtils.degToRad(EL[code]||28),dir=V(0,Math.sin(el),Math.cos(el));
   const vf=THREE.MathUtils.degToRad(cam.fov/2),hf=Math.atan(Math.tan(vf)*cam.aspect),f=Math.min(vf,hf);
   const dist=sp.radius/Math.sin(f)*({A09:.9,A10:.9,A11:.9,A21:.82,A07:.85,D01:.85}[code]||1.08);cam.position.copy(sp.center).addScaledVector(dir,dist);cam.lookAt(sp.center);
   const key=new THREE.DirectionalLight('#fff4dc',2.4);key.position.copy(sp.center).add(V(-5,8,6).multiplyScalar(sp.radius/1.5));key.target.position.copy(sp.center);
