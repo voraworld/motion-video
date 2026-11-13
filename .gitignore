@@ -1,0 +1,7 @@
+node_modules/
+.remotion/
+remotion/out/
+hyperframes/renders/
+.hyperframes/
+.DS_Store
+.env

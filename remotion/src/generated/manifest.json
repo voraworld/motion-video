@@ -1,0 +1,17 @@
+{
+  "logo": null,
+  "assets": {},
+  "vo": {},
+  "voBeats": {},
+  "music": {},
+  "hf": {},
+  "sfx": {
+    "boom": "sfx/boom.wav",
+    "crunch": "sfx/crunch.wav",
+    "glitch": "sfx/glitch.wav",
+    "sonic-logo": "sfx/sonic-logo.wav",
+    "stamp": "sfx/stamp.wav",
+    "tick": "sfx/tick.wav",
+    "whoosh": "sfx/whoosh.wav"
+  }
+}
