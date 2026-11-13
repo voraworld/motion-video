@@ -1,1 +1,1 @@
-{"name":"jdc-clay-lab","private":true,"dependencies":{"three":"0.169.0"}}
+{"name":"jdc-clay-lab","private":true,"dependencies":{"@fortawesome/fontawesome-free":"^6.5.2","three":"0.169.0"}}

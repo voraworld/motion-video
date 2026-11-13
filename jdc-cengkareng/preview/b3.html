@@ -1,0 +1,150 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"../clay-lab/node_modules/three/build/three.module.js","three/addons/":"../clay-lab/node_modules/three/examples/jsm/"}}</script>
+<style>
+@font-face{font-family:ArchivoBlack;src:url(../../remotion/public/fonts/ArchivoBlack-400.woff2) format('woff2')}
+@font-face{font-family:Jakarta;src:url(../../remotion/public/fonts/PlusJakartaSans-var.woff2) format('woff2');font-weight:200 800}
+@font-face{font-family:Mono;src:url(../../remotion/public/fonts/JetBrainsMono-var.woff2) format('woff2');font-weight:100 800}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#FFE58A}
+#stage{position:absolute;inset:0;overflow:hidden;background:linear-gradient(180deg,#FFF6D4 0%,#FFEFB0 45%,#FFE27A 100%)}
+#grid{position:absolute;inset:-60px;opacity:.09;background-image:repeating-linear-gradient(0deg,transparent 0 158px,#8a6a00 158px 160px),repeating-linear-gradient(90deg,transparent 0 158px,#8a6a00 158px 160px);-webkit-mask:repeating-linear-gradient(90deg,#000 0 10px,transparent 10px 18px);}
+#gl{position:absolute;inset:0}
+.deco{position:absolute;will-change:transform,filter;pointer-events:none}
+.deco img{display:block;width:100%;height:100%}
+/* text */
+#num{position:absolute;left:0;right:0;top:250px;text-align:center;font:400 44px Mono;font-weight:700;color:#D40511;letter-spacing:.08em}
+#head{position:absolute;left:0;right:0;top:300px;text-align:center;font:400 118px/1 ArchivoBlack;color:#1B1912;letter-spacing:-.01em;transform:scaleX(.82) skewX(-8deg);transform-origin:50% 0}
+#head span{display:inline-block}
+#chips{position:absolute;left:0;right:0;top:1452px;display:flex;justify-content:center;gap:18px}
+.chip{font:700 30px Mono;letter-spacing:.06em;padding:12px 26px;border-radius:999px;background:#FFFFFF;color:#1B1912;box-shadow:0 10px 0 -4px rgba(122,90,0,.18)}
+.chip.on{background:#D40511;color:#fff}
+#tag{position:absolute;padding:14px 28px;border-radius:22px;background:linear-gradient(160deg,#FFFFFF,#ECE6D6);font:800 54px Mono;color:#1B1912;box-shadow:0 14px 0 -6px rgba(122,90,0,.25),0 24px 40px -18px rgba(122,90,0,.45);transform-origin:50% 100%}
+#cap{position:absolute;left:60px;right:60px;top:1604px;text-align:center;font:500 34px/1.35 Jakarta;color:rgba(27,25,18,.45)}
+#cap b{font-weight:700;color:#1B1912}
+#cap b.now{background:#FFCC00;border-radius:8px;padding:0 6px;margin:0 -6px}
+/* brand frame */
+#header{position:absolute;left:0;right:0;top:0;height:150px;background:#FFCC00;display:grid;place-items:center}
+#header img{height:64px}
+#header::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:4px;background:#D40511}
+#footer{position:absolute;left:0;right:0;top:1700px;bottom:0;background:#D40511;color:#fff;text-align:center}
+#footer::before{content:"";position:absolute;left:0;right:0;top:-13px;height:14px;background:#D40511;-webkit-mask:linear-gradient(45deg,transparent 33%,#000 33.5%) 0 0/26px 14px repeat-x,linear-gradient(-45deg,transparent 33%,#000 33.5%) 0 0/26px 14px repeat-x}
+#f1{position:absolute;left:0;right:0;top:24px;font:400 38px ArchivoBlack;letter-spacing:.01em;transform:scaleX(.9)}
+#f2{position:absolute;left:0;right:0;top:74px;font:800 48px Mono;display:flex;justify-content:center;align-items:center;gap:16px}
+#f2 img{height:46px}
+#f3{position:absolute;left:0;right:0;top:138px;font:500 25px/1.25 Jakarta;opacity:.92}
+</style></head><body>
+<div id="stage">
+  <div id="grid"></div>
+  <div id="back"></div>
+  <canvas id="gl" width="1080" height="1920"></canvas>
+  <div id="mid"></div>
+  <div id="num">01</div>
+  <div id="head"><span>BOOK</span> <span>ANYWHERE.</span></div>
+  <div id="tag">07:30</div>
+  <div id="chips"><div class="chip">HOME</div><div class="chip">OFFICE</div><div class="chip">ON THE GO</div></div>
+  <div id="front"></div>
+  <div id="cap"></div>
+  <div id="header"><img src="../../inbox/brand-dhl/dhl-logo.svg" alt="DHL"></div>
+  <div id="footer">
+    <div id="f1">DHL Express Service Point · JDC Cengkareng</div>
+    <div id="f2"><img src="whatsapp.svg" alt="">+62 877-7589-7478</div>
+    <div id="f3">Soewarna Business Park, Lot 7A–7B,<br>Soekarno-Hatta International Airport Area</div>
+  </div>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {B,M,V,at,grp,rbox,cyl,puck} from '../clay-lab/clay.js';
+
+/* ---------- easing ---------- */
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const eOut=t=>1-Math.pow(1-clamp(t),4), eIO=t=>{t=clamp(t);return t<.5?8*t**4:1-Math.pow(-2*t+2,4)/2};
+const spring=(t,k=14,z=.42)=>{if(t<=0)return 0;const w=Math.sqrt(1-z*z)*k;return 1-Math.exp(-z*k*t)*(Math.cos(w*t)+z*k/w*Math.sin(w*t))};
+const prog=(t,a,b)=>clamp((t-a)/(b-a));
+
+/* ---------- 3D scene ---------- */
+const cv=document.getElementById('gl');
+const r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,preserveDrawingBuffer:true});
+r.setPixelRatio(1);r.setSize(1080,1920,false);r.toneMapping=THREE.NeutralToneMapping;r.shadowMap.enabled=true;r.shadowMap.type=THREE.VSMShadowMap;
+const sc=new THREE.Scene();sc.environment=new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(),.04).texture;sc.environmentIntensity=.55;
+const cam=new THREE.PerspectiveCamera(42,1080/1920,.1,100);
+const key=new THREE.DirectionalLight('#fff4dc',2.4);key.position.set(-5,9,7);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.radius=12;key.shadow.blurSamples=20;key.shadow.bias=-.0006;key.shadow.normalBias=.02;
+Object.assign(key.shadow.camera,{left:-5,right:5,top:5,bottom:-5,near:.1,far:40});sc.add(key);
+const rim=new THREE.DirectionalLight('#ffe9b0',1.5);rim.position.set(5,4,-6);sc.add(rim);sc.add(new THREE.HemisphereLight('#fff8e6','#c9a24a',.5));
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.ShadowMaterial({color:'#6b4a00',opacity:.22}));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;sc.add(ground);
+
+// conveyor (same geometry as A07, without parcels)
+const conv=B.A07();conv.children.filter(o=>o.isGroup).forEach(o=>conv.remove(o));sc.add(conv);
+const R0=2.0,pts=[];for(let i=0;i<=48;i++){const a=Math.PI+i/48*Math.PI;pts.push(V(Math.cos(a)*R0,0,-Math.sin(a)*R0*.8))}
+const curve=new THREE.CatmullRomCurve3([V(-R0,0,-2.3),...pts,V(R0,0,-2.3)]);
+// scanner gate across the belt at the front of the U
+const gp=curve.getPointAt(.5);const gate=grp();{const H=2.05,back=-.95;
+  gate.add(at(cyl(.06,.07,H,M.R,32),0,H/2,back));gate.add(at(puck(.22,.08,.03,M.G),0,.04,back));
+  gate.add(at(rbox(.16,.14,-back+.25,.07,M.G),0,H,back/2+.1));
+  gate.add(at(rbox(.62,.2,.46,.09,M.G),0,H-.08,0));gate.add(at(rbox(.5,.03,.08,.015,M.R),0,H-.19,.0));
+  gate.add(at(cyl(.035,.035,.04,M.R,16),.2,H+.03,.12));
+  const lz=new THREE.Mesh(new THREE.PlaneGeometry(1.1,H-.85),new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader:'varying vec2 vUv;void main(){float w=mix(1.,.22,vUv.y);float d=abs(vUv.x-.5)*2./w;if(d>1.)discard;float a=(.12+.28*vUv.y)*(1.-pow(d,3.));gl_FragColor=vec4(.95,.12,.16,a);}'}));
+  lz.position.set(0,.85+(H-.85)/2-.1,0);gate.add(lz);}
+gate.position.set(gp.x,0,gp.z);sc.add(gate);
+const sweep=new THREE.Mesh(new THREE.BoxGeometry(1.0,.025,.04),new THREE.MeshBasicMaterial({color:'#ff2a36'}));sweep.visible=false;sc.add(sweep);
+// dioramas riding the belt
+const kinds=['A09','A10','A11'];const dios=kinds.map(k=>{const d=B[k]();d.scale.setScalar(.31);const h=grp(d);sc.add(h);return h});
+const SPACE=.2,D1=.17;
+const travel=t=>D1*eOut(t/1.2)+SPACE*eIO(prog(t,2.5,3.5));
+const scans=[{t:1.35,u:'07:30'},{t:3.6,u:'13:00'}];
+
+/* ---------- decoration (packaging geometry), depth-blurred sprites ---------- */
+const DECO=[ // layer, sprite, x, y, size, blur, opacity, parallax, anims
+ ['back','X04',95,470,170,6,.35,.35,{float:[8,4.2,0],spin:[0,0]}],
+ ['back','X07',985,540,140,5,.3,.35,{float:[10,3.6,1.2],spin:[6,0]}],
+ ['back','X05',120,1340,150,4,.38,.35,{float:[6,5,2],spin:[0,0]}],
+ ['mid','X01',960,720,130,0,1,1,{float:[10,3.2,.4],spin:[-8,0],pop:1}],
+ ['mid','X06',125,730,110,0,1,1,{float:[8,3.8,2.2],spin:[10,0],pop:1}],
+ ['front','X02',1010,1250,360,16,.6,1.5,{float:[16,4.6,.8],spin:[4,0]}],
+ ['front','X03',30,1060,300,18,.5,1.5,{float:[14,5.2,2.6],spin:[-3,0]}],
+];
+const els=DECO.map(d=>{const e=document.createElement('div');e.className='deco';e.innerHTML=`<img src="../../inbox/jdc/jdc_${d[1]}_${{X01:'deco-cube',X02:'deco-ring',X03:'deco-pill',X04:'deco-half',X05:'deco-dots',X06:'deco-plus',X07:'deco-tri'}[d[1]]}.png">`;
+  e.style.width=e.style.height=d[4]+'px';document.getElementById(d[0]).appendChild(e);return e});
+
+/* ---------- caption ---------- */
+const words='Book your shipment from anywhere, at any time.'.split(' ');
+const wt=[.3,.55,.8,1.25,1.5,2.2,2.45,2.75];
+const capEl=document.getElementById('cap');
+
+const camDrift=t=>Math.sin(t/5*Math.PI)*.18;
+window.seek=(t)=>{
+  // camera: slow dolly + lateral drift
+  const dx=camDrift(t);cam.position.set(dx,6.2-.2*eOut(t/5),11.2-.6*eOut(t/5));cam.lookAt(0,.2,-.6);
+  // dioramas
+  const tr=travel(t);dios.forEach((h,i)=>{let u=.5-D1-i*SPACE+tr;h.visible=u>0.01&&u<.99;u=clamp(u,0,1);const p=curve.getPointAt(u),tg=curve.getTangentAt(u);
+    h.position.set(p.x,.7,p.z);h.rotation.y=Math.atan2(-tg.z,tg.x)*0+(-.5);
+    const s=scans[i];const lift=s?(spring(t-s.t+.15)-spring(t-(s.t+1.4)))*.12:0;h.position.y+=Math.max(0,lift);});
+  // laser sweep
+  sweep.visible=false;scans.forEach(s=>{const k=prog(t,s.t,s.t+.45);if(k>0&&k<1){sweep.visible=true;sweep.position.set(gp.x,1.8-.95*eIO(k),gp.z)}});
+  r.render(sc,cam);
+  // time tag above gate
+  const tagEl=document.getElementById('tag');const sp=V(gp.x,2.32,gp.z).project(cam);const x=(sp.x+1)/2*1080,y=(1-sp.y)/2*1920;
+  let tagS=0,txt='07:30';const ends=[2.45,99];scans.forEach((s,i)=>{if(t>=s.t+.35&&t<ends[i]+.25){tagS=spring(t-(s.t+.35),16,.38)*(1-eIO(prog(t,ends[i],ends[i]+.25)));txt=s.u}});
+  const hide=1;
+  tagEl.textContent=txt;tagEl.style.left=(x-tagEl.offsetWidth/2)+'px';tagEl.style.top=(y-tagEl.offsetHeight-6)+'px';tagEl.style.transform=`scale(${tagS*hide})`;
+  // headline
+  const sp2=document.querySelectorAll('#head span');[.15,.38].forEach((a,i)=>{const k=spring(t-a,15,.5);sp2[i].style.transform=`translateY(${(1-k)*60}px) scaleY(${1+(1-k)*.1})`;sp2[i].style.opacity=clamp((t-a)*6)});
+  document.getElementById('num').style.opacity=clamp(t*5);
+  // chips: appear, active follows the diorama under the scanner
+  const chips=document.querySelectorAll('.chip');chips.forEach((c,i)=>{const k=spring(t-(.9+i*.12),15,.55);c.style.transform=`translateY(${(1-k)*40}px)`;c.style.opacity=clamp((t-(.9+i*.12))*6);
+    c.classList.toggle('on',(i===0&&t>=1.35&&t<3.6)||(i===1&&t>=3.6))});
+  // caption
+  capEl.innerHTML=words.map((w,i)=>{const on=t>=wt[i];const now=on&&(i===words.length-1||t<wt[i+1]);return on?`<b class="${now?'now':''}">${w}</b>`:w}).join(' ');
+  // decoration micro animation
+  const beat=t%0.5;
+  DECO.forEach((d,i)=>{const e=els[i],a=d[8];const fl=a.float?Math.sin((t+a.float[2])/a.float[1]*Math.PI*2)*a.float[0]:0;const rot=(a.spin?a.spin[0]*t:0)+(i*23%40-20);
+    const pop=a.pop?1+.07*Math.exp(-beat*14)*Math.sin(Math.min(beat*30,Math.PI)):1;
+    const par=-dx*d[7]*260;
+    e.style.left=(d[2]-d[4]/2+par)+'px';e.style.top=(d[3]-d[4]/2+fl)+'px';e.style.opacity=d[6]*clamp(t*3);
+    e.style.filter=d[5]?`blur(${d[5]}px)`:'none';e.style.transform=`rotate(${rot}deg) scale(${pop*(1+(1-clamp(t*3))*.2)},${(2-pop)*(1+(1-clamp(t*3))*.2)})`;});
+  document.getElementById('grid').style.transform=`translateX(${-dx*.3*260}px)`;
+};
+await document.fonts.ready;
+await Promise.all([...document.images].map(i=>i.complete?1:new Promise(o=>{i.onload=i.onerror=o})));
+window.seek(0);window.READY=true;
+</script></body></html>

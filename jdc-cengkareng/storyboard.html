@@ -139,6 +139,7 @@ button.copy.done{background:var(--red);color:#fff}
 .th figcaption span{color:var(--muted)}
 .th figcaption em{font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
 .th.gptth{border-color:var(--red)}
+.pv{display:block;width:100%;max-width:300px;aspect-ratio:9/16;border-radius:12px;background:#000;margin-bottom:6px}
 .callout{background:var(--chip);color:var(--chip-ink);border-radius:12px;padding:12px 16px;font-size:14px;margin-top:16px}
 footer.end{padding-block:40px;color:var(--muted);font-size:13px}
 
@@ -186,7 +187,7 @@ footer.end{padding-block:40px;color:var(--muted);font-size:13px}
       <div><small>Tempo</small><b>120 BPM</b></div>
       <div><small>1 bar</small><b>2.0 s</b></div>
       <div><small>VO / teks</small><b>English</b></div>
-      <div><small>Aset GPT</small><b>1 file</b></div>
+      <div><small>Aset</small><b>42 file</b></div>
     </div>
   </div>
   <div class="stripes"></div>
@@ -294,13 +295,13 @@ footer.end{padding-block:40px;color:var(--muted);font-size:13px}
         <li>Ponsel mini di tiap diorama menyala bersamaan dengan beep: pesan "bisa booking dari mana saja".</li>
       </ul>
     </div>
-    <div class="card"><h3>Dekorasi (FX layer)</h3>
+    <div class="card"><h3>Dekorasi geometris packaging</h3>
       <ul>
-        <li><b>Parcel drift:</b> 5–7 mini parcel clay (3 ukuran) melayang lambat dengan rotasi 6°/s, parallax 1.3, blur gerak saat kamera bergerak.</li>
-        <li><b>Tape curl:</b> pita lakban merah melengkung, masuk dari tepi pada downbeat, keluar di bar berikutnya.</li>
-        <li><b>Dieline grid:</b> garis putus-putus tipis 8% opacity di BG, ikut perspektif kamera.</li>
-        <li><b>Speed stripes:</b> 3 garis merah horizontal tipis, hanya di T7 dan header.</li>
-        <li>Dilarang: bokeh, lens flare, glassmorphism, gradien blob, glitch, split-flap.</li>
+        <li><b>Bentuk:</b> rounded cube, ring lakban, pill, setengah lingkaran, grid titik 3×3, plus, segitiga tumpul (X01–X07), clay yang sama dengan aset utama.</li>
+        <li><b>Blur ikut kedalaman:</b> depan besar 16–22px blur, opacity 40–60%, parallax 1.5×; tengah tajam, parallax 1×; belakang kecil 4–7px blur, opacity 25–40%, parallax 0.35×.</li>
+        <li><b>Micro animation:</b> float 6–16px (siklus 3–5 s, fase beda tiap elemen), slow spin 3–10°/s, beat pop squash di setiap ketukan 0.5 s (hanya layer tengah), drift parallax ikut kamera.</li>
+        <li><b>Batas:</b> maks 5–7 per adegan, tidak masuk header, footer, area teks, caption, tag waktu atau nomor WA; melambat dan memudar saat momen baca (nomor, alamat).</li>
+        <li>Tetap dilarang: bokeh, lens flare, glassmorphism, gradien blob, glitch, split-flap.</li>
       </ul>
     </div>
     <div class="card"><h3>Kinetic type</h3>
@@ -530,6 +531,9 @@ const ASSETS=[
   ['I05','jdc_icon-location.png','1024×1024 · transparan','B7','A small icon object: a tiny yellow clay building with a red clay map pin floating above its roof, chunky and rounded.'],
   ['I06','jdc_icon-chat.png','1024×1024 · transparan','B8 tombol','A small icon object: a warm-white clay speech bubble with a tiny red clay phone handset inside it, chunky and rounded. Not the WhatsApp logo.']
  ]},
+ {g:'Dekorasi geometris',items:[
+  ['X01','jdc_X01_deco-cube.png','512×512 · transparan','FX semua adegan',''],['X02','jdc_X02_deco-ring.png','512×512 · transparan','FX semua adegan',''],['X03','jdc_X03_deco-pill.png','512×512 · transparan','FX semua adegan',''],['X04','jdc_X04_deco-half.png','512×512 · transparan','FX semua adegan',''],['X05','jdc_X05_deco-dots.png','512×512 · transparan','FX semua adegan',''],['X06','jdc_X06_deco-plus.png','512×512 · transparan','FX semua adegan',''],['X07','jdc_X07_deco-tri.png','512×512 · transparan','FX semua adegan','']
+ ]},
  {g:'Angka step & dekorasi',items:[
   ['N01','jdc_num-01.png','1024×1024 · transparan','B6 step','A chunky 3D clay numeral "01" in warm yellow, heavy rounded italic shapes, standing upright. (Satu-satunya pengecualian aturan "no text": ganti kalimat "No text, no letters, no numbers" di master style dengan "Only the numeral shown, nothing else".)'],
   ['N02','jdc_num-02.png','1024×1024 · transparan','B6 step','The same chunky 3D clay numeral style, showing "02" in warm yellow, heavy rounded italic shapes. (Lampirkan N01 sebagai referensi.)'],
@@ -541,6 +545,7 @@ const ASSETS=[
 
 const GPT=['A21'];
 const CODE={
+ X01:'Three.js: rounded cube kuning.',X02:'Three.js: ring merah (penampang lakban).',X03:'Three.js: pill merah (potongan lakban).',X04:'Three.js: setengah lingkaran kuning.',X05:'Three.js: grid titik 3×3 putih (perforasi label).',X06:'Three.js: tanda plus kuning.',X07:'Three.js: segitiga tumpul merah.',
  A04:'Three.js: tape gun tampak samping: gagang kuning, gulungan merah, lengan graphite, pisau bergerigi, lakban keluar.', A06:'Three.js: badan printer, tutup graphite, tombol, label keluar dari slot.', A09:'Three.js: platform bulat, sofa, lampu, tanaman, ponsel mini.', A10:'Three.js: meja, monitor, kursi, ponsel mini.', A11:'Three.js: potongan jalan, mobil hatchback, ponsel di dashboard.', A17:'Three.js: badan shredder, tutup kuning, strip kertas keluar.', A21:'Dari GPT (lo), background hitam dipotong Claude jadi transparan. Cadangan render Three.js: jdc_A21_airport-diorama_claude.png.', A22:'Three.js: fuselage, kaca kokpit, sayap, sirip merah, mesin kuning dengan pylon.',
  A01:'Three.js: rounded box + strip lakban + label. Live 3D, jadi bisa diputar dan dipantulkan dengan spring.',
  A02:'Three.js: 4 flap dengan engsel beneran. Dipakai untuk transisi T1 Flap burst dan tutup box di B8.',
@@ -583,6 +588,7 @@ document.getElementById('scenes').innerHTML=SCENES.map(s=>`
     <dt>Transisi</dt><dd class="tr"><b>${esc(s.tr[0])}</b><br>${esc(s.tr[1])}</dd>
     <dt>Aset</dt><dd><div class="chips">${s.assets.map(c=>`<a href="#asset-${c}" class="${GPT.includes(c)?'gpt':''}" title="${GPT.includes(c)?'GPT disarankan':'Render Claude'}">${c}</a>`).join('')}</div></dd>
     <dt>Audio</dt><dd>${esc(s.sfx)}</dd>
+    ${s.id==='b3'?`<dt>Preview</dt><dd><video class="pv" src="b3-preview.mp4" muted loop playsinline controls preload="metadata"></video><div class="use" style="font-size:12.5px;color:var(--muted)">5 detik pertama B3 dengan dekorasi geometris, tanpa audio.</div></dd>`:''}
    </dl>
   </div>
  </article>`).join('');
