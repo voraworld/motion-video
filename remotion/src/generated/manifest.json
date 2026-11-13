@@ -1,6 +1,16 @@
 {
   "logo": null,
-  "assets": {},
+  "assets": {
+    "e01": {
+      "baton": "assets/e01/baton.png",
+      "buyer-warehouse": "assets/e01/buyer-warehouse.png",
+      "container-ship": "assets/e01/container-ship.png",
+      "container-truck": "assets/e01/container-truck.png",
+      "customs-checkpoint": "assets/e01/customs-checkpoint.png",
+      "terminal-crane": "assets/e01/terminal-crane.png",
+      "warehouse-stuffing-station": "assets/e01/warehouse-stuffing-station.png"
+    }
+  },
   "vo": {},
   "voBeats": {},
   "music": {},
