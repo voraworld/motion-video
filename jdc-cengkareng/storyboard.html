@@ -247,7 +247,7 @@ footer.end{padding-block:40px;color:var(--muted);font-size:13px}
     <div><b>beat.lock</b>Setiap aksi utama jatuh di ketukan (kelipatan 0.5 s). Cut di garis bar.</div>
   </div>
 
-  <div class="callout">Header kuning setinggi 150px dengan logo DHL Express resmi di y 44–108, dan footer merah dari y 1700 sampai bawah layar. Safe area WA tidak dipakai. Header &amp; footer masuk di 0:06 dan diam sampai akhir. Kartu kecil di sketsa bertuliskan "DHL Express logo" hanya penanda posisi untuk file SVG resmi.</div>
+  <div class="callout">Header kuning setinggi 150px dengan logo DHL Express resmi di y 44–108, dan footer merah dari y 1700 sampai bawah layar. Safe area WA tidak dipakai. Header &amp; footer masuk di 0:06 dan diam sampai akhir. Logo di sketsa sudah logo DHL resmi dari lo (divektor ulang jadi SVG).</div>
 </div></section>
 
 <!-- STORYBOARD -->
@@ -391,7 +391,7 @@ function frame({dark=false,burst=false,bands=true,stage='',cap=true}){
   s+=stage;
   if(bands){
     s+=`<rect width="270" height="37.5" fill="#FFCC00"/><rect y="37.5" width="270" height="1.4" fill="#D40511"/>`;
-    s+=`<rect x="93" y="11" width="84" height="16" rx="3" fill="#D40511"/>`+T(135,22.5,7.2,'DHL EXPRESS LOGO',{f:'#FFCC00',it:false,w:800,ls:.6});
+    s+=`<image href="dhl-logo.svg" x="85.5" y="11.5" width="99" height="14"/>`;
     if(cap) s+=`<rect x="52" y="402" width="166" height="6" rx="3" fill="#1B1912" opacity=".22"/><rect x="52" y="402" width="58" height="6" rx="3" fill="#FFCC00"/>`;
     s+=`<path d="M0 425 ${Array.from({length:28},(_,i)=>`L${i*10+5} ${i%2?425:422}`).join(' ')} L270 425 L270 480 L0 480z" fill="#D40511"/>`;
     s+=T(135,441,7.6,'DHL Express Service Point · JDC Cengkareng',{f:'#fff',it:false,w:800});
@@ -541,13 +541,13 @@ const ASSETS=[
 
 const GPT=['A21'];
 const CODE={
- A04:'Three.js: tape gun tampak samping: gagang kuning, gulungan merah, lengan graphite, pisau bergerigi, lakban keluar.', A06:'Three.js: badan printer, tutup graphite, tombol, label keluar dari slot.', A09:'Three.js: platform bulat, sofa, lampu, tanaman, ponsel mini.', A10:'Three.js: meja, monitor, kursi, ponsel mini.', A11:'Three.js: potongan jalan, mobil hatchback, ponsel di dashboard.', A17:'Three.js: badan shredder, tutup kuning, strip kertas keluar.', A21:'Cadangan Three.js: landasan, terminal, blok gudang, satu blok kuning. Versi GPT disarankan.', A22:'Three.js: fuselage, sayap, sirip merah, mesin kuning.',
+ A04:'Three.js: tape gun tampak samping: gagang kuning, gulungan merah, lengan graphite, pisau bergerigi, lakban keluar.', A06:'Three.js: badan printer, tutup graphite, tombol, label keluar dari slot.', A09:'Three.js: platform bulat, sofa, lampu, tanaman, ponsel mini.', A10:'Three.js: meja, monitor, kursi, ponsel mini.', A11:'Three.js: potongan jalan, mobil hatchback, ponsel di dashboard.', A17:'Three.js: badan shredder, tutup kuning, strip kertas keluar.', A21:'Dari GPT (lo), background hitam dipotong Claude jadi transparan. Cadangan render Three.js: jdc_A21_airport-diorama_claude.png.', A22:'Three.js: fuselage, kaca kokpit, sayap, sirip merah, mesin kuning dengan pylon.',
  A01:'Three.js: rounded box + strip lakban + label. Live 3D, jadi bisa diputar dan dipantulkan dengan spring.',
  A02:'Three.js: 4 flap dengan engsel beneran. Dipakai untuk transisi T1 Flap burst dan tutup box di B8.',
  A03:'Three.js: POV dari dasar kardus, 4 dinding menyempit ke celah flap yang bercahaya.',
  A05:'Three.js: gulungan lakban merah lebar dengan core kraft dan strip yang ketarik. Dua gulungan + satu strip membentuk simbol % di B4.',
  A07:'Three.js: roller conveyor U, 60+ roller putih, rel dan kaki graphite, 2 parcel di atas sabuk.',
- A08:'Three.js: arch tube merah + bidang laser emissive untuk T3.',
+ A08:'Three.js: arch merah, bar scanner graphite, tirai laser merah transparan ke lantai (T3).',
  A12:'Three.js: rounded box + layar berupa tekstur HTML, jadi thread chat bisa live dan bubble keluar dari layar.',
  A13:'Three.js: extrude tag + teks jam dari kode.',
  A14:'Three.js: tag kuning, tali graphite masuk lewat lubang, diikat simpul lalu naik; bisa berayun pendulum.',
@@ -557,10 +557,10 @@ const CODE={
  A19:'Three.js: jaring box 6 panel + tab lem + garis lipat merah putus-putus; panel berengsel bisa melipat jadi box (morph M2).',
  A20:'Three.js: badge silinder merah + centang extrude.',
  A23:'Three.js: lathe teardrop merah + titik putih (sudah dites).',
- A24:'Three.js: label melengkung + teks/kontak dari kode.',
+ A24:'Three.js: label putih, strip merah, baris teks kosong, barcode dekoratif; kontak diisi dari kode.',
  I01:'Three.js: globe kuning dengan garis meridian di atas dudukan, pin merah di puncak.', I02:'Three.js: jam alarm kuning, jarum merah, tanpa angka.',
  I03:'Three.js: tag kuning, pita merah masuk lewat lubang dan diikat jadi pita kupu-kupu.', I04:'Three.js: clipboard putih dicoret strip lakban merah.',
- I05:'Three.js: gedung kecil kuning + pin melayang.', I06:'Three.js: bubble putih + tiga titik merah (typing).',
+ I05:'Three.js: gedung kuning, jendela di samping, pintu merah berkanopi, pin melayang.', I06:'Three.js: bubble putih + tiga titik merah (typing).',
  N01:'Three.js: TextGeometry dari font Archivo (OFL), bevel + miring italic (sudah dites).', N02:'Three.js: sama dengan N01.', N03:'Three.js: sama dengan N01, warna merah.',
  D01:'Three.js: varian A01 dalam 3 ukuran, instanced, melayang di layer FX.',
  D02:'Three.js: pita lakban sebagai ribbon extrude di sepanjang kurva spline, bisa beranimasi.'
@@ -593,7 +593,7 @@ document.getElementById('masterText').textContent=MASTER;
 const all=ASSETS.flatMap(g=>g.items.map(a=>({a,g:g.g})));
 const gptItems=GPT.map(c=>byCode[c]);
 document.getElementById('assetGroups').innerHTML=`
- <h3 class="group-h">Prompt GPT<small>${gptItems.length} aset · chip merah di storyboard</small></h3>
+ <h3 class="group-h">Prompt GPT<small>sudah diterima · hasilnya dipakai di grid bawah</small></h3>
  <div class="assets one">${gptItems.map(a=>`
   <div class="asset" id="asset-${a[0]}">
    <header><div><div class="fn">${a[0]} · ${a[1]}</div><div class="meta">${a[2]} · lampirkan clay-reference.png</div></div><button class="copy" type="button" data-copy="${a[0]}">Copy prompt</button></header>
@@ -604,7 +604,7 @@ document.getElementById('assetGroups').innerHTML=`
  <div class="thumbs">${g.items.map(a=>`<figure class="th${GPT.includes(a[0])?' gptth':''}" id="${GPT.includes(a[0])?'':'asset-'+a[0]}"><div class="img"><img src="thumbs/${a[0]}.png" alt="${a[1]}" loading="lazy"></div><figcaption><b>${a[0]}</b> ${a[1].replace('jdc_','').replace('.png','')}<span>${CODE[a[0]]||''}</span><em>${a[3]}</em></figcaption></figure>`).join('')}</div>`).join('')}
  <h3 class="group-h">Non-gambar<small>juga dari Claude</small></h3>
  <div class="tbl"><table><thead><tr><th>Elemen</th><th>Sumber</th></tr></thead><tbody>
-  <tr><td><b>Logo DHL Express</b></td><td>Wajib file SVG resmi dari lo / PIC DHL. Tidak digambar ulang atau di-generate.</td></tr>
+  <tr><td><b>Logo DHL</b></td><td>Diterima dari lo (PNG 3600px), divektor ulang Claude jadi SVG merah #D40511 tanpa mengubah bentuk: <span class="mono">inbox/brand-dhl/dhl-logo.svg</span>.</td></tr>
   <tr><td><b>Ikon WhatsApp footer</b></td><td>Glyph WhatsApp dari Font Awesome Free (CC BY 4.0), putih satu warna.</td></tr>
   <tr><td><b>Font</b></td><td>Archivo + Plus Jakarta Sans + JetBrains Mono (SIL OFL). Delivery kalau lo punya file berlisensinya.</td></tr>
   <tr><td><b>Musik</b></td><td>Disusun orisinal dengan kode (<span class="mono">scripts/music.py</span>, preset epic → pop 120 BPM).</td></tr>

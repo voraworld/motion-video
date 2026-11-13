@@ -89,8 +89,8 @@ const B={
      pv.add(f);return pv};
    g.add(flap(d*.5,w-.02,V(0,h/2,d/2),'x',2.05));g.add(flap(d*.5,w-.02,V(0,h/2,-d/2),'x',-1.95));
    g.add(flap(w*.42,d-.02,V(w/2,h/2,0),'z',2.25));g.add(flap(w*.42,d-.02,V(-w/2,h/2,0),'z',2.2));
-   g.add(ribbon([V(0,h/2+.02,d/2+.03),V(0,h/2+.22,d/2+.2),V(.05,h/2+.32,d/2+.12)],.32,.03,M.R,V(1,0,0)));
-   g.add(at(rbox(.34,.3,.05,.02,M.R),0,h/2-.17,d/2+.01));
+   
+   g.add(at(rbox(.34,.26,.05,.02,M.R),0,h/2-.15,d/2+.01));g.add(at(rbox(.34,.26,.05,.02,M.R),0,h/2-.15,-d/2-.01));
    return at(g,0,0,0,0,.5,0)},
  A04:()=>{const g=grp(),hub=V(0,1.15,0),RR=.62;
    g.add(at(tapeRoll(1),hub.x,hub.y,0,Math.PI/2,0,0));
@@ -125,7 +125,7 @@ const B={
    g.add(at(parcel(.55,.42,.5),c.getPointAt(.2).x,.9,c.getPointAt(.2).z,0,.9,0));
    return g},
  A08:()=>{const g=grp(),h=2.2,w=1.0,pts=[V(-w,0,0),V(-w,h*.5,0),V(-w,h-.1,0)];for(let i=0;i<=16;i++){const a=Math.PI-i/16*Math.PI;pts.push(V(Math.cos(a)*w,h+Math.sin(a)*.55,0))}pts.push(V(w,h-.1,0),V(w,h*.5,0),V(w,0,0));
-   g.add(tube(pts,.2,M.R));g.add(at(rbox(1.7,.16,.34,.07,M.G),0,h-.05,0));g.add(at(rbox(1.2,.03,.08,.015,M.Glow),0,h-.14,.12));
+   g.add(tube(pts,.2,M.R));g.add(at(rbox(1.7,.16,.34,.07,M.G),0,h-.05,0));g.add(at(rbox(1.2,.03,.08,.015,M.Laser),0,h-.14,.12));{const lz=new THREE.Mesh(new THREE.PlaneGeometry(1.5,h-.2),new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 vUv;void main(){float a=pow(vUv.y,1.6)*.45*(1.-pow(abs(vUv.x-.5)*2.,4.));gl_FragColor=vec4(.95,.1,.15,a);}'}));lz.position.set(0,(h-.2)/2,0);g.add(lz);g.add(at(rbox(1.5,.012,.03,.006,M.Laser),0,.03,0));}
    [-w,w].forEach(x=>g.add(at(puck(.34,.14,.06,M.G2),x,.07,0)));
    return at(g,0,0,0,0,-.35,0)},
  A09:()=>{const g=grp(platform(1.7));const y=.28;
@@ -141,7 +141,7 @@ const B={
    g.add(at(rbox(1.0,.62,.07,.06,M.G),-.1,y+1.5,-.42));g.add(at(rbox(.9,.52,.02,.04,M.W),-.1,y+1.5,-.38));g.add(at(cyl(.04,.04,.36,M.G),-.1,y+1.1,-.45));g.add(at(rbox(.36,.03,.24,.015,M.G),-.1,y+.96,-.45));
    g.add(at(phoneObj(.16),.6,y+.97,.02,-Math.PI/2,0,-.3));
    g.add(at(rbox(.62,.09,.26,.04,M.W),-.1,y+.97,.05));
-   const ch=grp(at(rbox(.66,.14,.62,.07,M.R),0,.55,0),at(rbox(.62,.66,.12,.06,M.R),0,.95,.3),at(cyl(.04,.04,.45,M.G),0,.28,0),at(puck(.3,.05,.02,M.G),0,.03,0));g.add(at(ch,.15,y,.75,0,Math.PI+.35,0));
+   const ch=grp(at(rbox(.66,.14,.62,.07,M.R),0,.55,0),at(rbox(.62,.66,.12,.06,M.R),0,.95,.3),at(cyl(.04,.04,.45,M.G),0,.28,0),at(puck(.3,.05,.02,M.G),0,.03,0));g.add(at(ch,.15,y,.75,0,.35,0));
    return at(g,0,0,0,0,.35,0)},
  A11:()=>{const g=grp(platform(1.7));const y=.28;
    g.add(at(rbox(3.0,.06,1.3,.05,M.G),0,y+.03,0));[-1,0,1].forEach(i=>g.add(at(rbox(.42,.02,.07,.03,M.W),i*.8,y+.07,0)));
@@ -172,8 +172,8 @@ const B={
  A18:()=>at(bubbleObj(),0,1.0,0,-.1,-.35,.05),
  A19:()=>{const s=.9,gap=.035,g=grp();[[0,-1],[-1,0],[0,0],[1,0],[0,1],[0,2]].forEach(([x,z],i)=>g.add(at(rbox(s-gap,.06,s-gap,.03,i===2?M.Yl:M.Y),x*s,0,z*s)));
    const tab=()=>{const t=new THREE.Shape();t.moveTo(-.4,0);t.lineTo(.4,0);t.lineTo(.28,.24);t.lineTo(-.28,.24);t.closePath();return ext(t,.05,.02,M.Yd)};
-   [[-1,0,'l'],[1,0,'r']].forEach(([x,z,sd])=>{[-1,1].forEach(e=>{const tb=tab();tb.rotation.set(-Math.PI/2,0,0);tb.position.set(x*s,0,z*s+e*(s/2-gap/2));if(e<0)tb.rotation.z=Math.PI;g.add(tb)})});
-   const tt=tab();tt.rotation.set(-Math.PI/2,0,Math.PI);tt.position.set(0,0,-1.5*s+gap/2);g.add(tt);
+   [[-1,0,'l'],[1,0,'r']].forEach(([x,z,sd])=>{[-1,1].forEach(e=>{const tb=tab();tb.rotation.set(-Math.PI/2,0,0);tb.position.set(x*s,0,z*s+e*(s/2-gap/2));if(e>0)tb.rotation.z=Math.PI;g.add(tb)})});
+   const tt=tab();tt.rotation.set(-Math.PI/2,0,0);tt.position.set(0,0,-1.5*s+gap/2);g.add(tt);
    [[0,-.5],[-.5,0],[.5,0],[0,.5],[0,1.5]].forEach(([x,z])=>{const vert=x!==0;for(let k=-3;k<=3;k++)g.add(at(rbox(vert?.025:.08,.012,vert?.08:.025,.005,M.R),x*s+(vert?0:k*.12),.035,z*s+(vert?k*.12:0)))});
    return at(g,0,.05,0,0,.5,0)},
  A20:()=>{const s=new THREE.Shape();s.moveTo(-.42,.02);s.lineTo(-.14,-.28);s.lineTo(.46,.32);s.lineTo(.34,.44);s.lineTo(-.14,-.04);s.lineTo(-.3,.14);s.closePath();
@@ -190,11 +190,11 @@ const B={
    g.add(at(B.A22(),1.3,.32,-.25,0,0,0,.22));
    return at(g,0,0,0,0,-.35,0)},
  A22:()=>{const g=grp();const fus=mesh(new THREE.CapsuleGeometry(.42,2.6,16,48),M.W);fus.rotation.z=Math.PI/2;g.add(fus);
-   const nose=at(sph(.42,M.W),1.7,0,0);nose.scale.set(.9,1,1);g.add(nose);
-   g.add(at(rbox(.4,.12,.3,.06,M.G2),1.5,.22,.0));
+   
+   g.add(at(rbox(.34,.12,.5,.06,M.G2),1.55,.2,0,0,0,-.35));
    const wing=new THREE.Shape();wing.moveTo(0,0);wing.lineTo(-.7,2.0);wing.lineTo(-1.1,2.0);wing.lineTo(-.9,0);wing.closePath();
    [1,-1].forEach(sd=>{const wm=ext(wing,.08,.06,M.W);wm.rotation.x=sd*Math.PI/2;wm.position.set(.4,-.12,0);g.add(wm);
-     g.add(at(mesh(new THREE.CapsuleGeometry(.17,.4,8,24),M.Y),.15,-.38,sd*.95,0,0,Math.PI/2));
+     g.add(at(mesh(new THREE.CapsuleGeometry(.16,.42,8,24),M.Y),.2,-.36,sd*.9,0,0,Math.PI/2));g.add(at(rbox(.3,.16,.06,.03,M.W),.15,-.2,sd*.9));
      const st=new THREE.Shape();st.moveTo(0,0);st.lineTo(-.35,.75);st.lineTo(-.6,.75);st.lineTo(-.5,0);st.closePath();const sm=ext(st,.05,.04,M.W);sm.rotation.x=sd*Math.PI/2;sm.position.set(-1.55,.1,0);g.add(sm)});
    const fin=new THREE.Shape();fin.moveTo(0,0);fin.lineTo(-.55,1.0);fin.lineTo(-.9,1.0);fin.lineTo(-.8,0);fin.closePath();g.add(at(ext(fin,.07,.05,M.R),-1.35,.25,0));
    for(let i=0;i<5;i++)g.add(at(sph(.06,M.G2),.9-i*.38,.16,.4));
@@ -202,12 +202,14 @@ const B={
  A23:()=>at(pinObj(1),0,0,0,0,-.2,0),
  A24:()=>{const g=grp(rbox(2.0,1.4,.06,.08,M.W));g.add(at(rbox(2.0,.18,.065,.05,M.R),0,.61,0));
    for(let i=0;i<3;i++)g.add(at(rbox(1.1-i*.25,.08,.07,.04,M.Gy),-.4+i*.12,.3-i*.2,0));
-   g.add(at(rbox(1.6,.34,.07,.04,M.G2),0,-.4,0));
+   g.add(at(rbox(1.6,.4,.07,.04,M.W),0,-.4,0));{let x=-.72;const ws=[.03,.015,.04,.015,.02,.05,.015,.03,.02,.04,.015,.03,.05,.015,.02,.03,.015,.04,.02,.015,.03,.05,.015,.02,.04,.015,.03];ws.forEach((w,i)=>{if(i%2===0)g.add(at(rbox(w,.3,.08,.004,M.G),x+w/2,-.4,.0));x+=w+.012});}
    return at(g,0,.9,0,-.2,-.35,0)},
- I01:()=>{const g=grp(at(sph(.7,M.Y),0,.7,0));[0,.0].forEach(()=>{});
-   [0,Math.PI/3,2*Math.PI/3].forEach(a=>g.add(at(new THREE.Mesh(new THREE.TorusGeometry(.705,.028,16,96),M.Yd),0,.7,0,0,a,0)));
-   [-.35,0,.35].forEach(y=>{const rr=Math.sqrt(.705*.705-y*y);g.add(at(new THREE.Mesh(new THREE.TorusGeometry(rr,.028,16,96),M.Yd),0,.7+y,0,Math.PI/2,0,0))});
-   g.add(at(cyl(.05,.05,.35,M.G),0,.0,0));g.add(at(puck(.4,.1,.04,M.G),0,-.18,0));g.add(at(pinObj(.55),0,1.28,0));return g},
+ I01:()=>{const gl=grp(sph(.7,M.Y));
+   [0,Math.PI/3,2*Math.PI/3].forEach(a=>gl.add(at(new THREE.Mesh(new THREE.TorusGeometry(.7,.016,12,128),M.Yd),0,0,0,0,a,0)));
+   [-.35,0,.35].forEach(y=>{const rr=Math.sqrt(.7*.7-y*y);gl.add(at(new THREE.Mesh(new THREE.TorusGeometry(rr,.016,12,128),M.Yd),0,y,0,Math.PI/2,0,0))});
+   const g=grp(at(gl,0,1.0,0,0,0,.4));g.add(at(pinObj(.5),-.27,1.6,0));
+   g.add(at(new THREE.Mesh(new THREE.TorusGeometry(.84,.04,16,96,Math.PI*1.1),M.G),0,1.0,0,0,0,-Math.PI*.55+.4));
+   g.add(at(cyl(.05,.05,.3,M.G),0,.2,0));g.add(at(puck(.42,.1,.04,M.G),0,.05,0));return g},
  I02:()=>{const g=grp(at(puck(.75,.42,.18,M.Y),0,.9,0,Math.PI/2,0,0),at(puck(.6,.06,.03,M.W),0,.9,.22,Math.PI/2,0,0));
    g.add(at(rbox(.07,.42,.04,.03,M.R),0,1.06,.27));g.add(at(rbox(.07,.3,.04,.03,M.R),.1,.86,.27,0,0,-1.2));g.add(at(sph(.06,M.G),0,.9,.28));
    [-1,1].forEach(s=>{g.add(at(sph(.24,M.Yd),s*.45,1.62,0));g.add(at(cyl(.04,.05,.3,M.G),s*.42,.15,0,0,0,s*.4))});g.add(at(rbox(.06,.3,.06,.03,M.G),0,1.75,0));return g},
@@ -221,7 +223,7 @@ const B={
  I04:()=>{const g=grp(rbox(1.2,1.6,.1,.12,M.W),at(rbox(.5,.2,.18,.08,M.G),0,.8,.03));[.35,.1,-.15,-.4].forEach(y=>g.add(at(rbox(.8,.08,.03,.04,M.Gy),0,y,.06)));
    g.add(at(rbox(1.5,.26,.05,.02,M.R),0,0,.12,0,0,-.7));return at(g,0,1.0,0,-.15,-.35,0)},
  I05:()=>{const g=grp(at(rbox(1.1,1.2,.9,.12,M.Y),0,.6,0),at(rbox(1.2,.12,1.0,.05,M.Yd),0,1.24,0));
-   [[-.25,.85],[.25,.85],[-.25,.45],[.25,.45]].forEach(([x,y])=>g.add(at(rbox(.26,.24,.04,.05,M.G2),x,y,.45)));g.add(at(rbox(.3,.38,.04,.05,M.R),0,.19,.45));
+   [[-.28,.88],[.28,.88],[-.32,.5],[.32,.5]].forEach(([x,y])=>g.add(at(rbox(.22,.22,.04,.05,M.G2),x,y,.45)));g.add(at(rbox(.26,.38,.05,.04,M.R),0,.3,.44));g.add(at(rbox(.34,.06,.12,.03,M.Rm),0,.52,.48));
    g.add(at(pinObj(.42),0,1.5,0));return g},
  I06:()=>{const g=grp(bubbleObj({lines:false}));[-.38,0,.38].forEach((x,i)=>g.add(at(sph(.14,i===1?M.R:M.Rm),x,.02,.3)));return at(g,0,1.0,0,-.1,-.35,.05)},
  N:(txt,m)=>{const tg=new TextGeometry(txt,{font:FONT,size:1.2,depth:.38,curveSegments:16,bevelEnabled:true,bevelThickness:.1,bevelSize:.05,bevelSegments:8});tg.center();
