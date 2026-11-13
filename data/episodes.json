@@ -1,0 +1,1746 @@
+[
+ {
+  "id": "E01",
+  "pillar": "Journey",
+  "title": "The Export Relay",
+  "dur": 55,
+  "svc": "Global Freight Forwarding · export docs",
+  "tile": "t01",
+  "tileLbl": "isometric",
+  "hookOS": "7 HANDOFFS. DROP ONE?",
+  "hookFX": "Frame 0: black, then a giant split-flap board slams in and spins to 07. Sub-bass hit + camera shake on the 07. The baton (orange pill) is tossed across frame and freezes mid-air on DROP ONE?",
+  "concept": "Export cargo is a relay baton passed through seven hands. One long shot, no cuts.",
+  "design": "Isometric miniature diorama on cream paper. GPT-made 3D objects (warehouse, truck, customs booth, terminal crane, ship) sit along one long panorama. Handoff numbers on an airport-style split-flap board.",
+  "motion": "Continuous horizontal camera dolly with soft ease-in-out at each station. Numbers change with a split-flap flip.",
+  "morph": [
+   "Orange pill",
+   "Carton",
+   "Container",
+   "Ship hull",
+   "B/L sheet",
+   "Map pin",
+   "UGC logo"
+  ],
+  "transition": "No cuts. The camera slides to the next station.",
+  "beats": [
+   [
+    0,
+    4,
+    "hook",
+    "H",
+    "Seven handoffs. Drop one, and your cargo misses the ship.",
+    "7 HANDOFFS. / DROP ONE?"
+   ],
+   [
+    4,
+    10,
+    "edu",
+    "R",
+    "One: booking. You lock space on a vessel. Every ship has a cut-off.",
+    "01 BOOKING · CUT-OFF SET"
+   ],
+   [
+    10,
+    17,
+    "edu",
+    "R",
+    "Two: the container is stuffed and weighed. Three: a truck runs it to the port.",
+    "02 STUFFED + WEIGHED (VGM) / 03 TRUCKED"
+   ],
+   [
+    17,
+    26,
+    "edu",
+    "R+H",
+    "Four: customs. The export declaration, the PEB, is filed before the container enters the port. Green lane: NPE issued. Red lane: inspection first.",
+    "04 PEB → NPE / GREEN: GO · RED: CHECK"
+   ],
+   [
+    26,
+    33,
+    "edu",
+    "R",
+    "Five: loaded, and the bill of lading is issued. Six: destination port. Seven: your buyer.",
+    "05 LOADED · B/L / 06 ARRIVED / 07 DELIVERED"
+   ],
+   [
+    33,
+    38,
+    "stuck",
+    "H",
+    "Miss one cut-off, and your container rolls to the next ship.",
+    "ROLLED."
+   ],
+   [
+    38,
+    48,
+    "ugc",
+    "R+H",
+    "UGC Logistics carries the baton from stuffing to B/L. Ocean, air, and every export document, handled by one team.",
+    "ONE TEAM. ALL 7 HANDOFFS."
+   ],
+   [
+    48,
+    55,
+    "cta",
+    "R",
+    "Planning an export? Talk to UGC Logistics. We care what we deliver.",
+    "PLAN YOUR EXPORT ROUTE"
+   ]
+  ],
+  "learn": "The seven handoffs of an export shipment, and why cut-offs and the PEB-to-NPE step decide whether cargo makes the ship.",
+  "promo": "One team holds the whole chain, so no handoff falls between two vendors.",
+  "music": {
+   "bpm": 124,
+   "style": "Cinematic pop-orchestral relay anthem",
+   "prompt": "Epic, upbeat and cheerful cinematic pop-orchestral track, 124 BPM, major key. Opens on a huge sub-bass boom and taiko hit, then marching snare and handclaps drive a steady build. Bright brass stabs on every handoff, soaring strings. Tension drop with a reverse cymbal at 0:33, then a euphoric full-band lift at 0:38. Clean button ending at 0:55. Instrumental, no vocals.",
+   "cues": "0:00 boom · 0:04 groove in · 0:33 drop out · 0:38 full lift · 0:53 button"
+  },
+  "facts": [
+   [
+    "The PEB must be filed no earlier than 7 days before the expected export date and no later than when goods enter the customs area at the port of loading (bulk and a few other cases are exempt).",
+    [
+     [
+      "PMK 155/PMK.04/2022 (JDIH Kemenkeu)",
+      "https://jdih.kemenkeu.go.id/api/download/ee16c00e-e189-41e3-ab54-3a432ebe7f4c/155~PMK.04~2022.pdf"
+     ],
+     [
+      "Customspedia summary",
+      "https://customspedia.com/ketentuan-pemberitahuan-pabean-ekspor-sesuai-pmk-155-pmk-04-2022/"
+     ]
+    ]
+   ],
+   [
+    "Export lanes in CEISA 4.0: green lane gets the NPE without physical inspection; red lane gets a physical inspection before the NPE is issued.",
+    [
+     [
+      "Bea Cukai Surakarta: Ekspor",
+      "https://bcsurakarta.beacukai.go.id/layanan/ekspor/"
+     ],
+     [
+      "Portal BCP CEISA",
+      "https://bcp.beacukai.go.id/page.py"
+     ]
+    ]
+   ],
+   [
+    "Since 1 July 2016 (SOLAS), a packed container needs a verified gross mass (VGM) before it is loaded. No VGM, no loading.",
+    [
+     [
+      "Norton Rose Fulbright",
+      "https://www.nortonrosefulbright.com/en/knowledge/publications/e5c0b34f/new-container-weight-rules---how-should-carriers-and-shippers-prepare"
+     ],
+     [
+      "gCaptain",
+      "https://gcaptain.com/imos-container-weight-verification-rule-enters-into-force"
+     ]
+    ]
+   ],
+   [
+    "\"Seven handoffs\" is our simplified model of the chain, not a legal count. Say it as a story device, not a statistic.",
+    []
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: three-quarter view from slightly above (about 20 degrees), the same angle and lighting for every E01 asset so they line up in one panorama.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Warehouse stuffing station",
+     "1024x1024 · transparent",
+     "A mid-size export warehouse with its roller door open and a loading dock; a forklift with a driver loads a pallet of cartons into an open 20ft shipping container on a trailer at the dock. No ground platform: the scene ends at the edges of the building and vehicles."
+    ],
+    [
+     "Container truck",
+     "1024x1024 · transparent",
+     "A white prime mover truck pulling a flatbed chassis carrying one 20ft shipping container, wheels slightly turned as if driving forward."
+    ],
+    [
+     "Customs checkpoint",
+     "1024x1024 · transparent",
+     "A compact port customs checkpoint booth with a red-and-white boom barrier and a small inspection canopy, one container truck waiting at the barrier."
+    ],
+    [
+     "Terminal crane",
+     "1024x1024 · transparent",
+     "A port ship-to-shore gantry crane in orange and white lifting one container from the quay."
+    ],
+    [
+     "Container ship",
+     "1536x1024 · transparent",
+     "A medium container ship, dark charcoal hull with an orange stripe, stacked with containers, side three-quarter isometric view, calm water ripple at the hull only."
+    ],
+    [
+     "Buyer warehouse",
+     "1024x1024 · transparent",
+     "A modern destination warehouse with an open dock and a single orange container being unloaded, small hand truck beside it."
+    ],
+    [
+     "Baton",
+     "1024x1024 · transparent",
+     "A single relay baton in anodized aluminium painted brand orange, floating at a slight angle."
+    ]
+   ]
+  },
+  "caption": "Seven handoffs stand between your factory and your buyer. Which one drops most often? 👀 Plan your export at utamaglobalindocargo.com"
+ },
+ {
+  "id": "E02",
+  "pillar": "Journey",
+  "title": "Gate by Gate: Import Clearance",
+  "dur": 55,
+  "svc": "Customs & Import Solutions",
+  "tile": "t02",
+  "tileLbl": "night port",
+  "hookOS": "SHIP DOCKED. CARGO DIDN'T MOVE.",
+  "hookFX": "Frame 0: a container drops from the top of frame and slams into a closed gate. Steel-impact boom, sodium lights flicker, dust burst. Text slams word by word.",
+  "concept": "The container falls vertically through five gates and stops hard at each one before it may continue.",
+  "design": "Night port: deep navy background, sodium-orange lamps. The only dark episode. Tall condensed headlines.",
+  "motion": "Gravity: fast fall, hard stop with a springy bounce at each gate. The camera follows downward.",
+  "morph": [
+   "Orange moon",
+   "Porthole",
+   "Round stamp",
+   "Gate arm",
+   "UGC logo"
+  ],
+  "transition": "A gate arm sweeps across the screen.",
+  "beats": [
+   [
+    0,
+    4,
+    "hook",
+    "H",
+    "The ship docked. Your cargo didn't move. Here's why.",
+    "SHIP DOCKED. / CARGO DIDN'T MOVE."
+   ],
+   [
+    4,
+    10,
+    "edu",
+    "R",
+    "Gate one: your container is unloaded and stacked in the port's temporary storage.",
+    "GATE 1 · UNLOADED"
+   ],
+   [
+    10,
+    19,
+    "edu",
+    "R+H",
+    "Gate two: import duties and taxes are paid, and the import declaration, the PIB, is filed with customs.",
+    "GATE 2 · PAY + FILE PIB"
+   ],
+   [
+    19,
+    28,
+    "edu",
+    "R+H",
+    "Gate three: the system assigns a lane. Green: released without a physical check. Red: goods and documents are inspected first.",
+    "GATE 3 · GREEN OR RED"
+   ],
+   [
+    28,
+    34,
+    "edu",
+    "R",
+    "Gate four: customs issues the SPPB, your release. Then the shipping line's delivery order.",
+    "GATE 4 · SPPB + DO"
+   ],
+   [
+    34,
+    39,
+    "stuck",
+    "H",
+    "Data doesn't match? Every extra day can add storage and container charges.",
+    "+1 DAY. +COST."
+   ],
+   [
+    39,
+    48,
+    "ugc",
+    "R+H",
+    "Gate five is UGC Logistics: documents checked, clearance handled, cargo trucked to your warehouse.",
+    "GATE 5 · DOOR TO DOOR"
+   ],
+   [
+    48,
+    55,
+    "cta",
+    "R",
+    "Importing soon? Let UGC Logistics open the gates. We care what we deliver.",
+    "OPEN THE GATES"
+   ]
+  ],
+  "learn": "The real order of an import release: unload, pay and file PIB, lane assignment (green or red), SPPB, delivery order.",
+  "promo": "Customs & Import Solutions handles every gate, door to door.",
+  "music": {
+   "bpm": 118,
+   "style": "Night-drive synth-orchestral build",
+   "prompt": "Epic and immersive synth-orchestral track that turns bright and cheerful, 118 BPM. Starts with a massive metallic impact and deep pulsing synth bass under night-city ambience. Each gate gets a heavy percussion hit and a rising arpeggio. Short tense breakdown at 0:34, then a euphoric major-key drop with big drums, brass and shimmering synths at 0:39. Confident ending at 0:55. Instrumental, no vocals.",
+   "cues": "0:00 impact · gate hits at 0:04/0:10/0:19/0:28 · 0:34 tension · 0:39 drop"
+  },
+  "facts": [
+   [
+    "Only two import release lanes exist now: green and red. The yellow lane was removed by PER-02/BC/2022, effective 25 April 2022. The current guideline is PER-2/BC/2023 (effective 14 January 2023), implementing PMK 190/2022.",
+    [
+     [
+      "DDTC News: DJBC hapus jalur kuning",
+      "https://news.ddtc.co.id/berita/nasional/1804978/djbc-hapus-jalur-kuning-dalam-pengeluaran-barang-impor-ini-aturannya"
+     ],
+     [
+      "PER-2/BC/2023 (JDIH Kemenkeu)",
+      "https://jdih.kemenkeu.go.id/api/download/8d677116-7f1d-453e-98f5-e1a43c774dd3/PER-2_BC_2023.pdf"
+     ]
+    ]
+   ],
+   [
+    "Green lane: no physical inspection; document review happens after the SPPB. Red lane: physical inspection and document review before the SPPB (the system issues an SPJM).",
+    [
+     [
+      "Ortax: Jalur pengeluaran barang impor",
+      "https://ortax.org/jalur-pengeluaran-barang-impor"
+     ],
+     [
+      "DDTC: Apa itu SPJM",
+      "https://news.ddtc.co.id/apa-itu-surat-pemberitahuan-jalur-merah-1802003"
+     ]
+    ]
+   ],
+   [
+    "Do not say a document mismatch \"sends you to the red lane\". Lanes come from importer and commodity risk profiles, random selection and intelligence. A mismatch causes questions and delays.",
+    [
+     [
+      "Ortax",
+      "https://ortax.org/jalur-pengeluaran-barang-impor"
+     ]
+    ]
+   ],
+   [
+    "No tariff or tax percentages in the video. Rates differ by HS code, origin and importer status.",
+    []
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nLighting: night. Warm sodium-vapor orange #F28C3A key light, cool navy #1D2B40 fill, crisp rim light.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Background plate",
+     "1024x1536 · opaque",
+     "Steep top-down view into a container yard at night, tall stacks of containers forming a deep vertical canyon, orange lamp poles, wet asphalt reflections, empty center lane for a falling container."
+    ],
+    [
+     "Falling container",
+     "1024x1024 · transparent",
+     "A single 40ft container hanging from a crane spreader frame by four cables, seen from slightly below, isolated."
+    ],
+    [
+     "Gate arm",
+     "1536x1024 · transparent",
+     "A long port boom barrier arm with orange and white stripes and a small round warning light at its tip, horizontal, isolated."
+    ],
+    [
+     "Porthole",
+     "1024x1024 · transparent",
+     "A round ship porthole with a thick riveted steel frame, glowing warm orange glass, isolated."
+    ],
+    [
+     "Delivery truck at gate",
+     "1024x1536 · opaque",
+     "A container truck leaving an open port gate at night toward a city skyline glow, motion streaks of headlights, cinematic."
+    ]
+   ]
+  },
+  "caption": "Your ship docked. Your container is still sitting there. Here are the 4 gates it has to pass first. Import with us: utamaglobalindocargo.com"
+ },
+ {
+  "id": "E03",
+  "pillar": "Journey",
+  "title": "Jakarta to Sorong",
+  "dur": 50,
+  "svc": "Domestic Distribution",
+  "tile": "t03",
+  "tileLbl": "sea chart",
+  "hookOS": "JAKARTA → SORONG. 3 RIDES. 1 SHOT.",
+  "hookFX": "Frame 0: map zooms from orbit straight down onto Jakarta with a whoosh-boom. A route line tears across the archipelago in one stroke. Ship horn blast layered on the beat.",
+  "concept": "One route line draws itself across the archipelago, and the vehicle changes shape each time the mode changes.",
+  "design": "Paper navigation chart: thin contour lines, compass rose, coordinate ticks at the edges. The thick orange route line is the only strong color.",
+  "motion": "Map camera zooms and pans along the line. The route draws with stroke-dashoffset.",
+  "morph": [
+   "Truck icon",
+   "Ship icon",
+   "Truck icon",
+   "Destination pin",
+   "UGC logo"
+  ],
+  "transition": "Scale zoom: from city streets to the whole archipelago and back.",
+  "beats": [
+   [
+    0,
+    4,
+    "hook",
+    "R+H",
+    "Jakarta to Sorong. Three rides, one shipment, zero room for error.",
+    "JAKARTA → SORONG"
+   ],
+   [
+    4,
+    14,
+    "edu",
+    "R+H",
+    "First mile, by truck. FTL means a full truck just for you. LTL means you share the truck and pay for your space.",
+    "FTL = WHOLE TRUCK / LTL = SHARED"
+   ],
+   [
+    14,
+    24,
+    "edu",
+    "R+H",
+    "Across the sea, by ship. FCL: a whole container is yours. LCL: your cargo shares a container with others.",
+    "FCL = WHOLE BOX / LCL = SHARED"
+   ],
+   [
+    24,
+    30,
+    "edu",
+    "R",
+    "Last mile: another truck to the door. Every mode switch is a handoff.",
+    "LAST MILE"
+   ],
+   [
+    30,
+    36,
+    "stuck",
+    "H",
+    "And from January 2027, Zero ODOL means no tolerance for overloaded or oversized trucks.",
+    "ZERO ODOL · 1 JAN 2027"
+   ],
+   [
+    36,
+    44,
+    "ugc",
+    "R+H",
+    "UGC Logistics plans every leg: FTL, LTL, domestic air, and inter-island FCL or LCL.",
+    "EVERY LEG. ONE PLAN."
+   ],
+   [
+    44,
+    50,
+    "cta",
+    "R",
+    "Shipping between islands? Start with UGC Logistics.",
+    "SHIP ACROSS ISLANDS"
+   ]
+  ],
+  "learn": "FTL vs LTL and FCL vs LCL, why mode switches need watching, and the Zero ODOL deadline.",
+  "promo": "Domestic Distribution coordinates every mode in one plan.",
+  "music": {
+   "bpm": 122,
+   "style": "Island adventure, tropical-orchestral",
+   "prompt": "Upbeat, cheerful and epic adventure track, 122 BPM, major key. Bright tropical house groove with Indonesian-inspired hand percussion and bamboo marimba, layered with sweeping orchestral strings and big drums. Ship-horn style brass swell at the start. Builds as the route crosses the sea, short pause at 0:30, triumphant chorus at 0:36. Instrumental, no vocals.",
+   "cues": "0:00 horn swell · 0:14 sea section lift · 0:30 pause · 0:36 chorus"
+  },
+  "facts": [
+   [
+    "Zero ODOL (over dimension, over load) enforcement is set for 1 January 2027 by the Ministry of Transportation, after trial enforcement during 2026.",
+    [
+     [
+      "Kompas, 17 Jul 2026",
+      "https://money.kompas.com/read/2026/07/17/141111026/kemenhub-zero-odol-berlaku-mulai-2027-truk-overload-bakal-ditindak"
+     ],
+     [
+      "Bisnis, 14 Oct 2026",
+      "https://ekonomi.bisnis.com/read/20261014/98/2012295/zero-odol-mulai-1-januari-2027-truk-obesitas-tak-ada-toleransi"
+     ]
+    ]
+   ],
+   [
+    "The Jakarta–Sorong route and its transit points are an illustration. Replace with a route UGC actually runs before production.",
+    []
+   ],
+   [
+    "No transit-time or price numbers in the video unless UGC supplies them.",
+    []
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: three-quarter view from slightly above, soft daylight. Exception: the chart paper background is a flat paper scan, and the compass rose is fine orange-red ink on that paper.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Chart paper background",
+     "1024x1536 · opaque",
+     "Blank aged nautical chart paper with faint concentric depth-contour lines, a small compass rose in one corner, thin border frame, no land shapes, no lettering."
+    ],
+    [
+     "Compass rose",
+     "1024x1024 · transparent",
+     "An ornate nautical compass rose drawn in fine orange-red ink, cardinal points shown as arrow shapes only, isolated."
+    ],
+    [
+     "Inter-island cargo ship",
+     "1536x1024 · transparent",
+     "Side view of an Indonesian inter-island cargo vessel carrying a few containers on deck."
+    ],
+    [
+     "Port town vignette",
+     "1536x1024 · transparent",
+     "A small eastern Indonesian port: a short concrete pier, two harbour cranes, a few warehouses and green hills behind, isolated."
+    ]
+   ]
+  },
+  "caption": "Truck, ship, truck again. Here's how cargo crosses Indonesia, and the 2027 rule every shipper should know. Plan it: utamaglobalindocargo.com"
+ },
+ {
+  "id": "E04",
+  "pillar": "Journey",
+  "title": "Blueprint: Too Big for the Road",
+  "dur": 55,
+  "svc": "Project & Specialized Cargo",
+  "tile": "t04",
+  "tileLbl": "blueprint",
+  "hookOS": "TOO BIG FOR THE ROAD. MOVING ANYWAY.",
+  "hookFX": "Frame 0: a giant transformer drops into frame and lands with a deep boom, camera shake and dust. Dimension lines snap out from its edges with a mechanical clack.",
+  "concept": "A project cargo move is treated like an engineering job: measure first, then move.",
+  "design": "Inverted blueprint: white lines on a red-orange field, graph-paper grid, dimension lines and number callouts.",
+  "motion": "Heavy and slow: long ease-in, small settle, a gentle camera shake when a load lands. Lines draw on like a plotter.",
+  "morph": [
+   "Dimension line",
+   "Road route",
+   "Crane boom",
+   "Lashing chain",
+   "UGC logo"
+  ],
+  "transition": "Plotter wipe: a drawn line sweeps the screen before the next scene appears.",
+  "beats": [
+   [
+    0,
+    4,
+    "hook",
+    "R+H",
+    "This cargo is too big for the road. It's moving anyway.",
+    "TOO BIG FOR THE ROAD. / MOVING ANYWAY."
+   ],
+   [
+    4,
+    14,
+    "edu",
+    "R+H",
+    "Step one: survey the route. Bridges, tight corners, overhead cables. Every one gets measured.",
+    "01 ROUTE SURVEY"
+   ],
+   [
+    14,
+    22,
+    "edu",
+    "R+H",
+    "Step two: permits. Oversized cargo needs approval from transport authorities, and often a police escort.",
+    "02 PERMITS + ESCORT"
+   ],
+   [
+    22,
+    32,
+    "edu",
+    "R",
+    "Step three: the right equipment. A lowbed or multi-axle trailer, plus a lifting plan for the crane.",
+    "03 TRAILER + LIFT PLAN"
+   ],
+   [
+    32,
+    40,
+    "edu",
+    "R",
+    "Step four: lashing. The load is chained and secured, then moves slowly on a planned schedule.",
+    "04 LASHED. SLOW. PLANNED."
+   ],
+   [
+    40,
+    48,
+    "ugc",
+    "R+H",
+    "UGC Logistics runs project and specialized cargo: oversized, heavy lift, industrial.",
+    "MEASURED FIRST. MOVED RIGHT."
+   ],
+   [
+    48,
+    55,
+    "cta",
+    "R",
+    "Got cargo that won't fit a normal truck? Talk to UGC Logistics.",
+    "TALK PROJECT CARGO"
+   ]
+  ],
+  "learn": "The four stages of a project cargo move, from route survey to lashing.",
+  "promo": "Project & Specialized Cargo for loads that don't fit a normal truck.",
+  "music": {
+   "bpm": 110,
+   "style": "Heavy epic trailer, cheerful brass",
+   "prompt": "Epic and powerful trailer-style track that stays positive and cheerful, 110 BPM. Huge low drums and metallic hits on every heavy landing, ticking mechanical percussion under the measuring sections, bold heroic brass melody in major key, uplifting choir pad. Big swell at 0:40 for the hero reveal. Strong final hit at 0:55. Instrumental, no vocals.",
+   "cues": "0:00 landing boom · 0:04 mechanical tick bed · 0:40 hero swell · 0:55 final hit"
+  },
+  "facts": [
+   [
+    "Permits for special goods and heavy equipment go through Ditjen Perhubungan Darat (SPIONAM). Bridges may need a separate dispensation (Bina Marga SE 04/SE/Db/2020). Escort is commonly provided with police. Exact requirements vary by route; confirm with UGC's project team.",
+    [
+     [
+      "SPIONAM SK Dirjen Hubdat",
+      "https://spionam.dephub.go.id/public/files/100000776/sk/1637550349.pdf"
+     ],
+     [
+      "SE Dirjen Bina Marga 04/2020",
+      "https://testindo.co.id/Webinar-File/SE-Dirjen-Bina-Marga-No-04_SE_Db_2020-Panduan-Teknis-Evaluasi-Struktur-Jembatan-untuk-Dispensasi-Penggunaan-Jalan-yang-Memerlukan-Perlakuan-Khusus.pdf"
+     ]
+    ]
+   ],
+   [
+    "Route surveys check overhead cables, overpass and bridge heights, turning radii and bridge strength.",
+    [
+     [
+      "Jaga Lautan Bersama: izin OD/OW",
+      "https://jagalautanbersama.id/insights/izin-odow-prosedur-biaya-dan-syarat-pengiriman-alat-berat-indonesia"
+     ]
+    ]
+   ],
+   [
+    "Do not show a specific weight in tons unless it comes from a real UGC job.",
+    []
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nLighting: clean overcast daylight, slightly desaturated, heavy and grounded.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Transformer",
+     "1024x1024 · transparent",
+     "A large industrial power transformer with cooling fins and ceramic bushings on top, grey steel body, front three-quarter view."
+    ],
+    [
+     "Multi-axle trailer",
+     "1536x1024 · transparent",
+     "A white heavy-haul prime mover pulling a long multi-axle lowbed trailer carrying a large power transformer, side view, wheels visible."
+    ],
+    [
+     "Crawler crane",
+     "1024x1536 · transparent",
+     "A white and orange crawler crane with a tall lattice boom lifting a heavy steel load on chains, full side view."
+    ],
+    [
+     "Route photo",
+     "1024x1536 · opaque",
+     "A two-lane Indonesian provincial road at golden hour with a low concrete bridge ahead and power cables crossing overhead, empty road, cinematic wide shot."
+    ],
+    [
+     "Lashing detail",
+     "1024x1024 · transparent",
+     "Close-up of heavy yellow-orange lashing chains and ratchet binders tensioned over a steel load edge."
+    ]
+   ]
+  },
+  "caption": "Some cargo is too big for the road. It still gets there. 4 steps behind every heavy-lift move. Project cargo: utamaglobalindocargo.com"
+ },
+ {
+  "id": "E05",
+  "pillar": "Journey",
+  "title": "Floor Plan: After Checkout",
+  "dur": 45,
+  "svc": "Warehousing & 3PL",
+  "tile": "t05",
+  "tileLbl": "top-down",
+  "hookOS": "ORDER IN. CLOCK ON.",
+  "hookFX": "Frame 0: a giant phone notification slams down onto the warehouse floor plan with a cash-register chime layered on a kick drum. The whole grid flashes orange once.",
+  "concept": "One order moves across a warehouse floor plan like a game piece on a board.",
+  "design": "Top-down flat, bold color blocks, floor grid with rack location codes (A-03-2).",
+  "motion": "Staccato: step-by-step movement with a 12 fps feel. Items snap into grid cells.",
+  "morph": [
+   "Square tile",
+   "Barcode",
+   "Rack slot",
+   "Parcel",
+   "Truck door",
+   "UGC logo"
+  ],
+  "transition": "Grid cells flip in a wave to reveal the next scene.",
+  "beats": [
+   [
+    0,
+    3,
+    "hook",
+    "H",
+    "Someone just hit buy. The race starts now.",
+    "ORDER IN. / CLOCK ON."
+   ],
+   [
+    3,
+    8,
+    "edu",
+    "R+H",
+    "Receiving: stock arrives, gets checked and logged.",
+    "RECEIVING"
+   ],
+   [
+    8,
+    13,
+    "edu",
+    "R+H",
+    "Storage: every item gets an address, like A, zero three, two.",
+    "STORAGE · A-03-2"
+   ],
+   [
+    13,
+    19,
+    "edu",
+    "R+H",
+    "Picking: the system points to the shelf, and a picker grabs it.",
+    "PICKING"
+   ],
+   [
+    19,
+    24,
+    "edu",
+    "R",
+    "Packing: boxed, labeled, ready.",
+    "PACKING"
+   ],
+   [
+    24,
+    28,
+    "edu",
+    "R",
+    "Dispatch: onto the right truck for its route.",
+    "DISPATCH"
+   ],
+   [
+    28,
+    33,
+    "edu",
+    "H",
+    "Hand all of that to a partner, and that's 3PL: third-party logistics.",
+    "3PL = THIRD-PARTY LOGISTICS"
+   ],
+   [
+    33,
+    40,
+    "ugc",
+    "R+H",
+    "UGC Logistics runs warehousing and 3PL, from receiving to dispatch.",
+    "RECEIVING → DISPATCH"
+   ],
+   [
+    40,
+    45,
+    "cta",
+    "R",
+    "Let your team sell. Let UGC Logistics ship.",
+    "YOU SELL. WE SHIP."
+   ]
+  ],
+  "learn": "The five fulfillment steps and what 3PL means.",
+  "promo": "UGC runs storage, stock and dispatch as one service.",
+  "music": {
+   "bpm": 126,
+   "style": "Playful funky house",
+   "prompt": "Cheerful, upbeat and punchy funk-house track, 126 BPM, major key. Tight four-on-the-floor kick, slap bass, bright horn section, playful marimba plucks on each step, handclaps. Opens with a big kick and brass hit. Every section change lands on a short stop and restart. Feel-good final brass riff at 0:40. Instrumental, no vocals.",
+   "cues": "0:00 brass hit · step stabs every 5 s · 0:33 full band · 0:40 final riff"
+  },
+  "facts": [
+   [
+    "Receiving, storage, picking, packing and dispatch are standard fulfillment stages; 3PL means outsourcing them to a logistics provider. Match step names to UGC's actual WMS terms.",
+    []
+   ],
+   [
+    "No speed claims (\"ships in 2 hours\") unless UGC has an SLA to back it.",
+    []
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: straight top-down orthographic photo; objects keep real proportions. Soft overhead light.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Rack row",
+     "1536x1024 · transparent",
+     "Top-down view of a row of warehouse pallet racks with cardboard boxes on each shelf."
+    ],
+    [
+     "Forklift",
+     "1024x1024 · transparent",
+     "Top-down view of a compact orange forklift carrying a pallet of boxes."
+    ],
+    [
+     "Parcel",
+     "1024x1024 · transparent",
+     "Top-down view of one sealed cardboard parcel with orange tape and a blank white shipping label."
+    ],
+    [
+     "Delivery truck",
+     "1024x1536 · transparent",
+     "Top-down view of a white box truck with its rear doors open, ready to load."
+    ],
+    [
+     "Picker",
+     "1024x1024 · transparent",
+     "Top-down view of a warehouse worker in an orange safety vest pushing a picking cart."
+    ]
+   ]
+  },
+  "caption": "You click buy. Five steps happen before the courier shows up. Here they are. Warehousing & 3PL: utamaglobalindocargo.com"
+ },
+ {
+  "id": "E06",
+  "pillar": "Friction",
+  "title": "The Container Meter",
+  "dur": 35,
+  "svc": "Customs · trucking · warehousing",
+  "tile": "t06",
+  "tileLbl": "receipt",
+  "hookOS": "NOT MOVING. STILL BILLING.",
+  "hookFX": "Frame 0: a receipt printer screams to life, a receipt shoots up the full height of the screen with a ripping sound and a bass drop. DAY 01, 02, 03 stamp in on the beat.",
+  "concept": "A meter that never stops. The container sits still while its bill keeps printing.",
+  "design": "Thermal receipt look: long white paper, mono type, dashed rules, big day numbers.",
+  "motion": "Accelerating tempo: slow ticks at first, then tighter and tighter. Cuts land on the music beat.",
+  "morph": [
+   "Hourglass",
+   "Coin stack",
+   "Container",
+   "Receipt",
+   "UGC logo"
+  ],
+  "transition": "The receipt tears.",
+  "beats": [
+   [
+    0,
+    3,
+    "hook",
+    "H",
+    "This container isn't moving. Its bill is.",
+    "NOT MOVING. / STILL BILLING."
+   ],
+   [
+    3,
+    8,
+    "edu",
+    "R+H",
+    "Shipping lines give free time. A few days, no charge.",
+    "FREE TIME"
+   ],
+   [
+    8,
+    15,
+    "edu",
+    "R+H",
+    "Then demurrage: the container overstays inside the terminal. Detention: it overstays outside, with you.",
+    "DEMURRAGE = INSIDE / DETENTION = OUTSIDE"
+   ],
+   [
+    15,
+    21,
+    "edu",
+    "R",
+    "The usual causes: slow clearance, late delivery orders, a warehouse not ready to unload.",
+    "WHY IT HAPPENS"
+   ],
+   [
+    21,
+    24,
+    "stuck",
+    "H",
+    "Every day counts.",
+    "DAY 09…"
+   ],
+   [
+    24,
+    30,
+    "ugc",
+    "R+H",
+    "UGC Logistics runs clearance, trucking and warehousing as one team, so nothing waits on a handoff.",
+    "ONE TEAM. NO WAITING."
+   ],
+   [
+    30,
+    35,
+    "cta",
+    "R",
+    "Stop paying for waiting. Talk to UGC Logistics.",
+    "STOP THE METER"
+   ]
+  ],
+  "learn": "The difference between free time, demurrage and detention, and the usual causes.",
+  "promo": "Clearance, trucking and warehousing under one team.",
+  "music": {
+   "bpm": "120→140",
+   "style": "Ticking build to euphoric drop",
+   "prompt": "Tense but fun ticking build that explodes into an epic, cheerful drop. Starts at 120 BPM with clock ticks, receipt-printer rhythm and pizzicato strings, accelerating to 140 BPM by 0:21. Stop at 0:21 for one beat of silence, then a massive bright drop with big drums, brass and synth lead at 0:24. Instrumental, no vocals.",
+   "cues": "0:00 printer + bass drop · accelerate to 0:21 · silence · 0:24 drop"
+  },
+  "facts": [
+   [
+    "Demurrage: the container stays inside the terminal beyond free time. Detention: the container is kept outside the terminal beyond free time. Some carriers combine both. Free time differs by carrier, port and country.",
+    [
+     [
+      "Maersk: What is demurrage and detention",
+      "https://www.maersk.com/logistics-explained/transportation-and-freight/2023/08/28/what-is-demurrage-detention-in-shipping-for-buyers"
+     ],
+     [
+      "Maersk D&D terms",
+      "https://terms.maersk.com/dnd"
+     ]
+    ]
+   ],
+   [
+    "Do not state a number of free days or a daily rate in the video.",
+    []
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: product-shot framing, soft daylight, white and cream tones with orange accents.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Receipt strip",
+     "1024x1536 · transparent",
+     "A very long curled strip of blank white thermal receipt paper with a zigzag torn edge, floating, soft shadow."
+    ],
+    [
+     "Hourglass",
+     "1024x1024 · transparent",
+     "An hourglass with a wooden frame and bright orange sand falling through the glass."
+    ],
+    [
+     "Coin stack",
+     "1024x1024 · transparent",
+     "Several stacks of plain gold coins with no markings, one stack tipping over."
+    ],
+    [
+     "Lonely container",
+     "1024x1536 · opaque",
+     "A single 20ft container standing alone in an empty container terminal at dusk, long shadows, cinematic wide shot."
+    ]
+   ]
+  },
+  "caption": "Your container isn't moving. Its bill is. Demurrage vs detention in 35 seconds. Talk to us: utamaglobalindocargo.com"
+ },
+ {
+  "id": "E07",
+  "pillar": "Friction",
+  "title": "The Missing Lane",
+  "dur": 38,
+  "svc": "Customs & Import Solutions",
+  "tile": "t07",
+  "tileLbl": "two lanes",
+  "hookOS": "3 LANES. ONE IS GONE.",
+  "hookFX": "Frame 0: three glowing lanes, green, yellow, red. On the beat, the yellow lane is ripped out of the road with a crunch and a boom. Two lanes snap together.",
+  "concept": "Split screen of road lanes. The yellow lane disappears and the container must choose between the two that remain.",
+  "design": "Top-down road markings: green and red lanes with white dashed lines, the yellow lane shown only as a ghost outline. The only episode using green and red.",
+  "motion": "Whip pans between lanes with motion blur, sharp stops.",
+  "morph": [
+   "Three dots",
+   "Three lanes",
+   "Two lanes",
+   "Stamp",
+   "UGC logo"
+  ],
+  "transition": "Horizontal whip pan.",
+  "beats": [
+   [
+    0,
+    3,
+    "hook",
+    "H",
+    "Indonesian customs had three lanes. One is gone.",
+    "3 LANES. / ONE IS GONE."
+   ],
+   [
+    3,
+    9,
+    "edu",
+    "R+H",
+    "Since April 2022, import release has two lanes: green and red. Yellow was removed.",
+    "SINCE APRIL 2022: GREEN + RED"
+   ],
+   [
+    9,
+    15,
+    "edu",
+    "R+H",
+    "Green: no physical inspection before release. Documents can be reviewed after.",
+    "GREEN · RELEASE FIRST"
+   ],
+   [
+    15,
+    21,
+    "edu",
+    "R+H",
+    "Red: officers inspect the goods and check the documents before release.",
+    "RED · INSPECT FIRST"
+   ],
+   [
+    21,
+    26,
+    "edu",
+    "H",
+    "Your lane depends on risk profiles, and some picks are random.",
+    "RISK PROFILE + RANDOM"
+   ],
+   [
+    26,
+    30,
+    "stuck",
+    "H",
+    "Red lane with messy documents? That's where cargo stalls.",
+    "RED + MESSY DOCS = STALL"
+   ],
+   [
+    30,
+    35,
+    "ugc",
+    "R+H",
+    "UGC Logistics keeps your documents consistent and handles inspections with you.",
+    "CLEAN DOCS. GUIDED INSPECTION."
+   ],
+   [
+    35,
+    38,
+    "cta",
+    "R",
+    "Clear customs with UGC Logistics.",
+    "CLEAR CUSTOMS WITH US"
+   ]
+  ],
+  "learn": "Import release now has two lanes, green and red, and what each one means.",
+  "promo": "Consistent documents and support during inspections.",
+  "music": {
+   "bpm": 128,
+   "style": "Driving electro-pop with whip hits",
+   "prompt": "High-energy, cheerful and epic electro-pop track, 128 BPM, major key. Punchy drums, bright synth stabs, whoosh-whip transitions on each lane change. Opens with a crunchy impact and bass drop. Quick filter-down at 0:26, then a big anthemic lift at 0:30 with big claps and brass. Instrumental, no vocals.",
+   "cues": "0:00 crunch + drop · whip hits at 0:09 and 0:15 · 0:26 filter · 0:30 lift"
+  },
+  "facts": [
+   [
+    "The yellow lane was removed by PER-02/BC/2022, effective 25 April 2022. Only green and red remain under PER-2/BC/2023.",
+    [
+     [
+      "DDTC News",
+      "https://news.ddtc.co.id/berita/nasional/1804978/djbc-hapus-jalur-kuning-dalam-pengeluaran-barang-impor-ini-aturannya"
+     ],
+     [
+      "PER-2/BC/2023 (JDIH)",
+      "https://jdih.kemenkeu.go.id/api/download/8d677116-7f1d-453e-98f5-e1a43c774dd3/PER-2_BC_2023.pdf"
+     ]
+    ]
+   ],
+   [
+    "Lane selection uses importer profile, commodity profile, the declaration, random selection, intelligence and other criteria.",
+    [
+     [
+      "Ortax",
+      "https://ortax.org/jalur-pengeluaran-barang-impor"
+     ]
+    ]
+   ],
+   [
+    "Some articles online still list four lanes (red, yellow, green, MITA). They are outdated or mix in other procedures. Do not use them as sources.",
+    [
+     [
+      "Pajak.com (outdated example)",
+      "https://www.pajak.com/pajak/mengenal-jenis-jenis-jalur-pengeluaran-barang-impor/"
+     ]
+    ]
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: straight top-down aerial photo. Flat midday sun, short soft shadows on the object only.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Road background",
+     "1024x1536 · opaque",
+     "Straight top-down view of a wide, clean, dark grey asphalt road filling the frame vertically, no lane markings, subtle texture."
+    ],
+    [
+     "Container truck top-down",
+     "1024x1536 · transparent",
+     "Top-down view of a white prime mover pulling one 40ft container, pointing upward."
+    ],
+    [
+     "Inspection canopy",
+     "1536x1024 · transparent",
+     "Top-down view of a customs inspection canopy roof with an open container under it and two small figures in vests beside it."
+    ],
+    [
+     "Stamp",
+     "1024x1024 · transparent",
+     "A round red rubber stamp imprint, blank in the middle, slightly uneven ink texture."
+    ]
+   ]
+  },
+  "caption": "Indonesian customs used to have 3 import lanes. Now it's 2. Here's what changed. Clear customs with us: utamaglobalindocargo.com"
+ },
+ {
+  "id": "E08",
+  "pillar": "Friction",
+  "title": "The Desk: One Number Off",
+  "dur": 40,
+  "svc": "Customs & Import Solutions",
+  "tile": "t08",
+  "tileLbl": "paper desk",
+  "hookOS": "4 DOCUMENTS. 1 NUMBER OFF.",
+  "hookFX": "Frame 0: four sheets slap down on a desk one after another, each with a punchy hit. A red circle snaps around one number with a heavy boom and a zoom.",
+  "concept": "Top-down view of an inspector's desk. Documents arrive one by one, a magnifying glass hunts for the mismatch.",
+  "design": "Paper textures, stamp ink, highlighter marks and orange handwritten notes.",
+  "motion": "Paper physics: slide, slight rotation, settle. The magnifier zooms in on detail.",
+  "morph": [
+   "Magnifying glass",
+   "OK stamp",
+   "UGC logo"
+  ],
+  "transition": "Page flip.",
+  "beats": [
+   [
+    0,
+    3,
+    "hook",
+    "H",
+    "Four documents. One number off. Now what?",
+    "4 DOCUMENTS. / 1 NUMBER OFF."
+   ],
+   [
+    3,
+    9,
+    "edu",
+    "R+H",
+    "Commercial invoice: what you sold, and its value.",
+    "COMMERCIAL INVOICE"
+   ],
+   [
+    9,
+    15,
+    "edu",
+    "R+H",
+    "Packing list: quantities, weights, packages. It has to match the invoice.",
+    "PACKING LIST"
+   ],
+   [
+    15,
+    21,
+    "edu",
+    "R+H",
+    "Bill of lading: shipper, consignee, container numbers.",
+    "BILL OF LADING"
+   ],
+   [
+    21,
+    27,
+    "edu",
+    "R+H",
+    "And the HS code. It decides the duty rate and which import rules apply.",
+    "HS CODE"
+   ],
+   [
+    27,
+    31,
+    "stuck",
+    "H",
+    "Weights don't match? Expect questions, and delays.",
+    "WEIGHTS DON'T MATCH"
+   ],
+   [
+    31,
+    36,
+    "ugc",
+    "R+H",
+    "UGC Logistics cross-checks every document before your cargo moves.",
+    "DOCUMENTS REVIEWED 4/4"
+   ],
+   [
+    36,
+    40,
+    "cta",
+    "R",
+    "Send us your docs first. UGC Logistics.",
+    "SEND US YOUR DOCS"
+   ]
+  ],
+  "learn": "What each of the four core documents carries and why their numbers must agree.",
+  "promo": "Document review before cargo moves.",
+  "music": {
+   "bpm": 120,
+   "style": "Detective-pop groove to bright chorus",
+   "prompt": "Playful, curious and upbeat track that becomes epic and cheerful, 120 BPM. Opens with a hard paper-slap hit and a bass drop, then a bouncy detective-style groove with pizzicato, muted guitar and finger snaps. Magnifier moments get a rising synth swell. Big bright chorus with brass and drums at 0:31. Instrumental, no vocals.",
+   "cues": "0:00 slap + drop · 0:27 tension sting · 0:31 chorus"
+  },
+  "facts": [
+   [
+    "Do not claim that a mismatch puts cargo in the red lane. Lane selection is risk-based. A mismatch leads to questions, corrections and delays.",
+    [
+     [
+      "Ortax",
+      "https://ortax.org/jalur-pengeluaran-barang-impor"
+     ]
+    ]
+   ],
+   [
+    "Indonesia classifies goods with the 8-digit BTKI (6-digit HS + 2-digit ASEAN AHTN). Duty rates and import restrictions (lartas) follow the code.",
+    [
+     [
+      "DDTC: BTKI 2022",
+      "https://news.ddtc.co.id/berita/nasional/38059/berlaku-1-april-2022-buku-tarif-kepabeanan-indonesia-resmi-diperbarui"
+     ],
+     [
+      "DDTC: AHTN",
+      "https://news.ddtc.co.id/literasi/kamus/38225/apa-itu-asean-harmonized-tariff-nomenclature"
+     ]
+    ]
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: top-down flat-lay photo, soft window daylight from one side.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Desk background",
+     "1024x1536 · opaque",
+     "Top-down view of a warm light-wood office desk surface, empty, with a faint coffee ring and a few paper fibers."
+    ],
+    [
+     "Blank document",
+     "1024x1536 · transparent",
+     "One A4 sheet of paper seen from above, slightly curled corner, with faint grey placeholder lines and empty table boxes, no readable writing."
+    ],
+    [
+     "Magnifying glass",
+     "1024x1024 · transparent",
+     "A classic magnifying glass with an orange handle seen from above at a slight angle, clear lens."
+    ],
+    [
+     "Rubber stamp",
+     "1024x1024 · transparent",
+     "A wooden-handled rubber stamp next to a round orange stamp imprint with a blank center."
+    ],
+    [
+     "Highlighter",
+     "1024x1024 · transparent",
+     "An orange highlighter pen with its cap off, seen from above."
+    ]
+   ]
+  },
+  "caption": "4 documents. 1 number that doesn't match. That's how a shipment slows down. Get your docs checked: utamaglobalindocargo.com"
+ },
+ {
+  "id": "E09",
+  "pillar": "Glossary",
+  "title": "FCL vs LCL",
+  "dur": 22,
+  "svc": "Global Freight Forwarding",
+  "tile": "t09",
+  "tileLbl": "split",
+  "hookOS": "PAYING FOR A BOX YOU CAN'T FILL?",
+  "hookFX": "Frame 0: a container slams shut with a deep steel boom, then splits down the middle like a cell dividing. Both halves bounce apart to the screen edges.",
+  "concept": "One container splits like a dividing cell into two versions, compared side by side.",
+  "design": "Symmetric split screen, two solid color fields (orange and cream), giant type.",
+  "motion": "Mirrored motion: left and right move symmetrically. Cartons drop and stack.",
+  "morph": [
+   "Container",
+   "Split in two",
+   "Uniform cartons vs mixed cartons",
+   "UGC logo"
+  ],
+  "transition": "The center line widens and covers the screen.",
+  "beats": [
+   [
+    0,
+    3,
+    "hook",
+    "H",
+    "Paying for a whole container you can't fill?",
+    "PAYING FOR A BOX / YOU CAN'T FILL?"
+   ],
+   [
+    3,
+    9,
+    "edu",
+    "H",
+    "FCL: full container load. The whole box is yours alone.",
+    "FCL · WHOLE BOX"
+   ],
+   [
+    9,
+    15,
+    "edu",
+    "H",
+    "LCL: you share a container and pay by volume or weight, whichever is higher.",
+    "LCL · PAY PER CBM OR TON"
+   ],
+   [
+    15,
+    19,
+    "ugc",
+    "R+H",
+    "Not sure which saves more? UGC Logistics runs the numbers.",
+    "WE RUN THE NUMBERS"
+   ],
+   [
+    19,
+    22,
+    "cta",
+    "R",
+    "UGC Logistics. We care what we deliver.",
+    "GET A QUOTE"
+   ]
+  ],
+  "learn": "FCL vs LCL, and how LCL is billed (W/M).",
+  "promo": "UGC compares both options for your cargo.",
+  "music": {
+   "bpm": 128,
+   "style": "Short punchy hype stinger",
+   "prompt": "Short, punchy, cheerful and epic hype track, 128 BPM, 22 seconds. Massive steel boom on the first beat, then bouncy drums, bright synth brass and claps. Mirror-style stereo ping-pong effects. Clean ending hit at 0:22. Instrumental, no vocals.",
+   "cues": "0:00 boom · 0:15 lift · 0:22 end hit"
+  },
+  "facts": [
+   [
+    "LCL is billed per revenue ton (W/M): 1 CBM or 1,000 kg, whichever is higher. Carriers usually apply a minimum of 1 CBM.",
+    [
+     [
+      "Cogoport: chargeable weight ocean",
+      "https://www.cogoport.com/blogs/how-to-calculate-chargeable-weight-ocean-freight"
+     ],
+     [
+      "Marine Insight: CBM rate",
+      "https://www.marineinsight.com/what-is-cbm-rate-in-shipping/"
+     ]
+    ]
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: straight side view, product-shot framing, bright studio light.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Container side view",
+     "1536x1024 · transparent",
+     "An 20ft shipping container, perfect side view, doors closed."
+    ],
+    [
+     "Uniform cartons",
+     "1024x1024 · transparent",
+     "A neat stack of identical brown cartons with orange tape, all the same size."
+    ],
+    [
+     "Mixed cartons",
+     "1024x1024 · transparent",
+     "A mixed stack of cartons of different sizes and colors (brown, white, blue, green crates), slightly uneven."
+    ]
+   ]
+  },
+  "caption": "FCL or LCL? One sentence each, plus how LCL is actually billed. Get both quoted: utamaglobalindocargo.com"
+ },
+ {
+  "id": "E10",
+  "pillar": "Glossary",
+  "title": "Incoterms: Where Risk Switches",
+  "dur": 34,
+  "svc": "Global Freight Forwarding",
+  "tile": "t10",
+  "tileLbl": "slider UI",
+  "hookOS": "FOB ON A CONTAINER? RISKY.",
+  "hookFX": "Frame 0: a giant slider knob slams onto a route line with a click-boom; the line flashes red where risk switches. Warning-light pulse.",
+  "concept": "One route line with a slider. The knob position is where cost and risk move from seller to buyer.",
+  "design": "App-interface look: cards, toggles, small labels. Clean and tidy.",
+  "motion": "The knob slides as if dragged by a finger, labels flip. A hand cursor appears.",
+  "morph": [
+   "Round knob",
+   "Seller icon",
+   "Buyer icon",
+   "UGC logo"
+  ],
+  "transition": "The screen scrolls to the next term.",
+  "beats": [
+   [
+    0,
+    3,
+    "hook",
+    "H",
+    "FOB on a container? Risky choice.",
+    "FOB ON A CONTAINER? / RISKY."
+   ],
+   [
+    3,
+    8,
+    "edu",
+    "H",
+    "Incoterms 2020 decide where cost and risk switch sides.",
+    "INCOTERMS 2020"
+   ],
+   [
+    8,
+    12,
+    "edu",
+    "H",
+    "EXW: the buyer takes over at the seller's door.",
+    "EXW · SELLER'S DOOR"
+   ],
+   [
+    12,
+    16,
+    "edu",
+    "H",
+    "DDP: the seller delivers to the buyer's door, duties paid.",
+    "DDP · BUYER'S DOOR"
+   ],
+   [
+    16,
+    23,
+    "edu",
+    "R+H",
+    "FOB and CIF: risk moves once goods are on board. CIF sellers still pay the freight.",
+    "FOB / CIF · ON BOARD"
+   ],
+   [
+    23,
+    27,
+    "edu",
+    "H",
+    "For containers, FCA or CIP usually fit better.",
+    "CONTAINERS? FCA / CIP"
+   ],
+   [
+    27,
+    31,
+    "ugc",
+    "R+H",
+    "Whatever term you sign, UGC Logistics handles your part.",
+    "WE HANDLE YOUR PART"
+   ],
+   [
+    31,
+    34,
+    "cta",
+    "R",
+    "UGC Logistics. We care what we deliver.",
+    "ASK BEFORE YOU SIGN"
+   ]
+  ],
+  "learn": "Where cost and risk transfer under EXW, FOB, CIF, DDP, and why FCA or CIP suit containers.",
+  "promo": "UGC handles the shipper's or buyer's share under any Incoterm.",
+  "music": {
+   "bpm": 124,
+   "style": "Sleek tech-pop",
+   "prompt": "Sleek, upbeat and cheerful tech-pop track with an epic edge, 124 BPM. UI click percussion, plucky synths, warm bass, big claps. Opens with a heavy click-boom and riser. Small swell on each term change, full anthemic lift at 0:27. Instrumental, no vocals.",
+   "cues": "0:00 click-boom · swells at 0:08/0:12/0:16/0:23 · 0:27 lift"
+  },
+  "facts": [
+   [
+    "Incoterms 2020 is the edition in force. ICC has begun groundwork for a 2030 revision but has published no new text or date.",
+    [
+     [
+      "DHL: next Incoterms revision",
+      "https://www.dhl.com/discover/en-br/news-and-insights/next-incoterms-revision"
+     ]
+    ]
+   ],
+   [
+    "Under FOB and CIF, risk passes when goods are on board the vessel at the port of shipment. CIF sellers pay freight and minimum insurance (ICC Clauses C) to the destination port; CIP requires Clauses A.",
+    [
+     [
+      "ICC Academy",
+      "https://academy.iccwbo.org/incoterms/article/incoterms-2020-new-rules-old-problems/"
+     ],
+     [
+      "Vero: common Incoterms 2020",
+      "https://suminsured.vero.co.nz/documents/marine/common-incoterms-2020-their-meanings.pdf"
+     ]
+    ]
+   ],
+   [
+    "For containerized cargo handed over at a terminal, FCA, CPT or CIP generally fit better than FOB or CIF.",
+    [
+     [
+      "Maersk: 7 common Incoterm mistakes",
+      "https://eascpcd.maersk.com/logistics-explained/customs-and-compliance/2023/10/04/how-to-avoid-the-7-most-common-incoterm-mistakes"
+     ]
+    ]
+   ],
+   [
+    "Incoterms® is a registered ICC trademark. Write it as \"Incoterms® 2020\" in on-screen text.",
+    []
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: three-quarter view from slightly above; all E10 assets at the same angle and scale so they read as a set of icons.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Seller warehouse icon",
+     "1024x1024 · transparent",
+     "A small modern factory-warehouse building with a roller loading door and one pallet of cartons in front."
+    ],
+    [
+     "Port icon",
+     "1024x1024 · transparent",
+     "A ship-to-shore gantry crane above a short container ship at the quay."
+    ],
+    [
+     "Buyer door icon",
+     "1024x1024 · transparent",
+     "A small shop-warehouse building with a front door and one parcel on the doorstep."
+    ],
+    [
+     "Insurance shield",
+     "1024x1024 · transparent",
+     "A painted metal shield badge with a small embossed shipping-container shape in the centre."
+    ]
+   ]
+  },
+  "caption": "FOB on a container sounds normal. It often puts risk in the wrong place. 30 seconds on Incoterms 2020. Ask us before you sign: utamaglobalindocargo.com"
+ },
+ {
+  "id": "E11",
+  "pillar": "Glossary",
+  "title": "The Weight You Can't See",
+  "dur": 24,
+  "svc": "Freight Forwarding · Domestic air",
+  "tile": "t11",
+  "tileLbl": "dial",
+  "hookOS": "50 KG OF CARGO. BILLED AS 80.",
+  "hookFX": "Frame 0: a scale needle slams from 50 to 80 with a heavy mechanical clunk and a boom. Warning lamps flash.",
+  "concept": "An instrument panel with one big needle. Real weight vs volume weight, then fast vs cheap.",
+  "design": "Retro cockpit panel: big dial, ticks around the edge, warm dark background.",
+  "motion": "Needle swings with a spring overshoot. Indicator lamps light up.",
+  "morph": [
+   "Needle",
+   "Plane",
+   "Container ship",
+   "UGC logo"
+  ],
+  "transition": "The dial spins 180° to the next panel.",
+  "beats": [
+   [
+    0,
+    3,
+    "hook",
+    "H",
+    "Fifty kilos of cargo. Billed as eighty.",
+    "50 KG. / BILLED AS 80."
+   ],
+   [
+    3,
+    10,
+    "edu",
+    "R+H",
+    "Air bills the higher of real weight and volume weight. Big, light boxes cost more.",
+    "REAL WEIGHT vs VOLUME WEIGHT"
+   ],
+   [
+    10,
+    15,
+    "edu",
+    "R",
+    "Ocean freight is slower, but far cheaper for volume.",
+    "OCEAN · SLOWER, CHEAPER"
+   ],
+   [
+    15,
+    18,
+    "edu",
+    "H",
+    "Need speed? Fly it. Need savings? Ship it.",
+    "SPEED → AIR / SAVINGS → SEA"
+   ],
+   [
+    18,
+    21,
+    "ugc",
+    "R+H",
+    "UGC Logistics quotes both.",
+    "WE QUOTE BOTH"
+   ],
+   [
+    21,
+    24,
+    "cta",
+    "R",
+    "Compare before you ship.",
+    "COMPARE BEFORE YOU SHIP"
+   ]
+  ],
+  "learn": "How air chargeable weight works, and when to choose air vs ocean.",
+  "promo": "UGC quotes air and ocean side by side.",
+  "music": {
+   "bpm": 130,
+   "style": "Retro-future arcade-orchestral",
+   "prompt": "Fast, cheerful and epic retro-future track, 130 BPM, major key. Heavy mechanical clunk and boom at the start, then driving drums, bright analog synth lead and short brass hits on each needle swing. Lift at 0:18. Final hit at 0:24. Instrumental, no vocals.",
+   "cues": "0:00 clunk boom · 0:15 swing hits · 0:18 lift · 0:24 end"
+  },
+  "facts": [
+   [
+    "Air chargeable weight = the higher of actual weight and volumetric weight. Standard IATA divisor: L × W × H (cm) ÷ 6,000. Express couriers often use 5,000. Example in the hook: a 100 × 100 × 48 cm box = 80 kg volumetric; if it weighs 50 kg, you pay for 80 kg.",
+    [
+     [
+      "Maersk: air cargo chargeable weight",
+      "https://www.maersk.com/logistics-explained/transportation-and-freight/2025/03/10/air-cargo-chargeable-weight"
+     ],
+     [
+      "CargoLinked glossary",
+      "https://cargolinked.com/glossary/chargeable-weight"
+     ]
+    ]
+   ],
+   [
+    "Show the box dimensions on screen (100 × 100 × 48 cm) so the 80 kg figure is checkable. No transit times or prices.",
+    []
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: low three-quarter angle from below, as if the vehicle is passing overhead; bright daylight.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Instrument panel",
+     "1024x1536 · opaque",
+     "A retro instrument panel with one huge round blank dial in the center (no numbers, only plain tick marks), two small indicator lamps, warm dark background."
+    ],
+    [
+     "Big light box",
+     "1024x1024 · transparent",
+     "A huge cardboard box floating like a balloon on a string, light and airy, soft shadow."
+    ],
+    [
+     "Cargo plane",
+     "1536x1024 · transparent",
+     "A white cargo jet with an orange tail, side view, nose cargo door slightly open."
+    ],
+    [
+     "Container ship",
+     "1536x1024 · transparent",
+     "A container ship with containers, side view, calm, isolated."
+    ]
+   ]
+  },
+  "caption": "Your cargo weighs 50 kg. The airline bills 80. Here's the math. Compare air vs sea with us: utamaglobalindocargo.com"
+ },
+ {
+  "id": "E12",
+  "pillar": "Glossary",
+  "title": "HS 2028: The Codes Are Changing",
+  "dur": 31,
+  "svc": "Customs & Import Solutions",
+  "tile": "t12",
+  "tileLbl": "code",
+  "hookOS": "1 JAN 2028. THE CODES CHANGE.",
+  "hookFX": "Frame 0: thousands of digits rain down and slam into one line with a glitch boom: 2028. The screen cracks into a grid of code cells.",
+  "concept": "A row of digits decodes itself and unfolds into a category tree.",
+  "design": "Giant mono type on black, orange digits, thin branch lines.",
+  "motion": "Scramble decode, then digits split into pairs and grow branches.",
+  "morph": [
+   "Barcode",
+   "Digits",
+   "Branch tree",
+   "Tariff bars",
+   "UGC logo"
+  ],
+  "transition": "Digits fall to the next line.",
+  "beats": [
+   [
+    0,
+    3,
+    "hook",
+    "H",
+    "In 2028, the world's product codes change.",
+    "1 JAN 2028. / THE CODES CHANGE."
+   ],
+   [
+    3,
+    9,
+    "edu",
+    "H",
+    "HS codes classify every traded product. The first six digits are shared worldwide.",
+    "6 DIGITS · WORLDWIDE"
+   ],
+   [
+    9,
+    15,
+    "edu",
+    "H",
+    "Indonesia adds two more from the ASEAN tariff list: eight digits in total.",
+    "+2 ASEAN · 8 DIGITS"
+   ],
+   [
+    15,
+    20,
+    "edu",
+    "H",
+    "That code sets your import duty and the rules your goods must follow.",
+    "CODE → DUTY + RULES"
+   ],
+   [
+    20,
+    25,
+    "edu",
+    "R+H",
+    "HS 2028 brings hundreds of changes. Some codes will need a second look.",
+    "HS 2028 · 299 AMENDMENT SETS"
+   ],
+   [
+    25,
+    28,
+    "ugc",
+    "R+H",
+    "UGC Logistics checks your codes before customs does.",
+    "WE CHECK FIRST"
+   ],
+   [
+    28,
+    31,
+    "cta",
+    "R",
+    "Get your HS codes checked. UGC Logistics.",
+    "CHECK YOUR CODES"
+   ]
+  ],
+  "learn": "HS code structure (6 + 2 digits in Indonesia), what it controls, and the HS 2028 update.",
+  "promo": "HS classification review by UGC.",
+  "music": {
+   "bpm": 125,
+   "style": "Glitch-hop to anthemic lift",
+   "prompt": "Epic, cheerful and immersive glitch-hop track, 125 BPM. Opens with a digital glitch boom and data-rain sound, then crisp breakbeat drums, bright arpeggiated synths and a warm bass. Each digit reveal gets a glitch stutter. Big uplifting chorus with synth brass at 0:25. Instrumental, no vocals.",
+   "cues": "0:00 glitch boom · stutters on digits · 0:25 chorus"
+  },
+  "facts": [
+   [
+    "WCO HS 2028 enters into force on 1 January 2028 with 299 sets of amendments (1,229 headings, 5,852 subheadings).",
+    [
+     [
+      "WCO: HS 2028 amendments",
+      "https://www.wcoomd.org/en/topics/nomenclature/instrument-and-tools/hs-nomenclature-2028-edition/amendments-effective-from-1-january-2028.aspx"
+     ],
+     [
+      "WCO newsroom, Jan 2026",
+      "https://www.wcoomd.org/en/media/newsroom/2026/january/hs-2028-amendments-adapting-the-harmonized-system-to-global-priorities-and-trade-evolution.aspx"
+     ]
+    ]
+   ],
+   [
+    "Indonesia's BTKI uses 8 digits: 6-digit HS + 2-digit AHTN.",
+    [
+     [
+      "DDTC: AHTN",
+      "https://news.ddtc.co.id/literasi/kamus/38225/apa-itu-asean-harmonized-tariff-nomenclature"
+     ],
+     [
+      "DDTC: BTKI 2022",
+      "https://news.ddtc.co.id/berita/nasional/38059/berlaku-1-april-2022-buku-tarif-kepabeanan-indonesia-resmi-diperbarui"
+     ]
+    ]
+   ],
+   [
+    "Indonesia has not yet published a BTKI based on HS 2028 (not found in research). Say \"some codes will need a second look\", not \"your code will change\". Recheck before publishing.",
+    []
+   ]
+  ],
+  "prompts": {
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nLighting: dark studio, black #0D0B0A background tones, glowing orange #F26A1F light. Exception: the data-rain background is abstract light, not a photo.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
+   "assets": [
+    [
+     "Data rain background",
+     "1024x1536 · opaque",
+     "Abstract vertical streaks of small glowing orange light particles falling through black space, depth of field, no characters."
+    ],
+    [
+     "Product cubes",
+     "1536x1024 · transparent",
+     "A grid of small glossy cubes, each holding a tiny different product (shoe, phone, coffee beans, bolt, fabric roll), lit in orange, isolated."
+    ]
+   ]
+  },
+  "caption": "On 1 Jan 2028, the global HS code list changes. Is your product code still right? Get it checked: utamaglobalindocargo.com"
+ }
+]

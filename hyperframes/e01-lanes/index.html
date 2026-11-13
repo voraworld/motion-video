@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!--
+      E01 customs card (placed at 22.6 s for 3.4 s): the second on-screen line "GREEN: GO · RED: CHECK"
+      as two signal chips that whip in when the VO says "Green lane" and "Red lane".
+      Transparent WebM → remotion/public/hf/e01-lanes.webm.
+    -->
+    <style>
+      :root { --green: #2e8b57; --red: #c8331e; --ink: #ffffff; --font-display: "Archivo Black", sans-serif; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 100%; height: 100%; font-family: var(--font-display); }
+      #lanes-row { position: absolute; left: 90px; width: 870px; top: 585px; display: flex; justify-content: center; align-items: center; gap: 22px; }
+      .chip { display: flex; flex-shrink: 0; white-space: nowrap; align-items: center; gap: 14px; padding: 14px 22px 14px 16px; border-radius: 20px; color: var(--ink); font-size: 44px; line-height: 1; box-shadow: 0 16px 34px rgba(0,0,0,.25); }
+      .dot { width: 34px; height: 34px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 6px rgba(255,255,255,.35); }
+      #lanes-green { background: var(--green); }
+      #lanes-red { background: var(--red); }
+      #lanes-sep { color: #2b1c15; font-size: 50px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="e01-lanes" data-start="0" data-duration="3.4" data-width="1080" data-height="1920">
+      <div id="lanes-row" class="clip" data-start="0" data-duration="3.4" data-track-index="0">
+        <div class="chip" id="lanes-green"><span class="dot"></span><span>GREEN: GO</span></div>
+        <span id="lanes-sep">·</span>
+        <div class="chip" id="lanes-red"><span class="dot"></span><span>RED: CHECK</span></div>
+      </div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // Whip in from the left with a horizontal smear, land sharp.
+      tl.fromTo("#lanes-green", { x: -700, opacity: 0, filter: "blur(16px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.26, ease: "power3.out" }, 0.0);
+      tl.fromTo("#lanes-sep", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 1.4);
+      tl.fromTo("#lanes-red", { x: 700, opacity: 0, filter: "blur(16px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.26, ease: "power3.out" }, 1.5);
+      // Signal pulses: green first, then red.
+      tl.fromTo("#lanes-green .dot", { scale: 1 }, { scale: 1.35, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, 0.3);
+      tl.fromTo("#lanes-red .dot", { scale: 1 }, { scale: 1.35, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, 1.8);
+      tl.fromTo("#lanes-row", { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(10px)", duration: 0.18, ease: "power2.in" }, 3.2);
+      window.__timelines["e01-lanes"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+{
+  "logo": null,
+  "assets": {
+    "e01": {
+      "baton": "assets/e01/baton.png",
+      "buyer-warehouse": "assets/e01/buyer-warehouse.png",
+      "container-ship": "assets/e01/container-ship.png",
+      "container-truck": "assets/e01/container-truck.png",
+      "customs-checkpoint": "assets/e01/customs-checkpoint.png",
+      "terminal-crane": "assets/e01/terminal-crane.png",
+      "warehouse-stuffing-station": "assets/e01/warehouse-stuffing-station.png"
+    }
+  },
+  "vo": {},
+  "voBeats": {
+    "e01": [
+      {
+        "start": 0,
+        "file": "audio/vo/e01/b00.wav",
+        "duration": 3.392
+      },
+      {
+        "start": 4,
+        "file": "audio/vo/e01/b01.wav",
+        "duration": 3.883
+      },
+      {
+        "start": 10,
+        "file": "audio/vo/e01/b02.wav",
+        "duration": 4.501
+      },
+      {
+        "start": 17,
+        "file": "audio/vo/e01/b03.wav",
+        "duration": 8.661
+      },
+      {
+        "start": 26,
+        "file": "audio/vo/e01/b04.wav",
+        "duration": 5.675
+      },
+      {
+        "start": 33,
+        "file": "audio/vo/e01/b05.wav",
+        "duration": 3.179
+      },
+      {
+        "start": 38,
+        "file": "audio/vo/e01/b06.wav",
+        "duration": 8.533
+      },
+      {
+        "start": 48,
+        "file": "audio/vo/e01/b07.wav",
+        "duration": 4.352
+      }
+    ]
+  },
+  "music": {
+    "e01": "audio/music/e01.wav"
+  },
+  "hf": {
+    "e01-hook": "hf/e01-hook.webm",
+    "e01-lanes": "hf/e01-lanes.webm",
+    "e01-rolled": "hf/e01-rolled.webm",
+    "e01-team": "hf/e01-team.webm"
+  },
+  "sfx": {
+    "boom": "sfx/boom.wav",
+    "crunch": "sfx/crunch.wav",
+    "glitch": "sfx/glitch.wav",
+    "sonic-logo": "sfx/sonic-logo.wav",
+    "stamp": "sfx/stamp.wav",
+    "tick": "sfx/tick.wav",
+    "whoosh": "sfx/whoosh.wav"
+  }
+}
