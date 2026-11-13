@@ -89,6 +89,7 @@ dl.shot dd{margin:0}
 .tr{border-left:3px solid var(--red);padding-left:10px}
 .tr b{font-family:var(--f-display);font-stretch:80%;font-size:17px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips a.gpt{background:var(--red);color:#fff}
 .chips a,.chips span{font-family:var(--f-mono);font-size:11.5px;background:var(--chip);color:var(--chip-ink);padding:2px 8px;border-radius:999px;text-decoration:none}
 
 /* SYSTEMS */
@@ -125,6 +126,9 @@ button.copy:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 button.copy.done{background:var(--red);color:#fff}
 .master button.copy{background:var(--yellow)}
 
+.proof{margin:0 0 14px;background:#FFF3C8;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.proof img{display:block;width:100%;height:auto;max-width:100%}
+.proof figcaption{background:var(--surface);padding:8px 14px;font-size:13px;color:var(--muted)}
 .callout{background:var(--chip);color:var(--chip-ink);border-radius:12px;padding:12px 16px;font-size:14px;margin-top:16px}
 footer.end{padding-block:40px;color:var(--muted);font-size:13px}
 
@@ -164,7 +168,7 @@ footer.end{padding-block:40px;color:var(--muted);font-size:13px}
     <div>
       <div class="eyebrow">DHL Express Service Point · JDC Cengkareng · Storyboard v1</div>
       <h1>Shipping,<br><span>Unboxed.</span></h1>
-      <p>Motion story 2.5D gaya <b>soft-matte clay</b>. Semua objek di dunia video ini adalah benda packing (kardus, lakban, label, price tag) yang dirender sebagai clay matte premium dalam warna DHL. Halaman ini berisi keyframe tiap adegan, sistem transisi dan morph, serta prompt GPT untuk setiap aset.</p>
+      <p>Motion story 2.5D gaya <b>soft-matte clay</b>. Semua objek di dunia video ini adalah benda packing (kardus, lakban, label, price tag) yang dirender sebagai clay matte premium dalam warna DHL. Halaman ini berisi keyframe tiap adegan, sistem transisi dan morph, 8 prompt GPT, dan daftar 27 aset yang dirender Claude dengan Three.js.</p>
     </div>
     <div class="specs">
       <div><small>Format</small><b>1080 × 1920</b></div>
@@ -172,7 +176,7 @@ footer.end{padding-block:40px;color:var(--muted);font-size:13px}
       <div><small>Tempo</small><b>120 BPM</b></div>
       <div><small>1 bar</small><b>2.0 s</b></div>
       <div><small>VO / teks</small><b>English</b></div>
-      <div><small>Aset GPT</small><b>35 file</b></div>
+      <div><small>Aset GPT</small><b>8 file</b></div>
     </div>
   </div>
   <div class="stripes"></div>
@@ -305,8 +309,8 @@ footer.end{padding-block:40px;color:var(--muted);font-size:13px}
 <section id="assets"><div class="wrap">
   <div class="sec-head">
     <div class="eyebrow">04 · Aset GPT</div>
-    <div><h2>35 aset, satu bahasa visual</h2>
-    <p>Setiap prompt = deskripsi objek + master style di bawah. Tombol Copy sudah menggabungkan keduanya. Semua teks, angka, nomor WA dan logo dibuat di kode, jadi tidak ada aset yang berisi tulisan.</p></div>
+    <div><h2>8 dari GPT, 27 dirender Claude</h2>
+    <p>Objek geometris (kotak, lakban, pin, bubble, tag, angka, ikon) dirender Claude sebagai clay 3D asli dengan Three.js, jadi bisa dianimasikan beneran: flap terbuka, dieline melipat, roller berputar. GPT cukup untuk 8 objek organik yang rumit (diorama, mesin, pesawat). Semua teks, angka, nomor WA dan logo dibuat di kode.</p></div>
   </div>
 
   <div class="master">
@@ -315,10 +319,10 @@ footer.end{padding-block:40px;color:var(--muted);font-size:13px}
   </div>
 
   <div class="how">
-    <div><b>1. Anchor dulu</b>Generate A01 dulu sampai pas. Ini patokan material, warna dan cahaya.</div>
-    <div><b>2. Lampirkan anchor</b>Untuk aset lain, lampirkan A01 dan tambahkan: "Match the exact material, color and lighting of the attached image."</div>
-    <div><b>3. Ukuran</b>Objek 1024×1024 PNG transparan. Plate/latar 1024×1536 (potret).</div>
-    <div><b>4. Cek &amp; kirim</b>Pastikan tidak ada teks/logo nyasar. Kirim ke chat dengan nama file sesuai kode, gue taruh di <span class="mono">inbox/jdc/</span>.</div>
+    <div><b>1. Referensi style</b>Lampirkan <span class="mono">clay-test-preview.png</span> (render Three.js Claude) di setiap prompt GPT. Kalimat "match the attached reference" sudah ada di prompt.</div>
+    <div><b>2. Mulai dari A09</b>Generate diorama Home dulu. Kalau sudah pas, lampirkan juga A09 untuk 7 aset berikutnya.</div>
+    <div><b>3. Ukuran</b>1024×1024 PNG transparan, kecuali A21 1536×1024.</div>
+    <div><b>4. Cek &amp; kirim</b>Pastikan tidak ada teks/logo nyasar. Kirim ke chat dengan nama file sesuai kode, Claude taruh di <span class="mono">inbox/jdc/</span>.</div>
   </div>
 
   <div id="assetGroups"></div>
@@ -477,7 +481,7 @@ const MASTER_PLATE=MASTER.replace("Transparent background.","Full-bleed backgrou
 
 const ASSETS=[
  {g:'Hero objects',items:[
-  ['A01','jdc_box-closed.png','1024×1024 · transparan','B2, B6, B8 · anchor style','A closed shipping parcel box made of soft clay, warm yellow, slightly rounded edges, a strip of glossy red packing tape running across the top and down the front face, an empty warm-white shipping label area on the front side.'],
+  ['A01','jdc_box-closed.png','1024×1024 · transparan','B2, B6, B8','A closed shipping parcel box made of soft clay, warm yellow, slightly rounded edges, a strip of glossy red packing tape running across the top and down the front face, an empty warm-white shipping label area on the front side.'],
   ['A02','jdc_box-open.png','1024×1024 · transparan','B1, B8','The same yellow clay parcel box with its four top flaps fully open and slightly splayed outward, inside visible with a soft warm glow, red tape torn and curling at the edges.'],
   ['A03','jdc_box-inside-pov.png','1024×1536 · plate','B1 latar hook','Point of view from the bottom inside a large yellow clay cardboard-like box looking straight up, four flaps closed above with a thin glowing seam of warm yellow light between them, walls in deep warm amber shadow, cozy dramatic mood.','plate'],
   ['A04','jdc_tape-dispenser.png','1024×1024 · transparan','B2 T2, B8','A handheld packing tape dispenser in soft graphite clay with a yellow handle, loaded with a roll of red tape, a short strip of red tape pulled out and curling forward.'],
@@ -525,10 +529,36 @@ const ASSETS=[
  ]}
 ];
 
+const GPT=['A09','A10','A11','A21','A22','A06','A17','A04'];
+const CODE={
+ A01:'Three.js: rounded box + strip lakban + label. Live 3D, jadi bisa diputar dan dipantulkan dengan spring.',
+ A02:'Three.js: 4 flap dengan engsel beneran. Dipakai untuk transisi T1 Flap burst dan tutup box di B8.',
+ A03:'Three.js: kamera di dalam box, celah cahaya dari emissive seam + bloom halus.',
+ A05:'Three.js: lathe ring merah satin + core putih. Bisa menggelinding masuk di B4.',
+ A07:'Three.js: rangka tube U + roller instanced yang berputar sesuai kecepatan sabuk.',
+ A08:'Three.js: arch tube merah + bidang laser emissive untuk T3.',
+ A12:'Three.js: rounded box + layar berupa tekstur HTML, jadi thread chat bisa live dan bubble keluar dari layar.',
+ A13:'Three.js: extrude tag + teks jam dari kode.',
+ A14:'Three.js: extrude shape tag + tali tube dengan ayunan pendulum.',
+ A15:'Three.js: disc merah dengan deformasi curl di satu sisi.',
+ A16:'Three.js: panel rounded box + bar input; rebah domino dengan rotasi engsel bawah.',
+ A18:'Three.js: extrude bubble dengan bevel tebal (sudah dites, lihat render).',
+ A19:'Three.js: 6 panel berengsel yang benar-benar melipat jadi box (morph M2).',
+ A20:'Three.js: badge silinder merah + centang extrude.',
+ A23:'Three.js: lathe teardrop merah + titik putih (sudah dites).',
+ A24:'Three.js: label melengkung + teks/kontak dari kode.',
+ I01:'Three.js: pin kecil di atas globe kuning.', I02:'Three.js: jam alarm kuning, jarum merah, tanpa angka.',
+ I03:'Three.js: tag kuning dengan loop pita merah.', I04:'Three.js: clipboard putih dicoret strip lakban merah.',
+ I05:'Three.js: gedung kecil kuning + pin melayang.', I06:'Three.js: bubble putih + gagang telepon merah (bukan logo WhatsApp).',
+ N01:'Three.js: TextGeometry dari font Archivo (OFL), bevel + miring italic (sudah dites).', N02:'Three.js: sama dengan N01.', N03:'Three.js: sama dengan N01, warna merah.',
+ D01:'Three.js: varian A01 dalam 3 ukuran, instanced, melayang di layer FX.',
+ D02:'Three.js: pita lakban sebagai ribbon extrude di sepanjang kurva spline, bisa beranimasi.'
+};
 /* ---------- render ---------- */
 const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const byCode={};ASSETS.forEach(g=>g.items.forEach(a=>byCode[a[0]]=a));
-const promptFor=a=>a[5]==='plate'?`${a[4]} ${MASTER_PLATE}`:a[0].startsWith('N')?`${a[4].replace(/\s*\(.*\)$/,'')} ${MASTER.replace('No text, no letters, no numbers,','Only the numeral shown and nothing else, no other text,')}`:`${a[4]} ${MASTER}`;
+const REF=' Match the clay material, colors and lighting of the attached reference image.';
+const promptFor=a=>(a[5]==='plate'?`${a[4]} ${MASTER_PLATE}`:a[0].startsWith('N')?`${a[4].replace(/\s*\(.*\)$/,'')} ${MASTER.replace('No text, no letters, no numbers,','Only the numeral shown and nothing else, no other text,')}`:`${a[4]} ${MASTER}`)+REF;
 
 document.getElementById('scenes').innerHTML=SCENES.map(s=>`
  <article class="scene" id="${s.id}">
@@ -540,7 +570,7 @@ document.getElementById('scenes').innerHTML=SCENES.map(s=>`
     <dt>Teks layar</dt><dd><div class="ost">${s.ost.map(o=>`<span class="${o[1]||''}">${esc(o[0])}</span>`).join('')}</div></dd>
     <dt>Visual</dt><dd>${esc(s.visual)}</dd>
     <dt>Transisi</dt><dd class="tr"><b>${esc(s.tr[0])}</b><br>${esc(s.tr[1])}</dd>
-    <dt>Aset</dt><dd><div class="chips">${s.assets.map(c=>`<a href="#asset-${c}" title="${byCode[c]?byCode[c][1]:''}">${c}</a>`).join('')}</div></dd>
+    <dt>Aset</dt><dd><div class="chips">${s.assets.map(c=>`<a href="#asset-${c}" class="${GPT.includes(c)?'gpt':''}" title="${GPT.includes(c)?'GPT (lo)':'Three.js (Claude)'}">${c}</a>`).join('')}</div></dd>
     <dt>Audio</dt><dd>${esc(s.sfx)}</dd>
    </dl>
   </div>
@@ -549,14 +579,31 @@ document.getElementById('scenes').innerHTML=SCENES.map(s=>`
 document.getElementById('trTable').innerHTML=TRANS.map(t=>`<tr><td class="mono">${t[0]}</td><td><b>${t[1]}</b></td><td>${t[2]}</td><td class="mono">${t[3]}</td><td>${t[4]}</td></tr>`).join('');
 document.getElementById('masterText').textContent=MASTER;
 
-document.getElementById('assetGroups').innerHTML=ASSETS.map(g=>`
- <h3 class="group-h">${g.g}<small>${g.items.length} aset</small></h3>
- <div class="assets">${g.items.map(a=>`
+const all=ASSETS.flatMap(g=>g.items.map(a=>({a,g:g.g})));
+const gptItems=GPT.map(c=>byCode[c]);
+const codeItems=all.filter(x=>!GPT.includes(x.a[0]));
+document.getElementById('assetGroups').innerHTML=`
+ <h3 class="group-h">Lo generate di GPT<small>${gptItems.length} aset · chip merah di storyboard</small></h3>
+ <div class="assets">${gptItems.map(a=>`
   <div class="asset" id="asset-${a[0]}">
    <header><div><div class="fn">${a[0]} · ${a[1]}</div><div class="meta">${a[2]}</div></div><button class="copy" type="button" data-copy="${a[0]}">Copy prompt</button></header>
    <div class="use">Dipakai di: ${a[3]}</div>
    <pre>${esc(promptFor(a))}</pre>
-  </div>`).join('')}</div>`).join('');
+  </div>`).join('')}</div>
+ <h3 class="group-h">Claude render sendiri (Three.js clay)<small>${codeItems.length} aset · chip kuning</small></h3>
+ <figure class="proof"><img src="clay-test-preview.png" alt="Render uji Three.js: box, gulungan lakban, map pin, bubble chat dan angka 01 dalam clay matte kuning, merah dan putih"><figcaption>Render uji pertama dari Three.js (box, lakban, pin, bubble, angka). Ini juga gambar referensi yang dilampirkan ke prompt GPT.</figcaption></figure>
+ <div class="tbl"><table><thead><tr><th>Kode</th><th>Aset</th><th>Cara dibuat</th><th>Dipakai di</th></tr></thead><tbody>
+ ${codeItems.map(({a})=>`<tr id="asset-${a[0]}"><td class="mono">${a[0]}</td><td>${a[1].replace('jdc_','').replace('.png','')}</td><td>${CODE[a[0]]||''}</td><td>${a[3]}</td></tr>`).join('')}
+ </tbody></table></div>
+ <h3 class="group-h">Non-gambar<small>juga dari Claude</small></h3>
+ <div class="tbl"><table><thead><tr><th>Elemen</th><th>Sumber</th></tr></thead><tbody>
+  <tr><td><b>Logo DHL Express</b></td><td>Wajib file SVG resmi dari lo / PIC DHL. Tidak digambar ulang atau di-generate.</td></tr>
+  <tr><td><b>Ikon WhatsApp footer</b></td><td>Glyph WhatsApp dari Font Awesome Free (CC BY 4.0), putih satu warna.</td></tr>
+  <tr><td><b>Font</b></td><td>Archivo + Plus Jakarta Sans + JetBrains Mono (SIL OFL). Delivery kalau lo punya file berlisensinya.</td></tr>
+  <tr><td><b>Musik</b></td><td>Disusun orisinal dengan kode (<span class="mono">scripts/music.py</span>, preset epic → pop 120 BPM).</td></tr>
+  <tr><td><b>Voice-over</b></td><td>Kokoro on-device, suara <span class="mono">af_heart</span>, bahasa Inggris.</td></tr>
+  <tr><td><b>SFX</b></td><td>Disintesis FFmpeg (<span class="mono">scripts/sfx.sh</span>): tape rip, thud, beep, printer, whoosh, pop.</td></tr>
+ </tbody></table></div>`;
 
 document.addEventListener('click',e=>{
   const b=e.target.closest('button.copy');if(!b)return;
