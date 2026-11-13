@@ -142,17 +142,17 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nCamera: true isometric view at a 30-degree angle, the same for every asset so they line up in one long panorama. Lighting: warm late-morning key light from the top left. Isolated object on a transparent background.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: three-quarter view from slightly above (about 20 degrees), the same angle and lighting for every E01 asset so they line up in one panorama.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Warehouse stuffing station",
      "1024x1024 · transparent",
-     "A mid-size export warehouse with its roller door open and a loading dock; a forklift with a driver loads a pallet of cartons into an open orange 20ft shipping container on a trailer at the dock. No ground platform: the scene ends at the edges of the building and vehicles."
+     "A mid-size export warehouse with its roller door open and a loading dock; a forklift with a driver loads a pallet of cartons into an open 20ft shipping container on a trailer at the dock. No ground platform: the scene ends at the edges of the building and vehicles."
     ],
     [
      "Container truck",
      "1024x1024 · transparent",
-     "A white prime mover truck pulling a flatbed chassis carrying one orange 20ft shipping container, wheels slightly turned as if driving forward."
+     "A white prime mover truck pulling a flatbed chassis carrying one 20ft shipping container, wheels slightly turned as if driving forward."
     ],
     [
      "Customs checkpoint",
@@ -162,12 +162,12 @@
     [
      "Terminal crane",
      "1024x1024 · transparent",
-     "A port ship-to-shore gantry crane in orange and white lifting one orange container from the quay."
+     "A port ship-to-shore gantry crane in orange and white lifting one container from the quay."
     ],
     [
      "Container ship",
      "1536x1024 · transparent",
-     "A medium container ship, dark charcoal hull with an orange stripe, stacked with orange, cream and red containers, side three-quarter isometric view, calm water ripple at the hull only."
+     "A medium container ship, dark charcoal hull with an orange stripe, stacked with containers, side three-quarter isometric view, calm water ripple at the hull only."
     ],
     [
      "Buyer warehouse",
@@ -177,7 +177,7 @@
     [
      "Baton",
      "1024x1024 · transparent",
-     "A single orange relay baton (a smooth cylinder with softly rounded ends) in matte clay, floating at a slight angle."
+     "A single relay baton in anodized aluminium painted brand orange, floating at a slight angle."
     ]
    ]
   },
@@ -320,7 +320,7 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nLighting: night port. Deep navy #1D2B40 ambient, warm sodium-vapor orange #F28C3A key light, strong rim light, light haze. Objects isolated on a transparent background unless the asset says opaque.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nLighting: night. Warm sodium-vapor orange #F28C3A key light, cool navy #1D2B40 fill, crisp rim light.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Background plate",
@@ -330,7 +330,7 @@
     [
      "Falling container",
      "1024x1024 · transparent",
-     "A single orange 40ft container hanging from a crane spreader frame by four cables, seen from slightly below, isolated."
+     "A single 40ft container hanging from a crane spreader frame by four cables, seen from slightly below, isolated."
     ],
     [
      "Gate arm",
@@ -462,7 +462,7 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nLighting: soft even daylight from above, as if the objects sit on a paper chart. Objects isolated on a transparent background. Exception: the chart paper background is a flat paper scan, not clay.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: three-quarter view from slightly above, soft daylight. Exception: the chart paper background is a flat paper scan, and the compass rose is fine orange-red ink on that paper.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Chart paper background",
@@ -477,7 +477,7 @@
     [
      "Inter-island cargo ship",
      "1536x1024 · transparent",
-     "Side view of an Indonesian inter-island cargo vessel carrying a few orange containers on deck, as a realistic matte clay model."
+     "Side view of an Indonesian inter-island cargo vessel carrying a few containers on deck."
     ],
     [
      "Port town vignette",
@@ -604,7 +604,7 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nLighting: clean overcast daylight, slightly desaturated, heavy and grounded, orange #F26A1F equipment accents. Objects isolated on a transparent background unless the asset says opaque.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nLighting: clean overcast daylight, slightly desaturated, heavy and grounded.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Transformer",
@@ -750,7 +750,7 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nCamera: straight top-down orthographic view, objects keep real proportions. Lighting: soft overhead warehouse light. Isolated on a transparent background.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: straight top-down orthographic photo; objects keep real proportions. Soft overhead light.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Rack row",
@@ -888,7 +888,7 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nLighting: soft daylight product shot, white and cream tones with orange accents. Objects isolated on a transparent background unless the asset says opaque.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: product-shot framing, soft daylight, white and cream tones with orange accents.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Receipt strip",
@@ -908,7 +908,7 @@
     [
      "Lonely container",
      "1024x1536 · opaque",
-     "A single orange 20ft container standing alone in an empty container terminal at dusk, long shadows, cinematic wide shot."
+     "A single 20ft container standing alone in an empty container terminal at dusk, long shadows, cinematic wide shot."
     ]
    ]
   },
@@ -1043,7 +1043,7 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nCamera: straight top-down aerial orthographic view. Lighting: flat midday sun with short soft shadows. Objects isolated on a transparent background unless the asset says opaque.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: straight top-down aerial photo. Flat midday sun, short soft shadows on the object only.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Road background",
@@ -1053,7 +1053,7 @@
     [
      "Container truck top-down",
      "1024x1536 · transparent",
-     "Top-down view of a white prime mover pulling one orange 40ft container, pointing upward."
+     "Top-down view of a white prime mover pulling one 40ft container, pointing upward."
     ],
     [
      "Inspection canopy",
@@ -1187,7 +1187,7 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nCamera: top-down flat-lay. Lighting: soft window daylight from one side. Objects isolated on a transparent background unless the asset says opaque.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: top-down flat-lay photo, soft window daylight from one side.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Desk background",
@@ -1304,12 +1304,12 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nCamera: straight side view, product-shot framing. Lighting: bright soft studio light. Isolated on a transparent background.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: straight side view, product-shot framing, bright studio light.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Container side view",
      "1536x1024 · transparent",
-     "An orange 20ft shipping container, perfect side view, doors closed."
+     "An 20ft shipping container, perfect side view, doors closed."
     ],
     [
      "Uniform cartons",
@@ -1457,27 +1457,27 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nSmall realistic clay models used as icons, three-quarter view from slightly above, all at the same angle and scale. Lighting: soft studio light. Isolated on a transparent background.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: three-quarter view from slightly above; all E10 assets at the same angle and scale so they read as a set of icons.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Seller warehouse icon",
      "1024x1024 · transparent",
-     "A compact factory-warehouse model with a roller loading door and one pallet of cartons in front."
+     "A small modern factory-warehouse building with a roller loading door and one pallet of cartons in front."
     ],
     [
      "Port icon",
      "1024x1024 · transparent",
-     "A compact port model: one ship-to-shore gantry crane above a short container ship at the quay."
+     "A ship-to-shore gantry crane above a short container ship at the quay."
     ],
     [
      "Buyer door icon",
      "1024x1024 · transparent",
-     "A compact shop-warehouse model with a front door and one parcel on the doorstep."
+     "A small shop-warehouse building with a front door and one parcel on the doorstep."
     ],
     [
      "Insurance shield",
      "1024x1024 · transparent",
-     "A shield-shaped badge in matte clay with a small embossed container shape in the center."
+     "A painted metal shield badge with a small embossed shipping-container shape in the centre."
     ]
    ]
   },
@@ -1581,7 +1581,7 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nLighting: warm low-key cockpit light with an orange #F26A1F rim light. Objects isolated on a transparent background unless the asset says opaque.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nCamera: low three-quarter angle from below, as if the vehicle is passing overhead; bright daylight.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Instrument panel",
@@ -1601,7 +1601,7 @@
     [
      "Container ship",
      "1536x1024 · transparent",
-     "A container ship with orange and cream containers, side view, calm, isolated."
+     "A container ship with containers, side view, calm, isolated."
     ]
    ]
   },
@@ -1727,7 +1727,7 @@
    ]
   ],
   "prompts": {
-   "style": "Premium 3D render in a realistic claymorphism style. Real-world proportions and accurate construction details (true corrugated container walls, correct wheel and axle counts, real machinery parts). Every surface is a soft matte clay material with a very fine micro-texture and gently softened edges: a small bevel, not bubbly or inflated. Physically based lighting with soft global illumination, soft contact shadows and subtle ambient occlusion. High detail, clean and premium, like a high-end product visualization. Brand palette: orange #F26A1F, red-orange #D63A1F, cream #FCEFE2, peach #F8CCB9, charcoal #2B1C15, with realistic greys and metals where needed. People, if any, have realistic adult proportions with simplified matte clay faces.\nLighting: dark scene, black #0D0B0A background tones, glowing orange #F26A1F light. Objects isolated on a transparent background unless the asset says opaque. Exception: the data-rain background is abstract light, not clay.\nAvoid: cartoon or toy look, chibi or big-head figures, cute exaggerated shapes, thick outlines, glossy plastic, a diorama base, plinth, platform or floor tile under the object, text, letters, numbers, logos, watermarks.",
+   "style": "Photorealistic commercial product photo of a real-world object, cut out cleanly like a high-end stock photo. Accurate real proportions and engineering details. Real materials: painted steel, galvanized and silver metal, corrugated container steel, rubber tyres, glass, natural cardboard, clear stretch wrap. Crisp focus across the whole object, soft even studio lighting with gentle natural shading on the object, bright clean colours. Brand colour treatment: parts that are normally painted use brand orange #F26A1F; shipping containers are painted in a smooth gradient from red #D63A1F at one end to orange #F5A623 at the other. Everything else keeps its realistic colour: white truck cabs and aircraft, dark grey steel, silver metal, natural cardboard. Small barcode labels may appear, but nothing readable.\nBackground: transparent (or pure white #FFFFFF if transparency is not available), the whole object inside the frame with a small margin, no ground plane and no cast shadow on the floor.\nAssets marked opaque are instead full-frame photographs of a real scene with the same photographic realism.\nLighting: dark studio, black #0D0B0A background tones, glowing orange #F26A1F light. Exception: the data-rain background is abstract light, not a photo.\nAvoid: illustration, 3D cartoon, clay or toy look, CGI plastic sheen, miniature or diorama look, readable text, brand names, logos, watermarks.",
    "assets": [
     [
      "Data rain background",
