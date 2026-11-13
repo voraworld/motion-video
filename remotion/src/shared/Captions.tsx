@@ -1,21 +1,22 @@
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { Beat } from "../data";
+import { Beat, MANIFEST, sec } from "../data";
 import { BRAND, FONT_BODY, ZONES } from "../brand/tokens";
 
 type Chunk = { from: number; to: number; words: { text: string; at: number }[] };
 
 /**
- * Splits each beat's voice-over into chunks of up to `maxWords` words and spreads them evenly over the beat.
- * This is the placeholder timing. Once the recorded VO exists, replace it with word timings from a
- * transcription (remotion-captions skill) so the highlight matches the actual audio.
+ * Splits each beat's voice-over into chunks of up to `maxWords` words and spreads them over the time the
+ * VO line actually lasts (per-beat durations from scripts/vo.mjs), or over the beat when no VO exists yet.
+ * For word-exact highlights, swap in transcription timings (remotion-captions skill).
  */
-export const buildChunks = (beats: Beat[], maxWords = 4): Chunk[] => {
+export const buildChunks = (beats: Beat[], maxWords = 4, voDurations?: (number | undefined)[]): Chunk[] => {
   const chunks: Chunk[] = [];
   for (const b of beats) {
     const words = b.vo.split(/\s+/).filter(Boolean);
     if (!words.length) continue;
-    const span = b.to - b.from - 4;
+    const vd = voDurations?.[b.index];
+    const span = vd ? Math.min(sec(vd), b.to - b.from - 2) : b.to - b.from - 4;
     const per = span / words.length;
     for (let i = 0; i < words.length; i += maxWords) {
       const slice = words.slice(i, i + maxWords);
@@ -30,9 +31,11 @@ export const buildChunks = (beats: Beat[], maxWords = 4): Chunk[] => {
   return chunks;
 };
 
-export const Captions: React.FC<{ beats: Beat[]; accent?: string }> = ({ beats, accent = BRAND.orange }) => {
+export const Captions: React.FC<{ beats: Beat[]; accent?: string; ep?: string }> = ({ beats, accent = BRAND.orange, ep }) => {
   const frame = useCurrentFrame();
-  const chunk = buildChunks(beats).find((c) => frame >= c.from && frame < c.to);
+  const vo = ep ? MANIFEST.voBeats?.[ep] : undefined;
+  const durations = vo ? beats.map((b) => vo.find((v) => sec(v.start) === b.from)?.duration) : undefined;
+  const chunk = buildChunks(beats, 4, durations).find((c) => frame >= c.from && frame < c.to);
   if (!chunk) return null;
   const pop = interpolate(frame - chunk.from, [0, 4], [0.92, 1], {
     extrapolateLeft: "clamp",

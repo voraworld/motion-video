@@ -37,6 +37,10 @@ for (const [i, [a, b, , , vo]] of ep.beats.entries()) {
     tts(vo, file, speed);
     d = duration(file);
   }
+  // Loudness: -16 LUFS, true peak -1.5 dBTP, 48 kHz (the music bed sits about 10 dB under this).
+  const tmp = file.replace(/\.wav$/, ".norm.wav");
+  execFileSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", "-i", file, "-af", "loudnorm=I=-16:TP=-1.5:LRA=11", "-ar", "48000", tmp]);
+  fs.renameSync(tmp, file);
   beats.push({ index: i, start: a, file: path.relative(path.join(root, "remotion", "public"), file), duration: +d.toFixed(3), speed, fits: d <= b - a });
   console.log(`${id} beat ${i} ${a}-${b}s  ${d.toFixed(2)}s @${speed}x  ${d <= room ? "ok" : "TIGHT"}  "${vo}"`);
 }

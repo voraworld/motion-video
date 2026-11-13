@@ -70,7 +70,7 @@ export const Scaffold: React.FC<{ id: string }> = ({ id }) => {
       <Sequence from={cta.from} name="End card">
         <EndCard cta={cta.lines} morphColor={theme.morph} origin={{ x: sx, y: sy, size: 520 }} />
       </Sequence>
-      <Captions beats={beats} accent={theme.accent} />
+      <Captions beats={beats} accent={theme.accent} ep={id.toLowerCase()} />
       <BrandFrame theme={theme.frame} endCardFrom={cta.from} />
       <div style={{ position: "absolute", left: ZONES.sideSafe, top: ZONES.contentTop - 20, fontFamily: FONT_MONO, fontSize: 20, color: theme.ink, opacity: 0.45 }}>
         {id} · DRAFT SCAFFOLD

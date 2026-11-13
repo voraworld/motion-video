@@ -1,0 +1,70 @@
+{
+  "id": "E01",
+  "voice": "af_heart",
+  "beats": [
+    {
+      "index": 0,
+      "start": 0,
+      "file": "audio/vo/e01/b00.wav",
+      "duration": 3.392,
+      "speed": 1.06,
+      "fits": true
+    },
+    {
+      "index": 1,
+      "start": 4,
+      "file": "audio/vo/e01/b01.wav",
+      "duration": 3.883,
+      "speed": 1.06,
+      "fits": true
+    },
+    {
+      "index": 2,
+      "start": 10,
+      "file": "audio/vo/e01/b02.wav",
+      "duration": 4.501,
+      "speed": 1.06,
+      "fits": true
+    },
+    {
+      "index": 3,
+      "start": 17,
+      "file": "audio/vo/e01/b03.wav",
+      "duration": 8.661,
+      "speed": 1.27,
+      "fits": true
+    },
+    {
+      "index": 4,
+      "start": 26,
+      "file": "audio/vo/e01/b04.wav",
+      "duration": 5.675,
+      "speed": 1.06,
+      "fits": true
+    },
+    {
+      "index": 5,
+      "start": 33,
+      "file": "audio/vo/e01/b05.wav",
+      "duration": 3.179,
+      "speed": 1.06,
+      "fits": true
+    },
+    {
+      "index": 6,
+      "start": 38,
+      "file": "audio/vo/e01/b06.wav",
+      "duration": 8.533,
+      "speed": 1.06,
+      "fits": true
+    },
+    {
+      "index": 7,
+      "start": 48,
+      "file": "audio/vo/e01/b07.wav",
+      "duration": 4.352,
+      "speed": 1.06,
+      "fits": true
+    }
+  ]
+}
