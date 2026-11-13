@@ -1,0 +1,569 @@
+<title>JDC Cengkareng Storyboard</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,700..900&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: production bible. Sticky scene index, then per-scene rows: 9:16 keyframes left, shot notes right. Assets as a prompt library with copy buttons. */
+:root{
+  --yellow:#FFCC00; --red:#D40511; --red-deep:#9E0410;
+  --bg:#FBF7EA; --surface:#FFFFFF; --sunk:#F3EDD8; --ink:#1B1912; --muted:#6B6452; --line:#E4DCC2;
+  --chip:#FFF2B8; --chip-ink:#5A4500;
+  --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --f-body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#15130D; --surface:#1E1B13; --sunk:#110F0A; --ink:#F4EFDF; --muted:#ADA48C; --line:#332E20;
+  --chip:#3A3108; --chip-ink:#FFE07A; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#15130D; --surface:#1E1B13; --sunk:#110F0A; --ink:#F4EFDF; --muted:#ADA48C; --line:#332E20;
+  --chip:#3A3108; --chip-ink:#FFE07A; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+h1,h2,h3{font-family:var(--f-display);font-stretch:75%;font-weight:850;line-height:1.02;text-wrap:balance;margin:0}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--f-mono)}
+
+/* HERO */
+.hero{background:var(--yellow);color:#1B1912;position:relative;overflow:hidden}
+.hero .wrap{padding-block:48px 40px;display:grid;grid-template-columns:1.25fr .75fr;gap:32px;align-items:end}
+.hero h1{font-size:clamp(46px,8.4vw,108px);font-style:italic;letter-spacing:-.01em}
+.hero h1 span{color:var(--red)}
+.hero p{max-width:58ch;margin:14px 0 0;font-size:16px}
+.hero .eyebrow{color:#6E5600}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(27,25,18,.18);border:1px solid rgba(27,25,18,.18)}
+.specs div{background:var(--yellow);padding:10px 12px}
+.specs b{display:block;font-family:var(--f-display);font-stretch:80%;font-size:22px;line-height:1.1}
+.specs small{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6E5600}
+.stripes{position:absolute;left:0;right:0;bottom:0;height:10px;background:repeating-linear-gradient(180deg,var(--red) 0 3px,transparent 3px 5px)}
+
+/* NAV */
+nav.idx{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+nav.idx .wrap{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+nav.idx a{flex:none;font-family:var(--f-mono);font-size:12px;color:var(--ink);text-decoration:none;padding:5px 10px;border:1px solid var(--line);border-radius:999px;white-space:nowrap}
+nav.idx a:hover,nav.idx a:focus-visible{background:var(--yellow);color:#1B1912;border-color:var(--yellow);outline:none}
+
+section{padding-block:56px;border-bottom:1px solid var(--line)}
+.sec-head{display:grid;grid-template-columns:220px 1fr;gap:24px;margin-bottom:28px}
+.sec-head h2{font-size:clamp(30px,4.4vw,48px)}
+.sec-head p{margin:0;max-width:68ch;color:var(--muted)}
+
+/* ART DIRECTION */
+.ad-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h3{font-size:22px;margin-bottom:8px}
+.card ul{margin:0;padding-left:18px}
+.card li{margin:3px 0}
+.swatches{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.sw{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.sw i{display:block;height:74px}
+.sw div{padding:8px 10px;font-size:12px;line-height:1.35}
+.sw b{display:block;font-size:13px}
+.sw code{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.ease{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}
+.ease div{border:1px dashed var(--line);border-radius:12px;padding:12px;font-size:13px}
+.ease b{font-family:var(--f-mono);font-size:12px;display:block;color:var(--red)}
+
+/* SCENES */
+.scene{display:grid;grid-template-columns:minmax(0,430px) minmax(0,1fr);gap:28px;padding-block:28px;border-top:1px solid var(--line)}
+.scene:first-of-type{border-top:0}
+.frames{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start}
+.frame figure{margin:0}
+.frame svg{display:block;width:100%;height:auto;aspect-ratio:9/16;border-radius:10px;box-shadow:0 1px 0 rgba(0,0,0,.06),0 10px 24px -14px rgba(60,40,0,.45)}
+.frame figcaption{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-top:6px}
+.notes{min-width:0}
+.scene-top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.scene-top .tc{font-family:var(--f-mono);font-size:12.5px;background:var(--ink);color:var(--bg);padding:3px 8px;border-radius:6px}
+.scene-top h3{font-size:30px}
+.scene-top .bars{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+dl.shot{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 16px;margin:0}
+dl.shot dt{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+dl.shot dd{margin:0}
+.vo{font-style:italic}
+.ost{display:flex;flex-wrap:wrap;gap:6px}
+.ost span{font-family:var(--f-display);font-stretch:78%;font-weight:800;font-size:15px;letter-spacing:.02em;background:var(--yellow);color:#1B1912;padding:2px 8px;border-radius:4px}
+.ost span.r{background:var(--red);color:#fff}
+.tr{border-left:3px solid var(--red);padding-left:10px}
+.tr b{font-family:var(--f-display);font-stretch:80%;font-size:17px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips a,.chips span{font-family:var(--f-mono);font-size:11.5px;background:var(--chip);color:var(--chip-ink);padding:2px 8px;border-radius:999px;text-decoration:none}
+
+/* SYSTEMS */
+.sys{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 10px}
+.chain span{font-size:13px;font-weight:600;background:var(--sunk);border:1px solid var(--line);padding:3px 10px;border-radius:999px}
+.chain em{color:var(--red);font-style:normal;font-weight:700}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--sunk)}
+tr:last-child td{border-bottom:0}
+td b{font-family:var(--f-display);font-stretch:80%;font-size:16px}
+
+/* ASSETS */
+.master{background:var(--ink);color:var(--bg);border-radius:16px;padding:20px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start;margin-bottom:18px}
+.master p{margin:6px 0 0;font-family:var(--f-mono);font-size:13px;line-height:1.55}
+.master .eyebrow{color:var(--yellow)}
+.how{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:22px}
+.how div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px}
+.how b{display:block;font-family:var(--f-display);font-stretch:80%;font-size:18px;color:var(--red)}
+.group-h{font-family:var(--f-display);font-stretch:80%;font-size:24px;margin:26px 0 10px;display:flex;gap:10px;align-items:baseline}
+.group-h small{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-stretch:100%;font-weight:400}
+.assets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.asset{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:8px;min-width:0}
+.asset header{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.asset .fn{font-family:var(--f-mono);font-size:12.5px;font-weight:600;word-break:break-all}
+.asset .meta{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.asset .use{font-size:13px;color:var(--muted)}
+.asset pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:var(--f-mono);font-size:12px;line-height:1.5;background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:10px 12px;max-height:180px;overflow:auto}
+button.copy{flex:none;font:600 12px var(--f-body);background:var(--yellow);color:#1B1912;border:0;border-radius:8px;padding:7px 12px;cursor:pointer}
+button.copy:hover{background:#FFD633}
+button.copy:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+button.copy.done{background:var(--red);color:#fff}
+.master button.copy{background:var(--yellow)}
+
+.callout{background:var(--chip);color:var(--chip-ink);border-radius:12px;padding:12px 16px;font-size:14px;margin-top:16px}
+footer.end{padding-block:40px;color:var(--muted);font-size:13px}
+
+@media (max-width:900px){
+  .hero .wrap{grid-template-columns:1fr}
+  .sec-head{grid-template-columns:1fr;gap:8px}
+  .ad-grid,.sys,.assets{grid-template-columns:1fr}
+  .swatches{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ease,.how{grid-template-columns:1fr 1fr}
+  .scene{grid-template-columns:1fr}
+  .master{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  dl.shot{grid-template-columns:1fr;gap:2px}
+  dl.shot dd{margin-bottom:8px}
+  .ease,.how{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<!-- shared clay gradients for the storyboard sketches -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6D4"/><stop offset="1" stop-color="#FFE58A"/></linearGradient>
+    <radialGradient id="gDark" cx=".5" cy=".15" r=".9"><stop offset="0" stop-color="#5A4310"/><stop offset=".55" stop-color="#2A1E08"/><stop offset="1" stop-color="#140E03"/></radialGradient>
+    <radialGradient id="gBurst" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#FFFBE6"/><stop offset=".45" stop-color="#FFE266"/><stop offset="1" stop-color="#FFCC00"/></radialGradient>
+    <radialGradient id="gY" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFE680"/><stop offset=".55" stop-color="#FFCC00"/><stop offset="1" stop-color="#D9A300"/></radialGradient>
+    <radialGradient id="gR" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#F2464E"/><stop offset=".55" stop-color="#D40511"/><stop offset="1" stop-color="#8E030D"/></radialGradient>
+    <radialGradient id="gW" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E6E0D0"/></radialGradient>
+    <radialGradient id="gG" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#6B675E"/><stop offset="1" stop-color="#2A2824"/></radialGradient>
+    <radialGradient id="gShadow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#7A5A00" stop-opacity=".35"/><stop offset="1" stop-color="#7A5A00" stop-opacity="0"/></radialGradient>
+  </defs>
+</svg>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">DHL Express Service Point · JDC Cengkareng · Storyboard v1</div>
+      <h1>Shipping,<br><span>Unboxed.</span></h1>
+      <p>Motion story 2.5D gaya <b>soft-matte clay</b>. Semua objek di dunia video ini adalah benda packing (kardus, lakban, label, price tag) yang dirender sebagai clay matte premium dalam warna DHL. Halaman ini berisi keyframe tiap adegan, sistem transisi dan morph, serta prompt GPT untuk setiap aset.</p>
+    </div>
+    <div class="specs">
+      <div><small>Format</small><b>1080 × 1920</b></div>
+      <div><small>Durasi</small><b>70 s</b></div>
+      <div><small>Tempo</small><b>120 BPM</b></div>
+      <div><small>1 bar</small><b>2.0 s</b></div>
+      <div><small>VO / teks</small><b>English</b></div>
+      <div><small>Aset GPT</small><b>35 file</b></div>
+    </div>
+  </div>
+  <div class="stripes"></div>
+</header>
+
+<nav class="idx" aria-label="Section index"><div class="wrap">
+  <a href="#look">Art direction</a>
+  <a href="#board">Storyboard</a>
+  <a href="#b1">B1 Hook</a><a href="#b2">B2 Intro</a><a href="#b3">B3 Anywhere</a><a href="#b4">B4 Rates</a>
+  <a href="#b5">B5 No reg.</a><a href="#b6">B6 How</a><a href="#b7">B7 Location</a><a href="#b8">B8 End</a>
+  <a href="#systems">Transisi &amp; morph</a>
+  <a href="#assets">Aset &amp; prompt</a>
+</div></nav>
+
+<main>
+<!-- ART DIRECTION -->
+<section id="look"><div class="wrap">
+  <div class="sec-head">
+    <div class="eyebrow">01 · Art direction</div>
+    <div><h2>Soft-matte clay, packaging world</h2>
+    <p>Premium datang dari tiga hal: material yang konsisten (satu jenis clay, satu setup cahaya), palet yang disiplin (kuning dan merah DHL mendominasi, netral hangat sebagai napas), dan gerak yang punya bobot (squash, settle, overshoot kecil). Tidak ada efek tempelan.</p></div>
+  </div>
+
+  <div class="swatches">
+    <div class="sw"><i style="background:#FFCC00"></i><div><b>DHL Yellow</b><code>#FFCC00</code><br>BG utama, hero box, header</div></div>
+    <div class="sw"><i style="background:#D40511"></i><div><b>DHL Red</b><code>#D40511</code><br>Aksen, lakban, laser, footer</div></div>
+    <div class="sw"><i style="background:#FFE680"></i><div><b>Butter</b><code>#FFE680</code><br>Highlight clay kuning, layer jauh</div></div>
+    <div class="sw"><i style="background:#FFF6D4"></i><div><b>Cream</b><code>#FFF6D4</code><br>Gradien BG atas, ruang napas</div></div>
+    <div class="sw"><i style="background:#F4F0E6"></i><div><b>Warm white</b><code>#F4F0E6</code><br>Label, bubble chat, form</div></div>
+    <div class="sw"><i style="background:#2A2824"></i><div><b>Graphite</b><code>#2A2824</code><br>Teks body, mesin, ponsel</div></div>
+  </div>
+
+  <div class="ad-grid">
+    <div class="card"><h3>Material</h3><ul>
+      <li>Clay matte lembut dengan bevel membulat besar, permukaan seperti velvet.</li>
+      <li>Subsurface glow sangat tipis di tepi (kesan "hangat", bukan plastik).</li>
+      <li>Kuning DHL bukan kuning lemon: selalu condong hangat.</li>
+      <li>Lakban merah satu-satunya permukaan yang sedikit satin.</li>
+    </ul></div>
+    <div class="card"><h3>Cahaya &amp; kamera</h3><ul>
+      <li>Key light besar lembut dari kiri atas, rim light tipis dari kanan belakang.</li>
+      <li>Contact shadow pendek hangat (<span class="mono">#7A5A00</span> 30%), tidak pernah hitam.</li>
+      <li>Kamera 2.5D: <span class="mono">perspective 1800px</span>, tilt maks 12°, dolly Z.</li>
+      <li>DOF: layer BG blur 6–10px, HERO tajam.</li>
+    </ul></div>
+    <div class="card"><h3>Layer 2.5D</h3><ul>
+      <li><b>BG</b> gradien cream→butter + noise 2%, parallax 0.3</li>
+      <li><b>MID</b> diorama/mesin, parallax 0.6</li>
+      <li><b>HERO</b> objek utama, parallax 1.0</li>
+      <li><b>FX</b> mini parcel melayang, curl lakban, parallax 1.3 + blur gerak</li>
+    </ul></div>
+  </div>
+
+  <div class="ease">
+    <div><b>ease.land</b>cubic-bezier(.16,1,.3,1) · 500–700ms. Objek mendarat, teks masuk.</div>
+    <div><b>ease.lift</b>cubic-bezier(.7,0,.84,0) · 300ms. Objek keluar frame.</div>
+    <div><b>spring.clay</b>stiffness 180, damping 14, mass 1. Squash 1.12/0.88 saat mendarat.</div>
+    <div><b>beat.lock</b>Setiap aksi utama jatuh di ketukan (kelipatan 0.5 s). Cut di garis bar.</div>
+  </div>
+
+  <div class="callout">Header kuning setinggi 150px dengan logo DHL Express resmi di y 44–108, dan footer merah dari y 1700 sampai bawah layar. Safe area WA tidak dipakai. Header &amp; footer masuk di 0:06 dan diam sampai akhir. Kartu kecil di sketsa bertuliskan "DHL Express logo" hanya penanda posisi untuk file SVG resmi.</div>
+</div></section>
+
+<!-- STORYBOARD -->
+<section id="board"><div class="wrap">
+  <div class="sec-head">
+    <div class="eyebrow">02 · Storyboard</div>
+    <div><h2>8 adegan, 35 bar</h2>
+    <p>Dua keyframe per adegan. Sketsa menunjukkan komposisi, posisi teks dan arah gerak, bukan render akhir. Kode aset (A01, I02, …) merujuk ke daftar prompt di bagian 04.</p></div>
+  </div>
+  <div id="scenes"></div>
+</div></section>
+
+<!-- SYSTEMS -->
+<section id="systems"><div class="wrap">
+  <div class="sec-head">
+    <div class="eyebrow">03 · Motion system</div>
+    <div><h2>Transisi, morph, carousel, dekorasi</h2>
+    <p>Setiap transisi lahir dari objek di adegan sebelumnya, jadi tidak ada wipe generik. Morph memakai teknik "clay squash swap": siluet di-goo-kan (SVG blur + color matrix), di titik paling gepeng tekstur ditukar, lalu memantul ke bentuk baru.</p></div>
+  </div>
+
+  <div class="tbl"><table>
+    <thead><tr><th>Kode</th><th>Transisi</th><th>Mekanik</th><th>Timing</th><th>SFX</th></tr></thead>
+    <tbody id="trTable"></tbody>
+  </table></div>
+
+  <div class="sys" style="margin-top:16px">
+    <div class="card"><h3>Morph chain</h3>
+      <div class="eyebrow">M1 · B5→B6 · Form jadi chat</div>
+      <div class="chain"><span>Panel form</span><em>→</em><span>Strip shredder</span><em>→</em><span>Bubble chat</span></div>
+      <div class="eyebrow">M2 · B6 · Chat jadi paket</div>
+      <div class="chain"><span>Bubble chat</span><em>→</em><span>Clay cube</span><em>→</em><span>Dieline datar</span><em>→</em><span>Parcel box</span><em>→</em><span>Box + label + check</span></div>
+      <div class="eyebrow">M3 · B4 · Lakban jadi persen</div>
+      <div class="chain"><span>2 gulungan lakban</span><em>+</em><span>strip diagonal</span><em>=</em><span>%</span></div>
+      <div class="eyebrow">M4 · B6→B7 · Pin ke peta</div>
+      <div class="chain"><span>Bubble location</span><em>→</em><span>Map pin clay</span><em>→</em><span>Pin di diorama</span></div>
+      <p style="font-size:13.5px;color:var(--muted);margin:8px 0 0">Teknik: 6 frame squash (scaleX 1.18, scaleY 0.82), tukar PNG di frame paling gepeng, spring.clay ke bentuk baru, 3–5 mini parcel terlempar dari titik morph sebagai "remah".</p>
+    </div>
+    <div class="card"><h3>Carousel: Sorting Conveyor</h3>
+      <ul>
+        <li>Sabuk roller clay graphite berbentuk U dilihat dari depan atas (tilt 28°). Roller berputar real (rotasi tekstur), bukan sekadar slide.</li>
+        <li>3 diorama di atas palet bulat: Home, Office, On the go. Jarak 1 bar per diorama.</li>
+        <li>Diorama aktif berhenti di bawah gerbang scanner, terangkat 24px dengan spring.clay. Diorama lain blur 4px dan turun saturasi 30%.</li>
+        <li>Laser merah menyapu 0.4 s, beep, lalu tag waktu clay putih tercetak dari celah gerbang: <span class="mono">07:30</span> · <span class="mono">13:00</span> · <span class="mono">22:45</span>.</li>
+        <li>Ponsel mini di tiap diorama menyala bersamaan dengan beep: pesan "bisa booking dari mana saja".</li>
+      </ul>
+    </div>
+    <div class="card"><h3>Dekorasi (FX layer)</h3>
+      <ul>
+        <li><b>Parcel drift:</b> 5–7 mini parcel clay (3 ukuran) melayang lambat dengan rotasi 6°/s, parallax 1.3, blur gerak saat kamera bergerak.</li>
+        <li><b>Tape curl:</b> pita lakban merah melengkung, masuk dari tepi pada downbeat, keluar di bar berikutnya.</li>
+        <li><b>Dieline grid:</b> garis putus-putus tipis 8% opacity di BG, ikut perspektif kamera.</li>
+        <li><b>Speed stripes:</b> 3 garis merah horizontal tipis, hanya di T7 dan header.</li>
+        <li>Dilarang: bokeh, lens flare, glassmorphism, gradien blob, glitch, split-flap.</li>
+      </ul>
+    </div>
+    <div class="card"><h3>Kinetic type</h3>
+      <ul>
+        <li><b>Headline:</b> Archivo ExtraCondensed Black Italic (atau Delivery jika ada), uppercase, tracking −1%. Masuk per kata dengan ease.land + scaleY 1.08→1.</li>
+        <li><b>Label print:</b> teks keluar dari printer, mask bergerak ke bawah 1 baris per 2 frame, SFX whirr.</li>
+        <li><b>Tape strike:</b> strip lakban merah ditempel miring 6° melintasi kata, sedikit melengkung di ujung.</li>
+        <li><b>Step number:</b> angka clay 3D <span class="mono">01 02 03</span> sebagai aset (bukan font), muncul dengan spring.clay.</li>
+        <li>Caption VO: Plus Jakarta Sans 34px, y 1600–1676, kata aktif disorot kuning.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- ASSETS -->
+<section id="assets"><div class="wrap">
+  <div class="sec-head">
+    <div class="eyebrow">04 · Aset GPT</div>
+    <div><h2>35 aset, satu bahasa visual</h2>
+    <p>Setiap prompt = deskripsi objek + master style di bawah. Tombol Copy sudah menggabungkan keduanya. Semua teks, angka, nomor WA dan logo dibuat di kode, jadi tidak ada aset yang berisi tulisan.</p></div>
+  </div>
+
+  <div class="master">
+    <div><div class="eyebrow">Master style (sudah ada di tiap prompt)</div><p id="masterText"></p></div>
+    <button class="copy" type="button" data-copy="master">Copy</button>
+  </div>
+
+  <div class="how">
+    <div><b>1. Anchor dulu</b>Generate A01 dulu sampai pas. Ini patokan material, warna dan cahaya.</div>
+    <div><b>2. Lampirkan anchor</b>Untuk aset lain, lampirkan A01 dan tambahkan: "Match the exact material, color and lighting of the attached image."</div>
+    <div><b>3. Ukuran</b>Objek 1024×1024 PNG transparan. Plate/latar 1024×1536 (potret).</div>
+    <div><b>4. Cek &amp; kirim</b>Pastikan tidak ada teks/logo nyasar. Kirim ke chat dengan nama file sesuai kode, gue taruh di <span class="mono">inbox/jdc/</span>.</div>
+  </div>
+
+  <div id="assetGroups"></div>
+</div></section>
+</main>
+
+<footer class="end"><div class="wrap">
+  DHL Express Service Point · JDC Cengkareng · WhatsApp +62 877-7589-7478 · Soewarna Business Park, Lot 7A–7B, Soekarno-Hatta International Airport Area. Konsep lengkap: <span class="mono">jdc-cengkareng/CONCEPT.md</span>.
+</div></footer>
+
+<script>
+/* ---------- sketch primitives (viewBox 270 x 480 = 1080x1920 / 4) ---------- */
+const W=270;
+const T=(x,y,s,txt,o={})=>`<text x="${x}" y="${y}" font-family="Archivo,Arial Narrow,sans-serif" font-stretch="70%" font-weight="${o.w||900}" font-style="${o.it===false?'normal':'italic'}" font-size="${s}" fill="${o.f||'#1B1912'}" text-anchor="${o.a||'middle'}" letter-spacing="${o.ls||0}">${txt}</text>`;
+const M=(x,y,s,txt,f='#1B1912',a='middle')=>`<text x="${x}" y="${y}" font-family="JetBrains Mono,monospace" font-weight="600" font-size="${s}" fill="${f}" text-anchor="${a}">${txt}</text>`;
+const shadow=(cx,cy,rx,ry)=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#gShadow)"/>`;
+function cube(cx,cy,s,o={}){ // iso clay box
+  const P=(x,y)=>`${x.toFixed(1)},${y.toFixed(1)}`, k=.866*s, h=s*(o.h||1);
+  const t=[cx,cy-s/2],r=[cx+k,cy],b=[cx,cy+s/2],l=[cx-k,cy];
+  const lerp=(p,q,u)=>[p[0]+(q[0]-p[0])*u,p[1]+(q[1]-p[1])*u];
+  let g=shadow(cx,cy+s/2+h,k*1.25,s*.28);
+  g+=`<polygon points="${P(...l)} ${P(...b)} ${P(b[0],b[1]+h)} ${P(l[0],l[1]+h)}" fill="#EBB300"/>`;
+  g+=`<polygon points="${P(...b)} ${P(...r)} ${P(r[0],r[1]+h)} ${P(b[0],b[1]+h)}" fill="#D29B00"/>`;
+  g+=`<polygon points="${P(...t)} ${P(...r)} ${P(...b)} ${P(...l)}" fill="url(#gY)"/>`;
+  if(o.tape!==false){const a=lerp(t,l,.42),a2=lerp(t,l,.58),c=lerp(r,b,.58),c2=lerp(r,b,.42);
+    g+=`<polygon points="${P(...a)} ${P(...a2)} ${P(...c)} ${P(...c2)}" fill="url(#gR)"/>`;
+    g+=`<polygon points="${P(...c2)} ${P(...c)} ${P(c[0],c[1]+h*.45)} ${P(c2[0],c2[1]+h*.45)}" fill="#A8040E"/>`;}
+  if(o.label){g+=`<polygon points="${P(lerp(l,b,.18)[0],lerp(l,b,.18)[1]+h*.22)} ${P(lerp(l,b,.85)[0],lerp(l,b,.85)[1]+h*.22)} ${P(lerp(l,b,.85)[0],lerp(l,b,.85)[1]+h*.8)} ${P(lerp(l,b,.18)[0],lerp(l,b,.18)[1]+h*.8)}" fill="#F4F0E6"/>`;}
+  return g;}
+const bubble=(x,y,w,h,f='url(#gW)',tail='l')=>`<g>${shadow(x+w/2,y+h+6,w*.5,4)}<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h/2.4}" fill="${f}"/><path d="M${tail==='l'?x+10:x+w-10} ${y+h-4} l${tail==='l'?-8:8} 10 l${tail==='l'?16:-16} -8z" fill="${f}"/><rect x="${x+10}" y="${y+h*.32}" width="${w*.6}" height="3.2" rx="1.6" fill="#2A2824" opacity=".35"/><rect x="${x+10}" y="${y+h*.58}" width="${w*.4}" height="3.2" rx="1.6" fill="#2A2824" opacity=".25"/></g>`;
+const phone=(x,y,w,h,rot=0,screen='')=>`<g transform="rotate(${rot} ${x+w/2} ${y+h/2})">${shadow(x+w/2,y+h+8,w*.6,6)}<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${w*.18}" fill="url(#gY)"/><rect x="${x+4}" y="${y+4}" width="${w-8}" height="${h-8}" rx="${w*.14}" fill="#2A2824"/><rect x="${x+7}" y="${y+12}" width="${w-14}" height="${h-22}" rx="${w*.08}" fill="#F4F0E6"/>${screen}</g>`;
+const pin=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})">${shadow(0,4,12,3)}<path d="M0 0 C -14 -16 -14 -38 0 -38 C 14 -38 14 -16 0 0z" fill="url(#gR)"/><circle cx="0" cy="-26" r="5" fill="#F4F0E6"/></g>`;
+const plane=(x,y,s=1,rot=0)=>`<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><ellipse cx="0" cy="0" rx="34" ry="7" fill="url(#gW)"/><path d="M-6 -2 L-20 -26 L-10 -26 L10 -2z" fill="#E6E0D0"/><path d="M-6 2 L-20 24 L-10 24 L10 2z" fill="#D8D1BF"/><path d="M-30 -2 L-36 -14 L-30 -14 L-24 -2z" fill="url(#gR)"/><ellipse cx="26" cy="-1" rx="6" ry="3" fill="#2A2824" opacity=".6"/></g>`;
+const tag=(x,y,rot=0)=>`<g transform="rotate(${rot} ${x} ${y-40})"><path d="M${x} ${y-80} C ${x+6} ${y-60} ${x-6} ${y-50} ${x} ${y-36}" stroke="#2A2824" stroke-width="1.5" fill="none"/>${shadow(x,y+70,50,7)}<path d="M${x} ${y-36} L${x+44} ${y-6} L${x+44} ${y+60} Q${x+44} ${y+66} ${x+38} ${y+66} L${x-38} ${y+66} Q${x-44} ${y+66} ${x-44} ${y+60} L${x-44} ${y-6}z" fill="url(#gY)"/><circle cx="${x}" cy="${y-16}" r="5" fill="#C99700"/></g>`;
+const taperoll=(x,y,r)=>`<g>${shadow(x,y+r+4,r,3)}<circle cx="${x}" cy="${y}" r="${r}" fill="url(#gR)"/><circle cx="${x}" cy="${y}" r="${r*.48}" fill="#F4F0E6"/><circle cx="${x}" cy="${y}" r="${r*.48}" fill="none" stroke="#9E0410" stroke-width="1"/></g>`;
+const minis=(arr)=>arr.map(([x,y,s,rot])=>`<g transform="rotate(${rot||0} ${x} ${y})">${cube(x,y,s,{tape:true})}</g>`).join('');
+const stripes=(y,n=3,op=1)=>Array.from({length:n},(_,i)=>`<rect x="0" y="${y+i*7}" width="${W}" height="3" fill="#D40511" opacity="${op}"/>`).join('');
+const dieline=(cx,cy,s)=>{const c=(x,y)=>`<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="3" fill="url(#gY)" stroke="#B88A00" stroke-dasharray="3 3" stroke-width=".8"/>`;return shadow(cx,cy+s*1.6,s*1.6,5)+c(cx-s/2,cy-s*1.5)+c(cx-s*1.5,cy-s/2)+c(cx-s/2,cy-s/2)+c(cx+s/2,cy-s/2)+c(cx-s/2,cy+s/2);};
+const formPanel=(x,y,w,h,skew=0,op=1)=>`<g transform="translate(${x} ${y}) skewX(${skew})" opacity="${op}"><rect width="${w}" height="${h}" rx="8" fill="url(#gW)"/>${[0,1,2,3].map(i=>`<rect x="10" y="${12+i*(h-20)/4}" width="${w*.35}" height="3" rx="1.5" fill="#2A2824" opacity=".35"/><rect x="10" y="${18+i*(h-20)/4}" width="${w-20}" height="8" rx="4" fill="#E6E0D0"/>`).join('')}</g>`;
+const conveyor=()=>`<path d="M30 300 Q30 360 135 360 Q240 360 240 300" fill="none" stroke="#2A2824" stroke-width="20" stroke-linecap="round"/><path d="M30 300 Q30 360 135 360 Q240 360 240 300" fill="none" stroke="#6B675E" stroke-width="20" stroke-dasharray="2 7" stroke-linecap="butt"/><path d="M30 300 Q30 360 135 360 Q240 360 240 300" fill="none" stroke="#3a3833" stroke-width="2" transform="translate(0 11)"/>`;
+const gate=()=>`<path d="M96 350 L96 210 Q96 190 116 190 L154 190 Q174 190 174 210 L174 350" fill="none" stroke="url(#gR)" stroke-width="12" stroke-linecap="round"/><rect x="104" y="200" width="62" height="5" rx="2" fill="#2A2824"/>`;
+const diorama=(x,y,s,kind,dim)=>{let g=`<g opacity="${dim?.55:1}" ${dim?'filter="blur(.6px)"':''}>${shadow(x,y+10*s,26*s,5*s)}<ellipse cx="${x}" cy="${y}" rx="26*${s}" ry="9" fill="#E6E0D0"/>`.replace(`rx="26*${s}"`,`rx="${26*s}"`);
+  g+=`<ellipse cx="${x}" cy="${y-3*s}" rx="${26*s}" ry="${9*s}" fill="url(#gW)"/>`;
+  if(kind==='home')g+=`<rect x="${x-16*s}" y="${y-16*s}" width="${24*s}" height="${10*s}" rx="${4*s}" fill="url(#gR)"/><rect x="${x-16*s}" y="${y-24*s}" width="${24*s}" height="${9*s}" rx="${4*s}" fill="#B9040F"/><circle cx="${x+15*s}" cy="${y-20*s}" r="${6*s}" fill="#6BA36B"/>`;
+  if(kind==='office')g+=`<rect x="${x-18*s}" y="${y-12*s}" width="${32*s}" height="${4*s}" rx="${2*s}" fill="url(#gY)"/><rect x="${x-10*s}" y="${y-30*s}" width="${18*s}" height="${14*s}" rx="${2*s}" fill="#2A2824"/><rect x="${x+16*s}" y="${y-18*s}" width="${6*s}" height="${12*s}" rx="${2*s}" fill="url(#gR)"/>`;
+  if(kind==='car')g+=`<rect x="${x-18*s}" y="${y-16*s}" width="${36*s}" height="${10*s}" rx="${5*s}" fill="url(#gY)"/><rect x="${x-10*s}" y="${y-24*s}" width="${18*s}" height="${9*s}" rx="${4*s}" fill="#FFE680"/><circle cx="${x-10*s}" cy="${y-6*s}" r="${4*s}" fill="#2A2824"/><circle cx="${x+10*s}" cy="${y-6*s}" r="${4*s}" fill="#2A2824"/>`;
+  return g+'</g>';};
+const iso=()=>`<polygon points="135,250 255,315 135,380 15,315" fill="#F4F0E6"/><polygon points="15,315 135,380 135,392 15,327" fill="#D8D1BF"/><polygon points="135,380 255,315 255,327 135,392" fill="#C9C1AD"/>
+ <polygon points="40,318 170,248 186,257 56,327" fill="#3a3833"/><polygon points="58,317 172,255 174,256 60,318" fill="#F4F0E6" opacity=".7"/>
+ ${[[150,300],[180,316],[120,318],[150,334],[210,300]].map(([x,y],i)=>`<g>${i===0?'':''}<polygon points="${x},${y-14} ${x+16},${y-6} ${x},${y+2} ${x-16},${y-6}" fill="${i===0?'url(#gY)':'#ECE6D6'}"/><polygon points="${x-16},${y-6} ${x},${y+2} ${x},${y+(i===0?14:8)} ${x-16},${y+(i===0?6:0)}" fill="${i===0?'#EBB300':'#D8D1BF'}"/><polygon points="${x},${y+2} ${x+16},${y-6} ${x+16},${y+(i===0?6:0)} ${x},${y+(i===0?14:8)}" fill="${i===0?'#D29B00':'#C9C1AD'}"/></g>`).join('')}`;
+
+function frame({dark=false,burst=false,bands=true,stage='',cap=true}){
+  const bg=dark?'url(#gDark)':burst?'url(#gBurst)':'url(#gBg)';
+  let s=`<svg viewBox="0 0 270 480" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="270" height="480" fill="${bg}"/>`;
+  if(!dark&&!burst) s+=`<g opacity=".08" stroke="#8a6a00" stroke-dasharray="2 3" stroke-width=".6">${[90,170,250,330].map(y=>`<line x1="0" y1="${y}" x2="270" y2="${y}"/>`).join('')}${[68,135,202].map(x=>`<line x1="${x}" y1="40" x2="${x}" y2="420"/>`).join('')}</g>`;
+  s+=stage;
+  if(bands){
+    s+=`<rect width="270" height="37.5" fill="#FFCC00"/><rect y="37.5" width="270" height="1.4" fill="#D40511"/>`;
+    s+=`<rect x="93" y="11" width="84" height="16" rx="3" fill="#D40511"/>`+T(135,22.5,7.2,'DHL EXPRESS LOGO',{f:'#FFCC00',it:false,w:800,ls:.6});
+    if(cap) s+=`<rect x="52" y="402" width="166" height="6" rx="3" fill="#1B1912" opacity=".22"/><rect x="52" y="402" width="58" height="6" rx="3" fill="#FFCC00"/>`;
+    s+=`<path d="M0 425 ${Array.from({length:28},(_,i)=>`L${i*10+5} ${i%2?425:422}`).join(' ')} L270 425 L270 480 L0 480z" fill="#D40511"/>`;
+    s+=T(135,441,7.6,'DHL Express Service Point · JDC Cengkareng',{f:'#fff',it:false,w:800});
+    s+=T(135,455,9.6,'WA  +62 877-7589-7478',{f:'#fff',it:false,w:850,ls:.3});
+    s+=`<text x="135" y="468" font-family="Plus Jakarta Sans,sans-serif" font-size="5.2" fill="#fff" opacity=".9" text-anchor="middle">Soewarna Business Park, Lot 7A–7B, Soekarno-Hatta International Airport Area</text>`;
+  }
+  return s+'</svg>';}
+
+/* ---------- scenes ---------- */
+const SCENES=[
+ {id:'b1',tc:'0:00–0:06',bars:'bar 1–3 · epic intro',name:'Hook: Inside the box',
+  frames:[
+   [frame({dark:true,bands:false,stage:`<path d="M0 0 L120 60 L150 60 L270 0z" fill="#3B2B0B"/><path d="M118 60 L152 60" stroke="#FFE266" stroke-width="2"/><path d="M0 0 L0 480 L40 420 L40 70z" fill="#1F1605"/><path d="M270 0 L270 480 L230 420 L230 70z" fill="#1A1204"/><rect x="40" y="420" width="190" height="60" fill="#120C02"/>`+T(135,215,40,'SHIPPING',{f:'#FFCC00',ls:1})+T(135,255,40,'OVERSEAS?',{f:'#FFCC00',ls:1})+`<rect x="128" y="62" width="14" height="30" fill="#FFE266" opacity=".25"/>`}),'0:01.0 · POV dari dalam kotak, stensil semprot'],
+   [frame({burst:true,bands:false,stage:`<polygon points="0,0 135,150 0,170" fill="#EBB300"/><polygon points="270,0 135,150 270,170" fill="#D29B00"/><polygon points="0,0 135,150 270,0" fill="#FFE680" opacity=".6"/><polygon points="0,480 135,330 270,480" fill="#C99700"/>`+minis([[50,250,12,-12],[220,230,10,14],[70,350,8,8],[205,345,9,-6]])+T(135,258,52,'MADE EASY.',{f:'#D40511'})}),'0:05.5 · flap meledak ke kamera, boom']],
+  vo:'Shipping overseas? It just got a whole lot easier.',
+  ost:[['SHIPPING OVERSEAS?'],['MADE EASY.','r']],
+  visual:'Kita di dalam kardus clay kuning, gelap hangat, hanya celah cahaya di flap atas. Headline disemprot stensil per huruf (mask noise). Di kata "easier" lakban di atas robek, cahaya menyelinap.',
+  tr:['T1 · Flap burst','4 flap engsel 3D membuka ke arah kamera (rotateX 0→−115°, stagger 2 frame), cahaya kuning memenuhi layar, kamera dolly keluar. Header turun dari atas, footer naik dari bawah tepat di drop 0:06.'],
+  assets:['A03','A02','D01'],sfx:'Taiko low, riser, tape rip 0:04.5, boom 0:05.5'},
+ {id:'b2',tc:'0:06–0:12',bars:'bar 4–6 · drop',name:'Intro: Meet the Service Point',
+  frames:[
+   [frame({stage:cube(135,215,58)+`<g>${shadow(135,365,60,6)}<rect x="80" y="300" width="110" height="56" rx="16" fill="url(#gW)"/><rect x="92" y="300" width="86" height="7" rx="3" fill="#2A2824"/><rect x="152" y="320" width="26" height="8" rx="4" fill="url(#gY)"/></g><rect x="97" y="262" width="76" height="38" rx="3" fill="#fff"/>`+T(135,280,13,'SERVICE',{it:false})+T(135,295,13,'POINT',{it:false})+minis([[40,120,8,10],[232,140,7,-10]])}),'0:07.5 · label keluar dari printer'],
+   [frame({stage:cube(135,205,70,{label:true})+T(135,245,10.5,'JDC',{it:false})+T(135,258,10.5,'CENGKARENG',{it:false})+T(135,115,30,'SERVICE POINT')+T(135,140,30,'JDC CENGKARENG',{f:'#D40511'})+M(135,158,7.5,'Jakarta Distribution Center','#6B6452')+minis([[40,330,8,10],[232,350,10,-10]])}),'0:10.0 · label menempel di sisi box']],
+  vo:'Meet DHL Express Service Point, JDC Cengkareng.',
+  ost:[['SERVICE POINT'],['JDC CENGKARENG','r'],['Jakarta Distribution Center']],
+  visual:'Hero box clay isometrik berputar pelan (rotateY 0→18°). Printer label clay di depannya mencetak label putih, label terkelupas, melengkung di udara, lalu menempel di sisi box mengikuti perspektif.',
+  tr:['T2 · Tape zip','Dispenser lakban clay meluncur kiri→kanan 0.5 s, strip merah menutup frame setinggi 220px. Di ketukan berikut strip disobek dari kiri (mask diagonal), adegan B3 terlihat di bawahnya.'],
+  assets:['A01','A06','A04','D01'],sfx:'Printer whirr, label peel, tape zip'},
+ {id:'b3',tc:'0:12–0:22',bars:'bar 7–11 · verse',name:'01 · Book anywhere, anytime',
+  frames:[
+   [frame({stage:T(135,82,13,'01',{f:'#D40511',it:false})+T(135,112,34,'BOOK ANYWHERE.')+conveyor()+gate()+diorama(52,300,1,'home',true)+diorama(135,342,1.15,'office')+diorama(218,300,1,'car',true)+`<rect x="98" y="248" width="74" height="2.5" fill="#D40511"/><rect x="98" y="244" width="74" height="10" fill="#D40511" opacity=".15"/>`}),'0:15.0 · Office di bawah scanner'],
+   [frame({stage:T(135,82,13,'01',{f:'#D40511',it:false})+T(135,112,34,'BOOK ANYTIME.')+conveyor()+gate()+diorama(52,300,1,'office',true)+diorama(135,342,1.15,'car')+diorama(218,300,1,'home',true)+`<rect x="108" y="212" width="54" height="22" rx="6" fill="url(#gW)"/>`+M(135,227,11,'22:45','#1B1912')+`<g>`+['HOME','OFFICE','ON THE GO'].map((t,i)=>`<rect x="${32+i*72}" y="384" width="62" height="13" rx="6.5" fill="${i===2?'#D40511':'#FFF'}"/>`+M(63+i*72,393.5,6.5,t,i===2?'#fff':'#1B1912')).join('')+`</g>`}),'0:20.0 · tag waktu tercetak']],
+  vo:'Book your shipment from anywhere, at any time. At home, at the office, or on the go.',
+  ost:[['01'],['BOOK ANYWHERE.'],['BOOK ANYTIME.','r'],['HOME · OFFICE · ON THE GO']],
+  visual:'Carousel Sorting Conveyor: 3 diorama clay berjalan di sabuk U. Tiap 1 bar satu diorama berhenti di gerbang scanner, laser menyapu, tag waktu clay tercetak. Ponsel mini di diorama menyala dengan bubble chat.',
+  tr:['T3 · Barcode scan','Laser gerbang memanjang jadi garis merah selebar layar dengan glow 12px, menyapu atas→bawah 0.6 s (ease.land). Area di atas laser sudah adegan B4, di bawah masih B3.'],
+  assets:['A07','A08','A09','A10','A11','A12','A13','I01','I02'],sfx:'Roller hum, beep ×3, print tick'},
+ {id:'b4',tc:'0:22–0:30',bars:'bar 12–15 · verse',name:'02 · Competitive rates + promo',
+  frames:[
+   [frame({stage:T(135,82,13,'02',{f:'#D40511',it:false})+T(135,112,30,'COMPETITIVE RATES')+tag(135,230,-8)+taperoll(95,330,20)+taperoll(178,368,20)+`<path d="M190 316 L84 384" stroke="url(#gR)" stroke-width="10" stroke-linecap="round"/>`}),'0:23.5 · tag berayun, % dari lakban'],
+   [frame({stage:T(135,82,13,'02',{f:'#D40511',it:false})+T(135,112,30,'COMPETITIVE RATES')+tag(135,230,4)+`<g>${shadow(175,262,30,5)}<circle cx="175" cy="225" r="34" fill="url(#gR)"/><path d="M203 205 Q212 214 206 224" fill="#9E0410"/></g>`+T(175,230,13,'PROMO',{f:'#fff',it:false})+`<rect x="22" y="342" width="226" height="34" rx="6" fill="#D40511"/>`+T(135,365,17,'+ SPECIAL PROMO DISCOUNTS',{f:'#fff'})+M(135,392,7.5,'Ask us about the current promo','#6B6452')}),'0:27.0 · sticker PROMO di-slap']],
+  vo:'Enjoy competitive rates, plus special promotional discounts. Just ask us about the current promo.',
+  ost:[['02'],['COMPETITIVE RATES'],['+ SPECIAL PROMO DISCOUNTS','r'],['Ask us about the current promo']],
+  visual:'Price tag clay kuning tergantung tali, berayun pendulum (±14°, redam 2.4 s), tebal sisi terlihat saat berputar. Dua gulungan lakban clay menggelinding masuk, strip lakban ditarik diagonal di antaranya membentuk %. Sticker PROMO merah di-slap, sudut melengkung lalu rata.',
+  tr:['T4 · String pull','Tali price tag ditarik ke atas keluar frame, seluruh adegan ikut terseret (translateY −1920px, 0.45 s, ease.lift, motion blur vertikal). B5 sudah menunggu di bawah dan settle dengan spring.clay.'],
+  assets:['A14','A15','A05','I03','D02'],sfx:'Swing creak (halus), roll, tape stretch, sticker slap'},
+ {id:'b5',tc:'0:30–0:38',bars:'bar 16–19 · breakdown',name:'03 · No registration',
+  frames:[
+   [frame({stage:T(135,82,13,'03',{f:'#D40511',it:false})+T(135,112,30,'NO')+T(135,142,30,'REGISTRATION')+`<rect x="40" y="128" width="190" height="11" rx="2" fill="url(#gR)" transform="rotate(-6 135 133)"/>`+formPanel(40,180,58,150,-4)+formPanel(106,190,58,150,0)+formPanel(172,180,58,150,4)}),'0:32.0 · lakban mencoret kata'],
+   [frame({stage:T(135,82,13,'03',{f:'#D40511',it:false})+T(135,112,30,'NO REGISTRATION')+T(135,142,30,'NEEDED.',{f:'#D40511'})+`<polygon points="30,360 100,330 110,350 40,380" fill="#E6E0D0"/><polygon points="100,370 170,340 180,360 110,390" fill="#DDD6C4"/><polygon points="168,358 238,328 246,348 176,378" fill="#D8D1BF"/>`+bubble(80,220,110,46)}),'0:36.0 · form rebah, bubble naik']],
+  vo:"And there's no registration needed. Skip the sign-up, completely.",
+  ost:[['03'],['NO REGISTRATION','r'],['NEEDED.']],
+  visual:'Panel form clay putih (kolom kosong, tanpa data) berdiri berjajar. Pada breakdown musik panel jatuh ke belakang seperti domino (rotateX 0→88°, stagger 3 frame), debu clay halus. Dari tumpukan, satu bubble chat clay putih melambung pelan.',
+  tr:['T5 · Shred to chat (morph M1)','Panel-panel masuk ke mesin shredder clay. Strip-strip keluar di sisi lain, melayang, lalu di-goo dan menyatu menjadi 3 bubble chat yang tersusun vertikal: frame pembuka B6.'],
+  assets:['A16','A17','A18','I04'],sfx:'Domino taps, soft thud, shredder buzz'},
+ {id:'b6',tc:'0:38–0:52',bars:'bar 20–26 · chorus',name:'How it works: 3 langkah',
+  frames:[
+   [frame({stage:phone(70,140,92,180,-10,'')+bubble(150,150,96,34)+bubble(160,200,90,34,'url(#gW)','r')+`<rect x="22" y="72" width="44" height="44" rx="10" fill="url(#gY)"/>`+T(44,102,22,'01',{it:false})+T(76,92,15,'CHAT ON',{a:'start'})+T(76,110,15,'WHATSAPP',{a:'start',f:'#D40511'})+M(116,333,6,'SAMPLE CHAT','#6B6452')+`<g opacity=".9">${dieline(205,330,16)}</g>`}),'0:41.0 · bubble keluar dari layar ke ruang Z'],
+   [frame({stage:cube(135,250,52,{label:true})+`<circle cx="190" cy="215" r="22" fill="url(#gR)"/><path d="M180 215 l7 7 l14 -15" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`+['01','02','03'].map((n,i)=>`<rect x="${26+i*76}" y="74" width="66" height="44" rx="10" fill="${i===2?'#D40511':'#fff'}"/>`+T(59+i*76,93,13,n,{it:false,f:i===2?'#fff':'#1B1912'})+M(59+i*76,108,5.6,['CHAT','TELL US','WE PREPARE'][i],i===2?'#fff':'#6B6452')).join('')+T(135,370,19,'WE PREPARE EVERYTHING,')+T(135,390,19,'START TO FINISH.',{f:'#D40511'})}),'0:50.0 · dieline terlipat jadi box, check stamp']],
+  vo:"Just send us a WhatsApp message, tell us what you need to ship, and we'll prepare everything, all the way to done.",
+  ost:[['01 CHAT ON WHATSAPP'],["02 TELL US WHAT YOU'RE SHIPPING"],['03 WE PREPARE EVERYTHING, START TO FINISH','r']],
+  visual:'Ponsel clay miring 10°, thread chat (tag SAMPLE CHAT). Tiap bubble terkirim keluar dari layar ke ruang Z lalu morph (M2): bubble → cube clay → dieline datar → melipat jadi parcel → lakban, label, check stamp merah. Tiga kartu langkah tersusun seperti panel dieline, lalu melipat jadi satu kubus di akhir chorus.',
+  tr:['T6 · Pin dive (morph M4)','Bubble terakhir berubah jadi bubble location, pin clay di dalamnya membesar ke kamera (scale 1→14, 0.6 s). Kamera menembus pin dan keluar di atas diorama B7, pin tetap jadi penanda lokasi.'],
+  assets:['A12','A18','A19','A01','A20','A23','N01','N02','N03','D01'],sfx:'Bubble pop ×3, fold creaks, tape, stamp'},
+ {id:'b7',tc:'0:52–1:00',bars:'bar 27–30 · post-chorus',name:'Location: Find us',
+  frames:[
+   [frame({stage:T(135,82,13,'FIND US',{f:'#D40511',it:false,ls:1})+T(135,112,24,'SOEWARNA BUSINESS PARK')+iso()+pin(150,284,1.1)+`<rect x="160" y="236" width="70" height="18" rx="5" fill="#fff"/>`+M(195,248,8,'LOT 7A–7B')+M(135,140,7,"Soekarno-Hatta Int'l Airport Area",'#6B6452')}),'0:54.0 · pin jatuh di Lot 7A–7B'],
+   [frame({stage:T(135,82,13,'FIND US',{f:'#D40511',it:false,ls:1})+T(135,112,24,'SOEWARNA BUSINESS PARK')+iso()+pin(150,284,1.1)+`<path d="M60 320 Q140 260 230 190" stroke="#fff" stroke-width="6" fill="none" opacity=".8" stroke-linecap="round"/>`+plane(222,186,1,-32)}),'0:58.0 · pesawat lepas landas']],
+  vo:'Find us at Soewarna Business Park, Lot 7A to 7B, in the Soekarno-Hatta International Airport area.',
+  ost:[['FIND US'],['SOEWARNA BUSINESS PARK'],['LOT 7A–7B','r'],["Soekarno-Hatta Int'l Airport Area"]],
+  visual:'Diorama isometrik clay (ilustratif, bukan peta akurat): landasan, blok business park. Satu blok terangkat dan berubah kuning, pin clay merah jatuh dengan squash, label LOT 7A–7B tercetak. Kamera orbit pelan 12°. Pesawat clay taxi lalu lepas landas diagonal.',
+  tr:['T7 · Contrail stripes','Contrail pesawat terbelah menjadi 3 garis merah horizontal (speed stripes) yang menyapu kanan→kiri 0.5 s dan melebar menutup frame, lalu terbuka ke end card.'],
+  assets:['A21','A22','A23','I05'],sfx:'Pin drop, jet whoosh, wind'},
+ {id:'b8',tc:'1:00–1:10',bars:'bar 31–35 · final lift',name:'End card: Seal it',
+  frames:[
+   [frame({stage:stripes(70,3,.9)+cube(135,205,74,{label:true})+M(135,248,7,'SERVICE POINT','#1B1912')+M(135,260,7,'JDC CENGKARENG','#D40511')+`<rect x="70" y="312" width="130" height="30" rx="15" fill="#fff" stroke="#D40511" stroke-width="2"/>`+T(135,332,13,'CHAT ON WHATSAPP',{it:false})+M(135,372,16,'+62 877-7589-7478','#1B1912')+`<rect x="40" y="361" width="190" height="2" fill="#D40511" opacity=".6"/>`}),'1:04.0 · laser menyorot nomor WA'],
+   [frame({stage:T(135,92,40,'SHIPPING,')+T(135,128,40,'UNBOXED.',{f:'#D40511'})+cube(135,215,62,{label:true})+M(135,262,6.5,'JDC CENGKARENG','#1B1912')+`<rect x="70" y="318" width="130" height="30" rx="15" fill="#D40511"/>`+T(135,338,13,'CHAT ON WHATSAPP',{it:false,f:'#fff'})+M(135,376,16,'+62 877-7589-7478','#1B1912')+minis([[42,300,8,12],[230,290,9,-12]])}),'1:08.0 · chord akhir, freeze 2 s']],
+  vo:'DHL Express Service Point, JDC Cengkareng. WhatsApp us today: 0877 7589 7478.',
+  ost:[['SHIPPING, UNBOXED.','r'],['SERVICE POINT JDC CENGKARENG'],['CHAT ON WHATSAPP'],['+62 877-7589-7478']],
+  visual:'Hero box menutup flap (spring.clay), lakban merah ditarik melintasi atas, label pengiriman besar menempel di sisi depan. Tombol "Chat on WhatsApp" clay putih bergaris merah, nomor besar JetBrains Mono. Laser scanner menyorot nomor sekali saat VO membacanya, footer pulse putih sekali. Tagline masuk 1:06.',
+  tr:['End · Settle','Box memantul kecil di chord akhir 1:08, semua FX berhenti, frame diam 2 s untuk screenshot.'],
+  assets:['A01','A02','A04','A24','I06','D01'],sfx:'Flap thud, tape zip, label slap, scanner beep, final chord'}
+];
+
+const TRANS=[
+ ['T1','Flap burst','Flap kardus clay engsel 3D membuka ke kamera, cahaya kuning penuh, dolly keluar','0:05.5 → 0:06.2','Boom + tape rip'],
+ ['T2','Tape zip','Dispenser meluncur, strip lakban merah menutup frame lalu disobek dengan mask diagonal','0:11.5 → 0:12.2','Tape zip + rip'],
+ ['T3','Barcode scan','Laser gerbang scanner jadi garis selebar layar, area yang dilewati berganti adegan','0:21.6 → 0:22.2','Beep + sweep'],
+ ['T4','String pull','Tali price tag ditarik ke atas, seluruh adegan terseret, B5 settle dengan spring','0:29.6 → 0:30.1','Whoosh vertikal'],
+ ['T5','Shred to chat','Form masuk shredder, strip keluar dan menyatu jadi bubble chat (goo morph)','0:37.0 → 0:38.2','Shredder + pop'],
+ ['T6','Pin dive','Bubble location → pin clay membesar, kamera menembus pin ke diorama','0:51.4 → 0:52.1','Air rush'],
+ ['T7','Contrail stripes','Contrail pesawat terbelah jadi 3 speed stripes merah yang menyapu frame','0:59.5 → 1:00.1','Jet whoosh']
+];
+
+const MASTER="Premium soft-matte clay 3D render in a 2.5D three-quarter view (camera about 30° above, slight perspective). Smooth rounded bevels, velvety matte finish with a very subtle warm subsurface glow on the edges. Strict palette: warm DHL yellow (#FFCC00), signal red (#D40511), warm white (#F4F0E6) and soft graphite (#2A2824) only. Large soft key light from the top left, thin rim light from the back right, short soft warm contact shadow. Clean minimal composition, centered, generous empty space around the object, high-end product render quality. Transparent background. No text, no letters, no numbers, no logos, no brand marks, no watermark.";
+const MASTER_PLATE=MASTER.replace("Transparent background.","Full-bleed background plate, portrait 2:3.");
+
+const ASSETS=[
+ {g:'Hero objects',items:[
+  ['A01','jdc_box-closed.png','1024×1024 · transparan','B2, B6, B8 · anchor style','A closed shipping parcel box made of soft clay, warm yellow, slightly rounded edges, a strip of glossy red packing tape running across the top and down the front face, an empty warm-white shipping label area on the front side.'],
+  ['A02','jdc_box-open.png','1024×1024 · transparan','B1, B8','The same yellow clay parcel box with its four top flaps fully open and slightly splayed outward, inside visible with a soft warm glow, red tape torn and curling at the edges.'],
+  ['A03','jdc_box-inside-pov.png','1024×1536 · plate','B1 latar hook','Point of view from the bottom inside a large yellow clay cardboard-like box looking straight up, four flaps closed above with a thin glowing seam of warm yellow light between them, walls in deep warm amber shadow, cozy dramatic mood.','plate'],
+  ['A04','jdc_tape-dispenser.png','1024×1024 · transparan','B2 T2, B8','A handheld packing tape dispenser in soft graphite clay with a yellow handle, loaded with a roll of red tape, a short strip of red tape pulled out and curling forward.'],
+  ['A05','jdc_tape-roll-red.png','1024×1024 · transparan','B4 simbol %','A single roll of glossy red packing tape in clay style, lying slightly tilted, warm-white cardboard core, the loose end of the tape peeling off a little.'],
+  ['A06','jdc_label-printer.png','1024×1024 · transparan','B2 teks keluar','A compact thermal label printer in warm-white clay with a soft graphite top and a small yellow button, a blank white label sticking out of the front slot.']
+ ]},
+ {g:'Carousel: Sorting conveyor',items:[
+  ['A07','jdc_conveyor-u.png','1536×1024 · transparan','B3','A curved U-shaped roller conveyor belt seen from the front and above, soft graphite clay frame with rounded warm-white rollers, empty belt, elegant and toy-like.'],
+  ['A08','jdc_scanner-gate.png','1024×1024 · transparan','B3 gerbang laser','A rounded arch-shaped package scanner gate in red clay with a soft graphite inner bar, a thin horizontal slot at the top, free-standing, front three-quarter view.'],
+  ['A09','jdc_diorama-home.png','1024×1024 · transparan','B3 carousel','A tiny round diorama platform in warm-white clay holding a cozy living room: a small red sofa, a yellow floor lamp, a potted plant and a small smartphone lying on the sofa.'],
+  ['A10','jdc_diorama-office.png','1024×1024 · transparan','B3 carousel','A tiny round diorama platform in warm-white clay holding a minimal office corner: a yellow desk, a graphite monitor, a red office chair and a small smartphone on the desk.'],
+  ['A11','jdc_diorama-onthego.png','1024×1024 · transparan','B3 carousel','A tiny round diorama platform in warm-white clay holding a short road segment with a small rounded yellow hatchback car and a tiny smartphone on a dashboard mount.']
+ ]},
+ {g:'Props per adegan',items:[
+  ['A12','jdc_phone.png','1024×1024 · transparan','B3, B6','A modern smartphone in soft clay with a yellow case and graphite bezel, tilted about 10 degrees, completely blank warm-white screen.'],
+  ['A13','jdc_time-tag.png','1024×1024 · transparan','B3 tag waktu','A small blank rounded rectangular tag in warm-white clay with a tiny hole on the left, slightly curved like freshly printed paper.'],
+  ['A14','jdc_price-tag.png','1024×1024 · transparan','B4','A large blank price tag in yellow clay with rounded corners, a punched hole near the top with a graphite string looping up out of frame, slight thickness visible on the edge.'],
+  ['A15','jdc_promo-sticker.png','1024×1024 · transparan','B4','A blank round sticker in red clay with one edge curling up to show a warm-white underside, slightly glossy.'],
+  ['A16','jdc_form-panel.png','1024×1536 · transparan','B5 domino','A standing tall blank form panel in warm-white clay with rounded corners, five empty input field bars in light warm grey, a small yellow button bar at the bottom, no writing.'],
+  ['A17','jdc_shredder.png','1024×1024 · transparan','B5 T5','A compact paper shredder in soft graphite clay with a yellow top slot, a few warm-white paper strips coming out of the bottom and curling.'],
+  ['A18','jdc_chat-bubble.png','1024×1024 · transparan','B5, B6 morph','A puffy rounded speech bubble in warm-white clay with a small tail on the bottom left, two soft empty grey line bars inside, slight inflated look.'],
+  ['A19','jdc_dieline-flat.png','1024×1024 · transparan','B6 morph M2','An unfolded flat box net in yellow clay, cross-shaped layout of six panels seen from above at a slight angle, subtle debossed fold lines between panels.'],
+  ['A20','jdc_check-stamp.png','1024×1024 · transparan','B6','A round red clay badge with a bold warm-white check mark embossed in the middle, slightly tilted, like a stamped seal.']
+ ]},
+ {g:'Lokasi',items:[
+  ['A21','jdc_airport-diorama.png','1536×1024 · transparan','B7','An isometric miniature diorama tile in warm-white clay of a generic airport-side business area: one runway strip with soft graphite asphalt, a row of simple low warehouse blocks, a few rounded trees, one warehouse block raised slightly and painted warm yellow. Generic, not a real airport.'],
+  ['A22','jdc_cargo-plane.png','1024×1024 · transparan','B7 T7','A cute rounded cargo airplane in warm-white clay with a red tail fin and yellow engine covers, no livery, seen in three-quarter view climbing upward.'],
+  ['A23','jdc_map-pin.png','1024×1024 · transparan','B6 T6, B7','A plump map location pin in red clay with a warm-white circle in the center, small soft shadow, slight squash at the bottom tip.'],
+  ['A24','jdc_shipping-label-blank.png','1024×1024 · transparan','B8 end card','A large blank shipping label in warm-white clay, slightly curved as if stuck on a box, a thin red stripe across the top edge and a soft graphite empty barcode-like stripe area, no characters.']
+ ]},
+ {g:'Ikon fitur (konsisten satu set)',items:[
+  ['I01','jdc_icon-anywhere.png','1024×1024 · transparan','B3 chip','A small icon object: a red clay map pin standing on top of a tiny yellow clay globe, chunky and rounded, icon proportions.'],
+  ['I02','jdc_icon-anytime.png','1024×1024 · transparan','B3 chip','A small icon object: a round yellow clay alarm clock with warm-white face and red hands, chunky and rounded, no numerals.'],
+  ['I03','jdc_icon-rate.png','1024×1024 · transparan','B4','A small icon object: a yellow clay price tag with a red clay ribbon bow tied through the hole, chunky and rounded.'],
+  ['I04','jdc_icon-noform.png','1024×1024 · transparan','B5','A small icon object: a warm-white clay clipboard with empty lines, crossed by a diagonal strip of red tape, chunky and rounded.'],
+  ['I05','jdc_icon-location.png','1024×1024 · transparan','B7','A small icon object: a tiny yellow clay building with a red clay map pin floating above its roof, chunky and rounded.'],
+  ['I06','jdc_icon-chat.png','1024×1024 · transparan','B8 tombol','A small icon object: a warm-white clay speech bubble with a tiny red clay phone handset inside it, chunky and rounded. Not the WhatsApp logo.']
+ ]},
+ {g:'Angka step & dekorasi',items:[
+  ['N01','jdc_num-01.png','1024×1024 · transparan','B6 step','A chunky 3D clay numeral "01" in warm yellow, heavy rounded italic shapes, standing upright. (Satu-satunya pengecualian aturan "no text": ganti kalimat "No text, no letters, no numbers" di master style dengan "Only the numeral shown, nothing else".)'],
+  ['N02','jdc_num-02.png','1024×1024 · transparan','B6 step','The same chunky 3D clay numeral style, showing "02" in warm yellow, heavy rounded italic shapes. (Lampirkan N01 sebagai referensi.)'],
+  ['N03','jdc_num-03.png','1024×1024 · transparan','B6 step','The same chunky 3D clay numeral style, showing "03" in signal red, heavy rounded italic shapes. (Lampirkan N01 sebagai referensi.)'],
+  ['D01','jdc_mini-parcels.png','1536×1024 · transparan','FX semua adegan','Seven tiny yellow clay parcel boxes of three different sizes scattered with space between them, each with a thin red tape strip, floating at different angles, no overlap, for cutting out individually.'],
+  ['D02','jdc_tape-curl.png','1536×1024 · transparan','FX transisi','A long ribbon of glossy red packing tape twisting and curling elegantly through the air in a loose S shape, both ends free.']
+ ]}
+];
+
+/* ---------- render ---------- */
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const byCode={};ASSETS.forEach(g=>g.items.forEach(a=>byCode[a[0]]=a));
+const promptFor=a=>a[5]==='plate'?`${a[4]} ${MASTER_PLATE}`:a[0].startsWith('N')?`${a[4].replace(/\s*\(.*\)$/,'')} ${MASTER.replace('No text, no letters, no numbers,','Only the numeral shown and nothing else, no other text,')}`:`${a[4]} ${MASTER}`;
+
+document.getElementById('scenes').innerHTML=SCENES.map(s=>`
+ <article class="scene" id="${s.id}">
+  <div class="frames">${s.frames.map(f=>`<div class="frame"><figure>${f[0]}<figcaption>${f[1]}</figcaption></figure></div>`).join('')}</div>
+  <div class="notes">
+   <div class="scene-top"><span class="tc">${s.tc}</span><h3>${s.name}</h3><span class="bars">${s.bars}</span></div>
+   <dl class="shot">
+    <dt>VO</dt><dd class="vo">“${esc(s.vo)}”</dd>
+    <dt>Teks layar</dt><dd><div class="ost">${s.ost.map(o=>`<span class="${o[1]||''}">${esc(o[0])}</span>`).join('')}</div></dd>
+    <dt>Visual</dt><dd>${esc(s.visual)}</dd>
+    <dt>Transisi</dt><dd class="tr"><b>${esc(s.tr[0])}</b><br>${esc(s.tr[1])}</dd>
+    <dt>Aset</dt><dd><div class="chips">${s.assets.map(c=>`<a href="#asset-${c}" title="${byCode[c]?byCode[c][1]:''}">${c}</a>`).join('')}</div></dd>
+    <dt>Audio</dt><dd>${esc(s.sfx)}</dd>
+   </dl>
+  </div>
+ </article>`).join('');
+
+document.getElementById('trTable').innerHTML=TRANS.map(t=>`<tr><td class="mono">${t[0]}</td><td><b>${t[1]}</b></td><td>${t[2]}</td><td class="mono">${t[3]}</td><td>${t[4]}</td></tr>`).join('');
+document.getElementById('masterText').textContent=MASTER;
+
+document.getElementById('assetGroups').innerHTML=ASSETS.map(g=>`
+ <h3 class="group-h">${g.g}<small>${g.items.length} aset</small></h3>
+ <div class="assets">${g.items.map(a=>`
+  <div class="asset" id="asset-${a[0]}">
+   <header><div><div class="fn">${a[0]} · ${a[1]}</div><div class="meta">${a[2]}</div></div><button class="copy" type="button" data-copy="${a[0]}">Copy prompt</button></header>
+   <div class="use">Dipakai di: ${a[3]}</div>
+   <pre>${esc(promptFor(a))}</pre>
+  </div>`).join('')}</div>`).join('');
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button.copy');if(!b)return;
+  const k=b.dataset.copy;const text=k==='master'?MASTER:promptFor(byCode[k]);
+  const label=b.textContent;
+  const ok=()=>{b.classList.add('done');b.textContent='Copied';setTimeout(()=>{b.classList.remove('done');b.textContent=label},1400)};
+  const fallback=()=>{const pre=k==='master'?document.getElementById('masterText'):b.closest('.asset').querySelector('pre');const r=document.createRange();r.selectNodeContents(pre);const sel=getSelection();sel.removeAllRanges();sel.addRange(r);b.textContent='Selected, tekan Ctrl/Cmd+C';setTimeout(()=>b.textContent=label,2200)};
+  try{navigator.clipboard.writeText(text).then(ok,fallback)}catch(_){fallback()}
+});
+</script>

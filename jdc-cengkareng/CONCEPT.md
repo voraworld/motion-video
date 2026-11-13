@@ -3,6 +3,9 @@
 Konsep motion story promosi, vertikal 1080×1920, 30 fps, gaya 2.5D.
 Voice-over dan teks layar bahasa Inggris. Durasi master **70 detik** (35 bar @ 120 BPM).
 
+> **Update art direction:** material final = **soft-matte clay 3D** (bukan papercraft kardus). Promo tanpa angka.
+> Storyboard visual, sistem transisi/morph dan 35 prompt aset GPT ada di `jdc-cengkareng/storyboard.html`. Kalau ada yang bertentangan dengan dokumen ini, storyboard yang berlaku.
+
 ---
 
 ## 1. Big idea
