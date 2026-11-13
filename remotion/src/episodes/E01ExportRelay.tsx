@@ -88,7 +88,7 @@ const Backdrop: React.FC<{ t: number }> = ({ t }) => {
       <AbsoluteFill style={{ clipPath: `circle(${iris}px at 540px 960px)`, background: "radial-gradient(90% 60% at 50% 42%, #FFF9F2 0%, #FCEFE2 55%, #F7DEC8 100%)" }}>
         <div style={{ position: "absolute", left: -260 + drift(0), top: 980 + drift(1), width: 760, height: 760, borderRadius: "50%", background: "radial-gradient(circle, rgba(242,106,31,.20), rgba(242,106,31,0) 70%)" }} />
         <div style={{ position: "absolute", left: 560 + drift(2), top: -180 + drift(3), width: 820, height: 820, borderRadius: "50%", background: "radial-gradient(circle, rgba(245,166,35,.18), rgba(245,166,35,0) 70%)" }} />
-        <DecorArc idPrefix="d1" x={1060} y={430} r={300} stroke={34} from={200} sweep={150} draw={draw(4.0)} rotate={t * 4} opacity={0.9} />
+        <DecorArc idPrefix="d1" x={1100} y={900} r={320} stroke={34} from={200} sweep={140} draw={draw(4.0)} rotate={t * 4} opacity={0.85} />
         <DecorArc idPrefix="d2" x={40} y={1560} r={250} stroke={28} from={20} sweep={140} draw={draw(4.25)} rotate={-t * 3} opacity={0.8} />
         <DecorArc idPrefix="d3" x={70} y={600} r={70} stroke={14} from={300} sweep={250} draw={draw(4.5)} rotate={t * 9} opacity={0.55} />
         <DecorArc idPrefix="d4" x={1000} y={1700} r={46} stroke={10} from={90} sweep={260} draw={draw(4.7)} rotate={-t * 11} opacity={0.5} />
