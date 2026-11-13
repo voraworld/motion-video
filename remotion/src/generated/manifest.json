@@ -1,5 +1,5 @@
 {
-  "logo": null,
+  "logo": "brand/logo.png",
   "assets": {
     "e01": {
       "baton": "assets/e01/baton.png",

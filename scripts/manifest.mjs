@@ -13,6 +13,7 @@ const stem = (f) => f.replace(/\.[^.]+$/, "");
 const manifest = { logo: null, assets: {}, vo: {}, voBeats: {}, music: {}, hf: {}, sfx: {} };
 
 if (fs.existsSync(path.join(pub, "brand", "logo.svg"))) manifest.logo = "brand/logo.svg";
+else if (fs.existsSync(path.join(pub, "brand", "logo.png"))) manifest.logo = "brand/logo.png";
 for (const ep of list(path.join(pub, "assets"))) {
   manifest.assets[ep] = {};
   for (const f of list(path.join(pub, "assets", ep))) manifest.assets[ep][stem(f)] = `assets/${ep}/${f}`;

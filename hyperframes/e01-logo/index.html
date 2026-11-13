@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!--
+      E01 end card logo (48–55 s), transparent WebM → remotion/public/hf/e01-logo.webm.
+      Choreography after the registry's logo-outro (pieces assemble with a ripple, expand-and-close, glow bloom,
+      text last), built from slices of the official UGC logo:
+        - the medallion ring (Remotion) lands on the G; the G draws with a circular sweep from that ring,
+        - U slides in from the left and C from the right with blur (assembly), then the mark expands and settles,
+        - a soft orange glow blooms behind the mark,
+        - LO / GIS / TICS rise row by row, the tagline wipes in,
+        - the CTA lands last. At 1.6 s the untouched full logo replaces the slices (pixel-exact brand file).
+      Logo box: centre (540, 800), height 320 → scale 0.788 of the 948×406 file; G centre on screen (436, 777).
+    -->
+    <style>
+      :root { --ink: #2b1c15; --ember: #d63a1f; --font-display: "Archivo Black", sans-serif; --font-body: "Inter", sans-serif; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 100%; height: 100%; }
+      #logo-box { position: absolute; left: 166px; top: 640px; width: 747px; height: 320px; }
+      #logo-glow { position: absolute; left: -120px; top: -160px; width: 760px; height: 640px; border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(242,106,31,.55), rgba(245,166,35,.18) 55%, rgba(245,166,35,0)); opacity: 0; }
+      .slice { position: absolute; left: -7px; top: -9px; width: 536px; height: 252px; }
+      .slice img { width: 100%; height: 100%; display: block; }
+      #logo-u { clip-path: inset(0 340px 0 0); }
+      #logo-g { clip-path: inset(0 173px 0 197px); --sweep: 0; -webkit-mask-image: conic-gradient(from 0deg at 277px 126px, #000 calc(var(--sweep) * 1deg), transparent 0); mask-image: conic-gradient(from 0deg at 277px 126px, #000 calc(var(--sweep) * 1deg), transparent 0); }
+      #logo-c { clip-path: inset(0 0 0 362px); }
+      .row { position: absolute; left: 548px; width: 197px; overflow: hidden; }
+      .row img { width: 100%; height: 100%; display: block; }
+      #logo-lo { top: 11px; height: 67px; }
+      #logo-gis { top: 86px; height: 71px; }
+      #logo-tics { top: 165px; height: 71px; }
+      #logo-tag { position: absolute; left: 1px; top: 273px; width: 752px; height: 53px; clip-path: inset(0 100% 0 0); }
+      #logo-tag img, #logo-full img { width: 100%; height: 100%; display: block; }
+      #logo-full { position: absolute; inset: 0; opacity: 0; }
+      #cta { position: absolute; left: 80px; width: 920px; top: 1080px; text-align: center; font-family: var(--font-display); font-size: 66px; line-height: 1.06; color: var(--ink); }
+      #cta .w { display: inline-block; }
+      #cta-sub { position: absolute; left: 80px; width: 920px; top: 1250px; text-align: center; font-family: var(--font-body); font-weight: 700; font-size: 36px; color: var(--ember); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="e01-logo" data-start="0" data-duration="7" data-width="1080" data-height="1920">
+      <div id="logo-box" class="clip" data-start="0" data-duration="7" data-track-index="0" data-layout-allow-overlap data-layout-allow-overflow>
+        <div id="logo-glow"></div>
+        <div id="logo-u" class="slice"><img src="assets/logo-mark.png" alt="" /></div>
+        <div id="logo-g" class="slice"><img src="assets/logo-mark.png" alt="" /></div>
+        <div id="logo-c" class="slice"><img src="assets/logo-mark.png" alt="" /></div>
+        <div id="logo-lo" class="row"><img src="assets/logo-lo.png" alt="" /></div>
+        <div id="logo-gis" class="row"><img src="assets/logo-gis.png" alt="" /></div>
+        <div id="logo-tics" class="row"><img src="assets/logo-tics.png" alt="" /></div>
+        <div id="logo-tag"><img src="assets/logo-tagline.png" alt="" /></div>
+        <div id="logo-full"><img src="assets/logo.png" alt="UGC Logistics, We care what we deliver" /></div>
+      </div>
+      <div id="cta" class="clip" data-start="1.7" data-duration="5.3" data-track-index="1">
+        <span class="w">PLAN</span> <span class="w">YOUR</span> <span class="w">EXPORT</span><br /><span class="w">ROUTE</span>
+      </div>
+      <div id="cta-sub" class="clip" data-start="2.3" data-duration="4.7" data-track-index="2">Let's discuss your logistics needs.</div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // 1. The G draws from the landing ring; U and C assemble from the sides with a ripple.
+      tl.fromTo("#logo-g", { "--sweep": 0 }, { "--sweep": 361, duration: 0.45, ease: "power2.inOut" }, 0.06);
+      tl.fromTo("#logo-u", { x: -560, opacity: 0, filter: "blur(14px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power4.out" }, 0.34);
+      tl.fromTo("#logo-c", { x: 560, opacity: 0, filter: "blur(14px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power4.out" }, 0.42);
+      // 2. Expand and close.
+      tl.to(["#logo-u", "#logo-g", "#logo-c"], { scale: 1.08, duration: 0.3, ease: "back.out(1.7)", stagger: 0.02, transformOrigin: "50% 50%" }, 0.85);
+      tl.to(["#logo-u", "#logo-g", "#logo-c"], { scale: 1, duration: 0.3, ease: "power2.inOut" }, 1.12);
+      // 3. Glow bloom.
+      tl.fromTo("#logo-glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1.15, duration: 0.4, ease: "power2.out" }, 0.85);
+      tl.to("#logo-glow", { opacity: 0, scale: 1.7, duration: 1.2, ease: "power2.out" }, 1.25);
+      // 4. LO / GIS / TICS rise, tagline wipes in.
+      ["#logo-lo img", "#logo-gis img", "#logo-tics img"].forEach((sel, i) => tl.fromTo(sel, { yPercent: 105 }, { yPercent: 0, duration: 0.45, ease: "power3.out" }, 0.75 + i * 0.08));
+      tl.to("#logo-tag", { clipPath: "inset(0 0% 0 0)", duration: 0.55, ease: "power2.inOut" }, 1.05);
+      // 5. The exact brand file takes over.
+      tl.to("#logo-full", { opacity: 1, duration: 0.15, ease: "none" }, 1.6);
+      // 6. CTA words blur in, then the sub-line.
+      tl.fromTo("#cta .w", { opacity: 0, filter: "blur(8px)", y: 12 }, { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.22, ease: "power3.out", stagger: 0.08 }, 1.7);
+      tl.fromTo("#cta-sub", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 2.3);
+      window.__timelines["e01-logo"] = tl;
+    </script>
+  </body>
+</html>
