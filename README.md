@@ -16,8 +16,9 @@ scripts/             ingest, manifest, sfx, stills, vo.
 
 ## Alur per episode
 
-1. Aset gambar dibuat di GPT dengan prompt dari content plan, lalu dikirim ke Claude.
-2. Claude menaruh file ke `inbox/eXX/` dengan nama `eXX_<nama-aset>.png`, lalu menjalankan `npm run ingest` di `remotion/`.
+1. Aset gambar dibuat di GPT dengan prompt dari content plan, lalu dilampirkan di chat Claude bersama prompt produksi.
+2. Claude menaruh file ke `inbox/eXX/` dengan nama `eXX_<nama-aset>.png`, menjalankan `npm run ingest` di `remotion/`, lalu commit dan push.
+   Claude membuat voice-over (Kokoro, `scripts/vo.mjs`) dan menyusun musik orisinal dengan kode.
 3. Klip HyperFrames dibangun dan dirender (`hyperframes/<eXX-klip>/index.html` → `remotion/public/hf/<eXX-klip>.webm`).
 4. Komposisi Remotion episode dibangun (`remotion/src/episodes/`), lalu didaftarkan di `BESPOKE` pada `remotion/src/Root.tsx`.
 5. Gambar cek: `node scripts/stills.mjs E01 0.3,1.5,5` → `remotion/out/stills/`.
@@ -30,6 +31,7 @@ cd remotion && npm i            # sekali
 npm run dev                     # Remotion Studio (menulis manifest dulu)
 npm run ingest                  # pindahkan file dari inbox/ ke public/ dan perbarui manifest
 bash scripts/sfx.sh             # buat ulang efek suara (disintesis FFmpeg, tanpa lisensi pihak ketiga)
+pip install kokoro-onnx soundfile   # sekali per container, untuk Kokoro
 node scripts/vo.mjs E01         # voice-over bahasa Inggris dengan Kokoro (on-device), satu file per beat
 cd hyperframes && npx --yes hyperframes@0.8.217 render e01-hook --format webm --fps 30 -o ../remotion/public/hf/e01-hook.webm
 ```
