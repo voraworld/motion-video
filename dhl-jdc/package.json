@@ -1,0 +1,25 @@
+{
+  "name": "dhl-jdc-cengkareng-commercial",
+  "version": "1.0.0",
+  "description": "DHL Express Service Point JDC Cengkareng, vertical motion commercial (Remotion)",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render JDCCommercial out/JDC_CENGKARENG_DHL_EXPRESS_MASTER.mp4",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.543",
+    "@remotion/fonts": "^4.0.543",
+    "@remotion/media": "4.0.543",
+    "@remotion/paths": "4.0.543",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.543"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}

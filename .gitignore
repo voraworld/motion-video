@@ -5,3 +5,6 @@ hyperframes/renders/
 .hyperframes/
 .DS_Store
 .env
+dhl-jdc/out/
+dhl-jdc/public/audio/stems/
+deliverables/**/*_SOURCE.zip

@@ -1,0 +1,101 @@
+{
+  "dhl_box-closed-label-left": {
+    "w": 1285,
+    "h": 906,
+    "src": "assets/processed/dhl_box-closed-label-left.png",
+    "original": [
+      1536,
+      1024
+    ]
+  },
+  "dhl_box-closed-label-right": {
+    "w": 1234,
+    "h": 821,
+    "src": "assets/processed/dhl_box-closed-label-right.png",
+    "original": [
+      1536,
+      1024
+    ]
+  },
+  "dhl_box-open": {
+    "w": 1400,
+    "h": 931,
+    "src": "assets/processed/dhl_box-open.png",
+    "original": [
+      1536,
+      1024
+    ]
+  },
+  "dhl_logo": {
+    "w": 1800,
+    "h": 255,
+    "src": "assets/processed/dhl_logo.png",
+    "original": [
+      3600,
+      510
+    ]
+  },
+  "dhl_pallet-boxes": {
+    "w": 1187,
+    "h": 1214,
+    "src": "assets/processed/dhl_pallet-boxes.png",
+    "original": [
+      1254,
+      1254
+    ]
+  },
+  "dhl_phone": {
+    "w": 636,
+    "h": 1400,
+    "src": "assets/processed/dhl_phone.png",
+    "original": [
+      1024,
+      1536
+    ]
+  },
+  "dhl_plane": {
+    "w": 1800,
+    "h": 633,
+    "src": "assets/processed/dhl_plane.png",
+    "original": [
+      1942,
+      809
+    ]
+  },
+  "dhl_ribbon-s-curve": {
+    "w": 890,
+    "h": 1157,
+    "src": "assets/processed/dhl_ribbon-s-curve.png",
+    "original": [
+      1024,
+      1536
+    ]
+  },
+  "dhl_ribbon": {
+    "w": 1190,
+    "h": 839,
+    "src": "assets/processed/dhl_ribbon.png",
+    "original": [
+      1254,
+      1254
+    ]
+  },
+  "dhl_tag": {
+    "w": 1600,
+    "h": 706,
+    "src": "assets/processed/dhl_tag.png",
+    "original": [
+      1774,
+      887
+    ]
+  },
+  "dhl_xray-scanner": {
+    "w": 1689,
+    "h": 862,
+    "src": "assets/processed/dhl_xray-scanner.png",
+    "original": [
+      1774,
+      887
+    ]
+  }
+}

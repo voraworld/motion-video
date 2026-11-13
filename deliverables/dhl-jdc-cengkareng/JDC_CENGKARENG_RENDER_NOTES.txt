@@ -1,0 +1,43 @@
+DHL EXPRESS SERVICE POINT JDC CENGKARENG: RENDER NOTES
+=======================================================
+
+OUTPUTS (all verified to exist and decode)
+  JDC_CENGKARENG_DHL_EXPRESS_MASTER.mp4   86.40 s, 2592 frames, 1080x1920, 30 fps, H.264 High yuv420p (BT.709, TV range),
+                                          AAC 256 kb/s 48 kHz stereo, faststart, 22.0 MB
+  JDC_CENGKARENG_STATUS/                  4 parts cut on scene boundaries, each <= 30 s, with 0.12/0.25 s audio fades:
+                                          1of4 0:00-0:28.8 (hook, reveal, anywhere)  2of4 0:28.8-0:51.8 (rates, no MyDHL+ account)
+                                          3of4 0:51.8-1:14.9 (WhatsApp, we handle)  4of4 1:14.9-1:26.4 (CTA)
+  JDC_CENGKARENG_AUDIO/                   JDC_final_mix.wav, JDC_music.wav, JDC_voiceover.wav, JDC_sfx.wav (48 kHz WAV, full length)
+  JDC_CENGKARENG_POSTER.png               1080x1920, final CTA frame (86.3 s)
+  JDC_CENGKARENG_PREVIEW_CONTACT_SHEET.png 24 frames (3 per scene) pulled from the master
+  JDC_CENGKARENG_DHL_EXPRESS_SOURCE.zip   Remotion project without node_modules (also in the repo at dhl-jdc/)
+
+CHECKS RUN
+  Video: ffprobe format check; blackdetect found 0 black segments; every scene boundary inspected frame by frame
+         (9.6, 17.28, 28.8, 38.4, 51.84, 65.28, 74.88 s). Fixed: chips missing for 1 frame in the S06->S07 whip, set
+         popping out at S07->S08, phone bezel sliver before S04, harsh cut on the red-room fold.
+  Audio: integrated -14.5 LUFS, peak -1.4 dBFS (after AAC). No silence longer than 0.8 s. Music is ducked about 9 dB
+         under the narration. Every VO line ends before its scene ends (see scripts/mix.py output).
+  Facts: WhatsApp +62 877 7589 7478 (= 087775897478) in the footer, S06 and S08. Service point name and address
+         as supplied. "No registration" / "no account" are always qualified as MyDHL+ and "when you book through
+         our Service Point". No discount figure, pickup, 24-hour, response-time or delivery-time claim. Discount
+         carries "Terms apply.".
+  Brand: #FFCC00 / #D40511 / #191919 / #FFFFFF from src/design/tokens.ts. The supplied logo is used unaltered with its
+         aspect ratio locked. The aircraft is never mirrored.
+  Layout: header logo at y 24-84 with EXPRESS centred under it. Footer from y 1676 to the bottom edge, with its last text
+          line ending at about y 1888. Nothing clipped at full resolution.
+
+CHANGES AFTER THE BRIEF (on request)
+  - "WHATSAPP US" became "REACH US NOW ON" and the number is shown as +62 877 7589 7478. The wa.me link was removed.
+  - "EXPRESS" is centred under the logo. The footer was redesigned on one centred axis: name, then number, then address.
+
+LIMITATIONS
+  - Voice-over is Kokoro-82M (on-device TTS, voice af_heart) run through the HyperFrames CLI. HyperFrames was used for TTS only;
+    every scene is built in Remotion. A professional voice actor would sound more natural, and the VO files can be
+    swapped in public/audio/vo/ before re-running scripts/mix.py.
+  - Pronunciation was checked from Kokoro's phonemes (D-H-L, J-D-C, "My D H L Plus", "Cheng-ka-reng"). Speech
+    recognition could not be run because model downloads are blocked in this environment.
+  - No real smartphone-speaker listening test was possible here.
+  - Supplied renders are 2-D images: the ribbon, folds and morphs are procedural (SVG and CSS 3-D). The box open-to-closed
+    change is hidden under the ribbon sweep rather than morphed.
+  - WhatsApp-style UI colours (green, dark theme) appear only inside the phone screen.

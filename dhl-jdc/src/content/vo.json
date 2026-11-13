@@ -1,0 +1,53 @@
+{
+  "voice": "af_heart",
+  "lines": [
+    {
+      "id": "s01",
+      "speed": 1.0,
+      "text": "Got something to ship, but can't be bothered with another login, another portal, or complicated booking?",
+      "spoken": "Got something to ship... but can't be bothered with another login, another portal, or complicated booking?"
+    },
+    {
+      "id": "s02",
+      "speed": 0.92,
+      "text": "Meet DHL Express Service Point JDC Cengkareng. A simpler way to get your shipment started.",
+      "spoken": "Meet DHL Express Service Point, J D C Chengkahreng. A simpler way to get your shipment started."
+    },
+    {
+      "id": "s03",
+      "speed": 0.88,
+      "text": "At home, at work, or on the go, you can start arranging your shipment through WhatsApp, wherever you are.",
+      "spoken": "At home, at work, or on the go, you can start arranging your shipment through WhatsApp, wherever you are."
+    },
+    {
+      "id": "s04",
+      "speed": 0.92,
+      "text": "Enjoy competitive shipping rates, with special promotional discounts available.",
+      "spoken": "Enjoy competitive shipping rates, with special promotional discounts available."
+    },
+    {
+      "id": "s05",
+      "speed": 0.88,
+      "text": "And here's the best part. No MyDHL+ registration and no MyDHL+ account required when you book through our Service Point.",
+      "spoken": "And here's the best part. No My DHL Plus registration... and no My DHL Plus account required, when you book through our Service Point."
+    },
+    {
+      "id": "s06",
+      "speed": 0.88,
+      "text": "Just WhatsApp us. Tell us what you're sending, where it's going, and any special requirements.",
+      "spoken": "Just WhatsApp us. Tell us what you're sending, where it's going, and any special requirements."
+    },
+    {
+      "id": "s07",
+      "speed": 0.9,
+      "text": "Our team will help prepare and coordinate your shipment, guiding the arrangements from start to finish.",
+      "spoken": "Our team will help prepare and coordinate your shipment, guiding the arrangements from start to finish."
+    },
+    {
+      "id": "s08",
+      "speed": 0.9,
+      "text": "Ready to ship? Message DHL Express Service Point JDC Cengkareng on WhatsApp today.",
+      "spoken": "Ready to ship? Message DHL Express Service Point, J D C Chengkahreng, on WhatsApp today."
+    }
+  ]
+}
