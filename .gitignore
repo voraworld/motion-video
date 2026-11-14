@@ -5,3 +5,4 @@ hyperframes/renders/
 .hyperframes/
 .DS_Store
 .env
+__pycache__/
