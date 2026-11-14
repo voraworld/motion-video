@@ -1,0 +1,73 @@
+{
+ "voice": "af_heart",
+ "speed": 0.9,
+ "scenes": [
+  {
+   "id": "s1",
+   "name": "Hook",
+   "vo": "Shipping overseas? It just got a whole lot easier.",
+   "tts": "Shipping overseas? It just got a whole lot easier."
+  },
+  {
+   "id": "s2",
+   "name": "Intro",
+   "vo": "Meet DHL Express Service Point, JDC Cengkareng.",
+   "tts": "Meet D. H. L. Express Service Point, J. D. C. Cheng-kah-reng."
+  },
+  {
+   "id": "s4",
+   "name": "Rates",
+   "vo": "Enjoy competitive rates, plus special promotional discounts. Just ask us about the current promo.",
+   "tts": "Enjoy competitive rates, plus special promotional discounts. Just ask us about the current promo."
+  },
+  {
+   "id": "s5",
+   "name": "No registration",
+   "vo": "There's no registration needed. Skip the sign-up, completely.",
+   "tts": "There's no registration needed. Skip the sign-up, completely."
+  },
+  {
+   "id": "s6",
+   "name": "Pickup",
+   "vo": "Can't drop by? We'll pick up your shipment from your place, so you don't need to bring it to JDC Cengkareng.",
+   "tts": "Can't drop by? We'll pick up your shipment from your place, so you don't need to bring it to J. D. C. Cheng-kah-reng."
+  },
+  {
+   "id": "s8",
+   "name": "Location",
+   "vo": "Find us at Soewarna Business Park, Lot 7A to 7B, in the Soekarno-Hatta International Airport area.",
+   "tts": "Find us at Soo-war-nah Business Park, Lot seven A to seven B, in the Soo-kar-no Hah-tah International Airport area."
+  },
+  {
+   "id": "s9",
+   "name": "End card",
+   "vo": "DHL Express Service Point, JDC Cengkareng. WhatsApp us today: 0877 7589 7478.",
+   "tts": "D. H. L. Express Service Point, J. D. C. Cheng-kah-reng. WhatsApp us today. Zero eight seven seven, seven five eight nine, seven four seven eight."
+  },
+  {
+   "id": "s3a",
+   "vo": "Book your shipment from anywhere, at any time.",
+   "tts": "Book your shipment from anywhere, at any time."
+  },
+  {
+   "id": "s3b",
+   "vo": "At home, at the office, or on the go.",
+   "tts": "At home, at the office, or on the go."
+  },
+  {
+   "id": "s7a",
+   "vo": "Just send us a WhatsApp message,",
+   "tts": "Just send us a WhatsApp message."
+  },
+  {
+   "id": "s7b",
+   "vo": "tell us what you need to ship,",
+   "tts": "Tell us what you need to ship."
+  },
+  {
+   "id": "s7c",
+   "vo": "and we'll prepare everything, all the way to done.",
+   "tts": "And we'll prepare everything, all the way to done."
+  }
+ ]
+}

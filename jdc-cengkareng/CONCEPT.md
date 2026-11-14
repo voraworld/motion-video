@@ -3,8 +3,24 @@
 Konsep motion story promosi, vertikal 1080×1920, 30 fps, gaya 2.5D.
 Voice-over dan teks layar bahasa Inggris. Durasi master **70 detik** (35 bar @ 120 BPM).
 
-> **Update art direction:** material final = **soft-matte clay 3D** (bukan papercraft kardus). Promo tanpa angka.
-> Storyboard visual, sistem transisi/morph dan 35 prompt aset GPT ada di `jdc-cengkareng/storyboard.html`. Kalau ada yang bertentangan dengan dokumen ini, storyboard yang berlaku.
+> **Status produksi v1 (berlaku di atas isi dokumen ini):**
+> - Material final: **soft-matte clay 3D** (Three.js), promo tanpa angka.
+> - Durasi final **85 detik**, 9 adegan. Ditambah benefit **04 · Pickup ke tempat Anda** ("No need to bring it to JDC Cengkareng").
+> - Footer didesain ulang jadi **kartu label pengiriman** (nama, alamat, tombol WhatsApp, nomor, chip "Pickup available", strip micro-text).
+> - Mekanisme anti-edit: lihat `ANTI-EDIT.md`.
+> - Source produksi: `film/` (index.html, core.js, scenes.js, timeline.json, script.json, audio/). Render: `film/render.cjs`, finishing: `film/finish.sh`.
+>
+> | Adegan | Waktu | VO |
+> |---|---|---|
+> | 1 Hook (dalam kardus) | 0–6 | Shipping overseas? It just got a whole lot easier. |
+> | 2 Intro (label JDC) | 6–13 | Meet DHL Express Service Point, JDC Cengkareng. |
+> | 3 01 Anywhere, anytime | 13–23 | Book your shipment from anywhere, at any time. / At home, at the office, or on the go. |
+> | 4 02 Rates + promo | 23–32 | Enjoy competitive rates, plus special promotional discounts. Just ask us about the current promo. |
+> | 5 03 No registration | 32–39 | There's no registration needed. Skip the sign-up, completely. |
+> | 6 04 Pickup | 39–49 | Can't drop by? We'll pick up your shipment from your place, so you don't need to bring it to JDC Cengkareng. |
+> | 7 How it works | 49–61 | Just send us a WhatsApp message, / tell us what you need to ship, / and we'll prepare everything, all the way to done. |
+> | 8 Location | 61–71 | Find us at Soewarna Business Park, Lot 7A to 7B, in the Soekarno-Hatta International Airport area. |
+> | 9 End card | 71–85 | DHL Express Service Point, JDC Cengkareng. WhatsApp us today: 0877 7589 7478. |
 
 ---
 
