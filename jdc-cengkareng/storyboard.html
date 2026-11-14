@@ -140,6 +140,9 @@ button.copy.done{background:var(--red);color:#fff}
 .th figcaption em{font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
 .th.gptth{border-color:var(--red)}
 .pv{display:block;width:100%;max-width:300px;aspect-ratio:9/16;border-radius:12px;background:#000;margin-bottom:6px}
+.prodgrid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:20px;align-items:start}
+.final{display:block;width:100%;aspect-ratio:9/16;border-radius:16px;background:#000}
+@media (max-width:900px){.prodgrid{grid-template-columns:1fr}.final{max-width:360px}}
 .callout{background:var(--chip);color:var(--chip-ink);border-radius:12px;padding:12px 16px;font-size:14px;margin-top:16px}
 footer.end{padding-block:40px;color:var(--muted);font-size:13px}
 
@@ -194,6 +197,7 @@ footer.end{padding-block:40px;color:var(--muted);font-size:13px}
 </header>
 
 <nav class="idx" aria-label="Section index"><div class="wrap">
+  <a href="#prod">Video final</a>
   <a href="#look">Art direction</a>
   <a href="#board">Storyboard</a>
   <a href="#b1">B1 Hook</a><a href="#b2">B2 Intro</a><a href="#b3">B3 Anywhere</a><a href="#b4">B4 Rates</a>
@@ -203,6 +207,23 @@ footer.end{padding-block:40px;color:var(--muted);font-size:13px}
 </div></nav>
 
 <main>
+<section id="prod"><div class="wrap">
+  <div class="sec-head">
+    <div class="eyebrow">00 · Produksi v1</div>
+    <div><h2>Video final 85 detik</h2>
+    <p>Hasil render dari source di <span class="mono">jdc-cengkareng/film/</span>: 9 adegan (termasuk benefit baru 04 · Pickup), footer kartu label, VO bahasa Inggris, musik orisinal epic → pop 120 BPM, SFX, dan lapisan anti-edit. Sketsa storyboard di bawah adalah versi konsep; video ini yang berlaku.</p></div>
+  </div>
+  <div class="prodgrid">
+    <video class="final" src="final-720p.mp4" controls playsinline preload="metadata" poster="final-poster.jpg"></video>
+    <div class="card"><h3>Yang berubah dari konsep</h3><ul>
+      <li><b>Benefit 04 · Pickup:</b> van clay bertuliskan JDC Cengkareng menjemput paket dari rumah pelanggan, "No need to bring it to JDC Cengkareng".</li>
+      <li><b>Footer:</b> kartu label pengiriman dengan nama, alamat, tombol WhatsApp, nomor, chip "Pickup available" dan strip micro-text bergulir.</li>
+      <li><b>Header:</b> logo DHL plus baris "SERVICE POINT · JDC CENGKARENG".</li>
+      <li><b>Pacing:</b> durasi tiap adegan dihitung dari panjang VO asli (kecepatan 0,9) plus waktu baca; VO adegan 3 dan 7 dipecah per kalimat supaya sinkron dengan animasi.</li>
+      <li><b>Anti-edit:</b> nama JDC Cengkareng ditanam di objek 3D yang bergerak, micro-print latar bergerak, lakban transisi, footer animasi, VO menyebut nama 3× plus nomor, metadata dan SHA-256. Detail di <span class="mono">ANTI-EDIT.md</span>.</li>
+    </ul></div>
+  </div>
+</div></section>
 <!-- ART DIRECTION -->
 <section id="look"><div class="wrap">
   <div class="sec-head">

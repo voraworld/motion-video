@@ -170,8 +170,8 @@ function S5(){const [r,ov]=root();const {scene,cam}=stage({r:6});
 
 /* ================= S6 · Pickup at your place ================= */
 function S6(){const [r,ov]=root();const {scene,cam}=stage({r:6,fov:32});
-  scene.add(at(rbox(7.4,.3,5.0,.14,M.W),0,.15,0));
-  const path=new THREE.CatmullRomCurve3([V(-2.2,.31,-1.0),V(-1.1,.31,-.7),V(.1,.31,.2),V(1.3,.31,.95),V(2.1,.31,1.25)]);
+  scene.add(at(rbox(6.3,.3,4.7,.14,M.W),0,.15,0));
+  const path=new THREE.CatmullRomCurve3([V(-1.75,.31,-.85),V(-.9,.31,-.6),V(.1,.31,.15),V(1.05,.31,.85),V(1.7,.31,1.15)]);
   const road=[];for(let i=0;i<=60;i++)road.push(path.getPointAt(i/60));scene.add(ribbon(road,.85,.03,M.G));
   for(let i=1;i<12;i++){const u=i/12,p=path.getPointAt(u),tg=path.getTangentAt(u);const d=at(rbox(.2,.012,.05,.02,M.W),p.x,.33,p.z);d.rotation.y=Math.atan2(-tg.z,tg.x);scene.add(d)}
   // JDC building with a sign on the roof
@@ -179,12 +179,12 @@ function S6(){const [r,ov]=root();const {scene,cam}=stage({r:6,fov:32});
   for(let k=0;k<5;k++)jdc.add(at(rbox(.66,.02,.055,.01,M.Rm),0,.1+k*.12,.62));
   const sign=canvasTex(1024,256,(g,w,h)=>{g.fillStyle='#D40511';g.beginPath();g.roundRect(0,0,w,h,30);g.fill();g.fillStyle='#fff';g.font='400 112px ArchivoBlack';g.textAlign='center';g.save();g.translate(w/2,140);g.scale(.86,1);g.fillText('JDC CENGKARENG',0,0);g.restore();g.font='700 36px Mono';g.fillStyle='#FFCC00';g.fillText('DHL EXPRESS SERVICE POINT',w/2,212)});
   jdc.add(at(rbox(1.9,.5,.06,.04,M.R),0,1.55,.1),at(new THREE.Mesh(new THREE.PlaneGeometry(1.84,.46),new THREE.MeshBasicMaterial({map:sign})),0,1.55,.135),at(cyl(.03,.03,.3,M.G),-.7,1.33,.1),at(cyl(.03,.03,.3,M.G),.7,1.33,.1));
-  jdc.position.set(-2.75,.3,-1.55);scene.add(jdc);
+  jdc.position.set(-2.2,.3,-1.45);scene.add(jdc);
   // customer's home
   const roofS=new THREE.Shape();roofS.moveTo(-.68,0);roofS.lineTo(0,.55);roofS.lineTo(.68,0);roofS.closePath();
   const home=grp(at(rbox(1.15,.8,1.0,.08,M.W),0,.4,0),at(ext(roofS,1.1,.05,M.R),0,.78,0),at(rbox(.26,.42,.05,.04,M.Y),-.2,.24,.51),at(rbox(.24,.22,.05,.04,M.G2),.25,.48,.51));
-  home.position.set(2.85,.3,1.3);home.rotation.y=-.35;scene.add(home);
-  const pk=parcel(.42,.32,.36);scene.add(pk);const pkHome=V(2.25,.46,1.75);
+  home.position.set(2.3,.3,1.25);home.rotation.y=-.35;scene.add(home);
+  const pk=parcel(.42,.32,.36);scene.add(pk);const pkHome=V(1.75,.46,1.65);
   // van with the service point's name on both sides
   const van=new THREE.Group();scene.add(van);
   const side=canvasTex(1024,256,(g,w,h)=>{g.fillStyle='#D40511';g.font='400 96px ArchivoBlack';g.save();g.translate(30,120);g.scale(.86,1);g.fillText('JDC CENGKARENG',0,0);g.restore();g.fillStyle='#1B1912';g.font='800 48px Mono';g.fillText('PICKUP · +62 877-7589-7478',34,205)});
@@ -197,7 +197,7 @@ function S6(){const [r,ov]=root();const {scene,cam}=stage({r:6,fov:32});
   const num=txt(ov,'eyebrow','04',214,'font-size:40px');const h=txt(ov,'h1','<span>WE PICK UP</span>',262);const h2=txt(ov,'h1','<span class="red">AT YOUR PLACE.</span>',376,'font-size:104px');
   const sub=txt(ov,'sub','<span class="pillW">No need to bring it to JDC Cengkareng</span>',1395);
   return {root:r,scene,cam,update(lt){
-    const yaw=Math.sin(lt*.2)*.12;cam.fov=38;cam.updateProjectionMatrix();cam.position.set(-.35+Math.sin(yaw)*14.5,10.5,Math.cos(yaw)*14.5);cam.lookAt(-.35,1.25,-.1);
+    const yaw=Math.sin(lt*.2)*.12;cam.fov=38;cam.updateProjectionMatrix();cam.position.set(-.05+Math.sin(yaw)*16,11.5,Math.cos(yaw)*16);cam.lookAt(-.05,1.2,-.1);
     const go=eIO(prog(lt,.6,3.1)),back=eIO(prog(lt,4.7,7.4));let u=.03+go*.88-back*.86;u=clamp(u,0,1);
     const p=path.getPointAt(u),tg=path.getTangentAt(u);van.position.set(p.x,.31,p.z);
     const turn=eIO(prog(lt,3.9,4.6));van.rotation.y=Math.atan2(-tg.z,tg.x)+turn*Math.PI;van.position.y+=Math.abs(Math.sin(lt*14))*.012*(go>0&&go<1||back>0&&back<1?1:0);
