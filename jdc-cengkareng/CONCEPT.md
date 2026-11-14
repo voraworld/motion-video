@@ -3,24 +3,15 @@
 Konsep motion story promosi, vertikal 1080×1920, 30 fps, gaya 2.5D.
 Voice-over dan teks layar bahasa Inggris. Durasi master **70 detik** (35 bar @ 120 BPM).
 
-> **Status produksi v1 (berlaku di atas isi dokumen ini):**
-> - Material final: **soft-matte clay 3D** (Three.js), promo tanpa angka.
-> - Durasi final **85 detik**, 9 adegan. Ditambah benefit **04 · Pickup ke tempat Anda** ("No need to bring it to JDC Cengkareng").
-> - Footer didesain ulang jadi **kartu label pengiriman** (nama, alamat, tombol WhatsApp, nomor, chip "Pickup available", strip micro-text).
-> - Mekanisme anti-edit: lihat `ANTI-EDIT.md`.
-> - Source produksi: `film/` (index.html, core.js, scenes.js, timeline.json, script.json, audio/). Render: `film/render.cjs`, finishing: `film/finish.sh`.
->
-> | Adegan | Waktu | VO |
-> |---|---|---|
-> | 1 Hook (dalam kardus) | 0–6 | Shipping overseas? It just got a whole lot easier. |
-> | 2 Intro (label JDC) | 6–13 | Meet DHL Express Service Point, JDC Cengkareng. |
-> | 3 01 Anywhere, anytime | 13–23 | Book your shipment from anywhere, at any time. / At home, at the office, or on the go. |
-> | 4 02 Rates + promo | 23–32 | Enjoy competitive rates, plus special promotional discounts. Just ask us about the current promo. |
-> | 5 03 No registration | 32–39 | There's no registration needed. Skip the sign-up, completely. |
-> | 6 04 Pickup | 39–49 | Can't drop by? We'll pick up your shipment from your place, so you don't need to bring it to JDC Cengkareng. |
-> | 7 How it works | 49–61 | Just send us a WhatsApp message, / tell us what you need to ship, / and we'll prepare everything, all the way to done. |
-> | 8 Location | 61–71 | Find us at Soewarna Business Park, Lot 7A to 7B, in the Soekarno-Hatta International Airport area. |
-> | 9 End card | 71–85 | DHL Express Service Point, JDC Cengkareng. WhatsApp us today: 0877 7589 7478. |
+> **Status produksi v2 (berlaku di atas isi dokumen ini):**
+> - Material final **soft-matte clay 3D** (Three.js), promo tanpa angka. Durasi **86 detik**, 9 adegan, semua potongan di downbeat 120 BPM (6, 14, 24, 32, 40, 50, 62, 72 detik).
+> - **Transisi spatial carousel 2.5D**: adegan mundur jadi kartu di ruang 3D lalu berputar ke kartu berikutnya. Variasi: cincin horizontal (14 s), rolodex vertikal (24 s), heliks (32 s), cincin terbalik (40 s), kubus kardus (50 s), rolodex terbalik (62 s), dan *recap* 9 kartu satu putaran penuh sebelum end card (72 s).
+> - **Reveal "Meet DHL Express Service Point, JDC Cengkareng"** (9,0 s): kardus bergetar, flap meledak terbuka, sunburst, kolom cahaya, shockwave, konfeti, huruf JDC CENGKARENG terlempar keluar kardus dan mendarat di judul. Musik berhenti setengah ketukan lalu drop.
+> - **End card**: HP clay mengetik nomor WhatsApp digit demi digit sinkron dengan VO, angka besar ikut muncul, lalu kartu "Contact ready".
+> - **Jedag jedug**: skor EDM-pop dengan kick + sub, sidechain pumping, bass offbeat, stab supersaw, snare roll + riser + hening sebelum tiap drop; visual punch-in tiap ketukan, shake + flash di tiap drop.
+> - Elemen grafis kontekstual per adegan (tanpa blur): partikel cahaya, lintasan label, ikon globe/jam, chip %, ikon form dicoret, pin + ring rumah, centang langkah, radar pin, jalur terbang, konfeti.
+> - Benefit **04 · Pickup**, footer kartu label, mekanisme anti-edit: lihat `ANTI-EDIT.md`.
+> - Source: `film/` (index.html, core.js, scenes.js, timeline.json, script.json, audio/). Thumbnail kartu carousel: `film/thumbs/` (capture dengan `?clean=1`).
 
 ---
 

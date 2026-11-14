@@ -23,7 +23,7 @@ function words(e,lt,times,out=99){[...e.querySelectorAll('span')].forEach((s,i)=
   e.style.opacity=1-eIO(prog(lt,out,out+.35))}
 const HB='scaleX(.82) skewX(-8deg)',HB2='scaleX(.84) skewX(-8deg)';
 const mat=(map,o={})=>new THREE.MeshPhysicalMaterial({map,roughness:o.r??.6,sheen:.4,sheenColor:new THREE.Color('#fff1c2'),transparent:!!o.tr,clearcoat:o.cc||0});
-function proj(v,cam){const p=v.clone().project(cam);return [(p.x+1)/2*W,(1-p.y)/2*H]}
+function proj(v,cam){cam.updateMatrixWorld();const p=v.clone().project(cam);return [(p.x+1)/2*W,(1-p.y)/2*H]}
 // branded tape texture: the service point's name repeats along every strip of tape
 const tapeTex=(rot=0)=>{const t=canvasTex(1024,128,(g,w,h)=>{const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#E8202B');gr.addColorStop(1,'#C40410');g.fillStyle=gr;g.fillRect(0,0,w,h);
   g.fillStyle='rgba(255,255,255,.92)';g.font='400 54px ArchivoBlack';g.textBaseline='middle';let x=10;for(let i=0;i<4;i++){g.fillText('JDC CENGKARENG',x,h/2+3);x+=g.measureText('JDC CENGKARENG').width+24;g.fillText('✦',x,h/2);x+=60}});
@@ -66,34 +66,61 @@ function S1(){const [r,ov]=root();const scene=new THREE.Scene();scene.environmen
 
 /* ================= S2 · Intro: the service point label ================= */
 function S2(){const [r,ov]=root();const {scene,cam}=stage({r:4});
+  const rnd=i=>{const x=Math.sin(i*127.1+311.7)*43758.5453;return x-Math.floor(x)};
   scene.add(at(puck(1.75,.16,.07,M.W),-.35,.08,0));
-  const box=new THREE.Group();box.position.set(-.35,.16,0);scene.add(box);const bw=1.7,bh=1.25,bd=1.3;
-  box.add(at(rbox(bw,bh,bd,.16,M.Y),0,bh/2,0));
-  const tm=new THREE.MeshPhysicalMaterial({map:tapeTex(Math.PI/2),roughness:.45,clearcoat:.3});
-  box.add(at(rbox(.36,.05,bd+.04,.02,tm),0,bh+.005,0));
-  const tm2=new THREE.MeshPhysicalMaterial({map:tapeTex(Math.PI/2),roughness:.45,clearcoat:.3});box.add(at(rbox(.36,.42,.05,.02,tm2),0,bh-.21,bd/2+.01));
+  const box=new THREE.Group();box.position.set(-.35,.16,0);scene.add(box);const bw=1.7,bh=1.25,bd=1.3,t=.07;
+  box.add(at(rbox(bw,bh,bd,.16,M.Y),0,bh/2,0));box.add(at(rbox(bw-.14,.02,bd-.14,.01,M.Yin),0,bh-.012,0));
+  const tm=()=>new THREE.MeshPhysicalMaterial({map:tapeTex(Math.PI/2),roughness:.45,clearcoat:.3});
+  // four flaps; the long ones carry one half of the branded tape each, so the tape tears on the blast
+  const flaps=[[0,1,bd/2,bw],[0,-1,bd/2,bw],[1,0,bw*.42,bd],[-1,0,bw*.42,bd]].map(([x,z,len,wid],i)=>{const pv=new THREE.Group();pv.position.set(x*bw/2,bh,z*bd/2);
+    const f=rbox(x?len:wid-.04,t*.8,x?wid-.04:len,.03,M.Y);f.position.set(-x*len/2,(x?-.012:0),-z*len/2);pv.add(f);
+    if(!x)pv.add(at(rbox(.36,.03,len,.012,tm()),0,.045,-z*len/2));box.add(pv);return {pv,x,z,i}});
+  box.add(at(rbox(.36,.42,.05,.02,tm()),0,bh-.21,bd/2+.01));
+  const seam=new THREE.Mesh(new THREE.PlaneGeometry(bw*.92,.05),new THREE.MeshBasicMaterial({color:'#FFF6C8',transparent:true,opacity:0}));seam.rotation.x=-Math.PI/2;seam.position.y=bh+.07;box.add(seam);
+  const glow=new THREE.Mesh(new THREE.PlaneGeometry(bw-.2,bd-.2),new THREE.MeshBasicMaterial({color:'#FFF3B0',transparent:true,opacity:0}));glow.rotation.x=-Math.PI/2;glow.position.y=bh-.005;box.add(glow);
+  const inner=new THREE.PointLight('#FFD86B',0,7,1.4);inner.position.set(0,bh+.5,0);box.add(inner);
+  // light column out of the open box
+  const beam=new THREE.Mesh(new THREE.CylinderGeometry(1.7,.72,4.2,48,1,true),new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{k:{value:0}},
+    vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'uniform float k;varying vec2 vUv;void main(){float a=(1.-vUv.y)*.55*k*(.6+.4*sin(vUv.x*60.));gl_FragColor=vec4(1.,.86,.35,a);}'}));
+  beam.position.set(0,bh+2.1,0);box.add(beam);
+  // sunburst behind the box
+  const rays=new THREE.Mesh(new THREE.PlaneGeometry(10,10),new THREE.MeshBasicMaterial({transparent:true,depthWrite:false,map:canvasTex(1024,1024,(g,w,h)=>{const c=w/2;for(let i=0;i<28;i++){g.beginPath();g.moveTo(c,c);g.arc(c,c,c,i/28*Math.PI*2,(i+.5)/28*Math.PI*2);g.closePath();g.fillStyle=i%2?'rgba(255,255,255,.55)':'rgba(255,214,64,.6)';g.fill()}
+    const gr=g.createRadialGradient(c,c,0,c,c,c);gr.addColorStop(0,'rgba(255,250,220,1)');gr.addColorStop(.25,'rgba(255,240,170,.4)');gr.addColorStop(1,'rgba(255,230,140,0)');g.globalCompositeOperation='destination-in';g.fillStyle=gr;g.fillRect(0,0,w,h)})}));
+  rays.position.set(-.35,1.7,-2.2);scene.add(rays);
   const printer=B.A06();printer.rotation.y=-.5;printer.scale.setScalar(.55);printer.position.set(1.2,0,1.15);scene.add(printer);
-  // remove the static paper strip of A06; the live label replaces it
   printer.traverse(o=>{if(o.isMesh&&o.geometry.type==='BufferGeometry'&&o.material===M.W&&!o.geometry.parameters)o.visible=false});
-  const lt0=labelTex();const label=new THREE.Mesh(new THREE.PlaneGeometry(.92,.61),new THREE.MeshPhysicalMaterial({map:lt0,roughness:.55,side:THREE.DoubleSide}));label.castShadow=true;box.add(label);
+  const label=new THREE.Mesh(new THREE.PlaneGeometry(.92,.61),new THREE.MeshPhysicalMaterial({map:labelTex(),roughness:.55,side:THREE.DoubleSide}));label.castShadow=true;box.add(label);
   const slot=new THREE.Object3D();slot.position.set(0,.6,.75);printer.add(slot);
-  const eb=txt(ov,'eyebrow','MEET DHL EXPRESS',214);const h2=txt(ov,'h2','<span>SERVICE POINT</span>',268);const h1=txt(ov,'h1','<span class="red">JDC CENGKARENG</span>',360,'font-size:104px');
+  const eb=txt(ov,'eyebrow','MEET DHL EXPRESS',214);const h2=txt(ov,'h2','<span>SERVICE POINT</span>',268);
+  const NAME='JDC CENGKARENG';const h1=txt(ov,'h1',NAME.split('').map(c=>`<span class="red">${c===' '?'&nbsp;':c}</span>`).join(''),360,'font-size:104px');h1.style.opacity=1;
+  const letters=[...h1.querySelectorAll('span')];let fin=null;
   const sub=txt(ov,'sub','Jakarta Distribution Center',488,'font:700 30px Mono;letter-spacing:.14em;color:#6d6656');
-  const qA=new THREE.Quaternion(),qB=new THREE.Quaternion(),tmp=new THREE.Vector3(),fQ=new THREE.Quaternion();
+  const qA=new THREE.Quaternion(),qB=new THREE.Quaternion(),fQ=new THREE.Quaternion(),BL=3.0;
   return {root:r,scene,cam,update(lt){
-    cam.position.set(.3+Math.sin(lt*.25)*.4,4.8,11.6);cam.lookAt(.25,.95,0);
-    box.rotation.y=-.42+lt*.035;
-    // label: out of the printer slot (1.0–2.4), then flies onto the box's front face (3.0–4.2)
+    const push=eIO(prog(lt,2.1,BL)),rec=lt>=BL?Math.exp(-(lt-BL)*3.2)*Math.cos((lt-BL)*9):0;
+    cam.position.set(-.1+Math.sin(lt*.25)*.3,6.1-push*.35+rec*.35,15.6-push*1.0+rec*1.3);cam.lookAt(-.1,1.0+push*.1,0);
+    const amp=eIn(prog(lt,2.0,BL))*(lt<BL?1:0);box.position.x=-.35+Math.sin(lt*71)*.035*amp;box.rotation.set(0,-.42+lt*.035,Math.sin(lt*53)*.03*amp);
+    // flaps rattle, then blast open on the downbeat
+    flaps.forEach(({pv,x,z,i})=>{const rattle=Math.max(0,Math.sin(lt*38+i*1.7))*.09*amp;const o=lt<BL?rattle:clamp(spring(lt-BL-i*.03,13,.32),0,1.25)*(x?2.0:2.3);if(x)pv.rotation.z=-x*o;else pv.rotation.x=z*o});
+    seam.material.opacity=lt<BL?amp*.95:0;const b=lt>=BL?Math.exp(-(lt-BL)*1.4):0;
+    glow.material.opacity=lt>=BL?.55+.45*b:0;inner.intensity=lt<BL?amp*6:6+30*b;beam.material.uniforms.k.value=lt>=BL?.45+.9*b:0;
+    const rk=spring(lt-BL,9,.5);rays.visible=lt>=BL;rays.scale.setScalar(Math.max(.001,rk*(1+.05*Math.sin(lt*3))));rays.material.opacity=.55+.45*b;rays.lookAt(cam.position);rays.rotateZ(lt*.35);
+    // label: printed (4.2–5.2) then flown onto the box (5.4–6.5)
     scene.updateMatrixWorld(true);
-    const out=eOut(prog(lt,1.0,2.4)),fly=eIO(prog(lt,3.0,4.2));
+    const out=eOut(prog(lt,4.2,5.2)),fly=eIO(prog(lt,5.4,6.5));
     const sw=slot.getWorldPosition(new THREE.Vector3());const dir=new THREE.Vector3(0,0,1).applyQuaternion(printer.quaternion);
-    const startW=sw.clone().addScaledVector(dir,-.25+out*.42).add(new THREE.Vector3(0,.02,0));
-    const startL=box.worldToLocal(startW.clone());const endL=new THREE.Vector3(.18,.52,bd/2+.035);
+    const startW=sw.clone().addScaledVector(dir,-.25+out*.42).add(new THREE.Vector3(0,.02,0));const startL=box.worldToLocal(startW.clone());const endL=new THREE.Vector3(.18,.52,bd/2+.035);
     const p=startL.clone().lerp(endL,fly);p.y+=Math.sin(fly*Math.PI)*1.1;label.position.copy(p);
-    qA.setFromEuler(new THREE.Euler(-Math.PI/2+.25,printer.rotation.y,0,'YXZ'));fQ.copy(box.getWorldQuaternion(new THREE.Quaternion())).invert().multiply(qA);
-    qB.identity();label.quaternion.copy(fQ).slerp(qB,fly);
-    const s=fly>=1?1+.06*Math.sin(clamp((lt-4.2)*10)*Math.PI):1;label.scale.set(s,s,1);label.visible=lt>=.95;
-    show(eb,lt,1.0,6.45);words(h2,lt,[1.25],6.45);words(h1,lt,[3.15],6.45);show(sub,lt,3.75,6.45,30)}}}
+    qA.setFromEuler(new THREE.Euler(-Math.PI/2+.25,printer.rotation.y,0,'YXZ'));fQ.copy(box.getWorldQuaternion(new THREE.Quaternion())).invert().multiply(qA);qB.identity();label.quaternion.copy(fQ).slerp(qB,fly);
+    const s=fly>=1?1+.06*Math.sin(clamp((lt-6.5)*10)*Math.PI):1;label.scale.set(s,s,1);label.visible=lt>=4.15;
+    const top=proj(box.localToWorld(new THREE.Vector3(0,bh+.2,0)),cam);
+    this.anchors={boxTop:top,slot:proj(sw,cam),label:proj(label.getWorldPosition(new THREE.Vector3()),cam),labelS:proj(box.localToWorld(endL.clone()),cam)};
+    // the name erupts out of the box letter by letter and lands in the headline
+    if(!fin){fin=letters.map(e=>[e.offsetLeft+e.offsetWidth/2-h1.offsetWidth/2,e.offsetTop+e.offsetHeight/2])}
+    letters.forEach((e,i)=>{const ti=BL+.02+i*.035,k=prog(lt,ti,ti+.62),q=eOut(k);const fx=540+fin[i][0]*.82,fy=360+fin[i][1];
+      const dx=(top[0]-fx)/.82,dy=top[1]-fy;const land=lt-(ti+.62);const sq=land>0?.2*Math.exp(-land*11)*Math.sin(land*34):0;
+      e.style.opacity=lt>=ti?1:0;e.style.transform=`translate(${dx*(1-q)}px,${dy*(1-q)-Math.sin(q*Math.PI)*(240+rnd(i)*160)}px) rotate(${(1-q)*(rnd(i+7)-.5)*760}deg) scale(${lerp(.2,1,q)*(1+sq)},${lerp(.2,1,q)*(1-sq)})`});
+    show(eb,lt,.9,99);words(h2,lt,[1.55],99);show(sub,lt,4.3,99,30)}}}
 
 /* ================= S3 · Anywhere, anytime: sorting conveyor ================= */
 function S3(){const [r,ov]=root();const {scene,cam}=stage({r:6});
@@ -113,15 +140,15 @@ function S3(){const [r,ov]=root();const {scene,cam}=stage({r:6});
   const tag=el('div','tagT','<b>07:30</b><i>BOOKED · JDC CGK</i>',ov);
   const chips=el('div',null,'<div class="chip">HOME</div><div class="chip">OFFICE</div><div class="chip">ON THE GO</div>',ov);chips.style.cssText='position:absolute;left:0;right:0;top:1420px;display:flex;justify-content:center;gap:18px';
   return {root:r,scene,cam,update(lt){
-    const dx=Math.sin(lt/5*Math.PI)*.18;cam.fov=42;cam.updateProjectionMatrix();cam.position.set(dx,6.2-.2*eOut(lt/10),11.2-.6*eOut(lt/10));cam.lookAt(0,.2,-.6);
+    const dx=Math.sin(lt/5*Math.PI)*.18;cam.fov=42;cam.updateProjectionMatrix();cam.position.set(dx,7.3-.2*eOut(lt/10),13.4-.6*eOut(lt/10));cam.lookAt(0,.75,-.6);
     const tr=travel(lt);dios.forEach((hh,i)=>{let u=.5-D1-i*SPACE+tr;hh.visible=u>0.01&&u<.99;u=clamp(u,0,1);const p=curve.getPointAt(u);hh.position.set(p.x,.7,p.z);hh.rotation.y=-.5;
       const s=scans[i];hh.position.y+=Math.max(0,(spring(lt-s.t+.15)-spring(lt-(s.t+1.4)))*.12)});
     sweep.visible=false;scans.forEach(s=>{const k=prog(lt,s.t,s.t+.45);if(k>0&&k<1){sweep.visible=true;sweep.position.set(gp.x,1.8-.95*eIO(k),gp.z)}});
     let ts=0,tx='07:30';scans.forEach(s=>{if(lt>=s.t+.35&&lt<s.end+.25){ts=spring(lt-(s.t+.35),16,.38)*(1-eIO(prog(lt,s.end,s.end+.25)));tx=s.u}});
-    tag.querySelector('b').textContent=tx;const [x,y]=proj(V(gp.x,2.32,gp.z),cam);tag.style.left=(x-tag.offsetWidth/2)+'px';tag.style.top=(y-tag.offsetHeight-6)+'px';tag.style.transform=`scale(${ts})`;
-    show(num,lt,.25,9.45,30);words(h,lt,[.35],9.45);
-    const sw=eIO(prog(lt,2.85,3.2));show(wA,lt,.6,2.85,60,HB);show(wB,lt,3.1,9.45,60,HB);
-    const cs=chips.querySelectorAll('.chip'),on=[6.75,7.35,7.95];cs.forEach((c,i)=>{const k=spring(lt-(6.5+i*.1),15,.55);c.style.transform=`translateY(${(1-k)*40}px)`;c.style.opacity=clamp((lt-(6.5+i*.1))*6)*(1-prog(lt,9.4,9.7));c.classList.toggle('on',lt>=on[i]&&(i===2||lt<on[i+1]))})}}}
+    tag.querySelector('b').textContent=tx;const [x,y]=proj(V(gp.x,2.32,gp.z),cam);this.anchors={gate:proj(V(gp.x,1.95,gp.z),cam)};tag.style.left=(x-tag.offsetWidth/2)+'px';tag.style.top=(y-tag.offsetHeight-6)+'px';tag.style.transform=`scale(${ts})`;
+    show(num,lt,.25,99,30);words(h,lt,[.35],99);
+    const sw=eIO(prog(lt,2.85,3.2));show(wA,lt,.6,2.85,60,HB);show(wB,lt,3.1,99,60,HB);
+    const cs=chips.querySelectorAll('.chip'),on=[6.75,7.35,7.95];cs.forEach((c,i)=>{const k=spring(lt-(6.5+i*.1),15,.55);c.style.transform=`translateY(${(1-k)*40}px)`;c.style.opacity=clamp((lt-(6.5+i*.1))*6);c.classList.toggle('on',lt>=on[i]&&(i===2||lt<on[i+1]))})}}}
 
 /* ================= S4 · Competitive rates + promo ================= */
 function S4(){const [r,ov]=root();const {scene,cam}=stage({r:5});
@@ -142,15 +169,15 @@ function S4(){const [r,ov]=root();const {scene,cam}=stage({r:5});
   const strip=at(rbox(2.0,.3,.06,.03,new THREE.MeshPhysicalMaterial({map:tapeTex(0),roughness:.45,clearcoat:.3})),1.75,1.85,.05,0,0,-.95);scene.add(strip);
   const A=V(1.15,2.55,0),Bp=V(2.35,1.15,0);
   const num=txt(ov,'eyebrow','02',214,'font-size:40px');const h=txt(ov,'h1','<span>COMPETITIVE</span>',262);const h2=txt(ov,'h1','<span class="red">RATES</span>',376);
-  const ban=txt(ov,'sub','<span class="pillR">+ SPECIAL PROMO DISCOUNTS</span>',1230);const ask=txt(ov,'sub','<span class="pillW">Ask us about the current promo</span>',1372);
+  const ban=txt(ov,'sub','<span class="pillR" style="font-size:44px">+ SPECIAL PROMO DISCOUNTS</span>',1222);const ask=txt(ov,'sub','<span class="pillW">Ask us about the current promo</span>',1372);
   return {root:r,scene,cam,update(lt){
-    cam.position.set(.55+Math.sin(lt*.3)*.3,3.0,16.2);cam.lookAt(.7,1.75,0);
+    cam.position.set(.6+Math.sin(lt*.3)*.25,3.1,18.6);cam.lookAt(.62,1.7,0);
     pivot.rotation.z=Math.sin(lt*2.4)*.24*Math.exp(-lt*.35)+(lt>3.4?Math.sin((lt-3.4)*5)*.08*Math.exp(-(lt-3.4)*1.5):0)+.02;
     const ra=eOut(prog(lt,1.4,2.3)),rb=eOut(prog(lt,1.6,2.5));
     rollA.position.set(lerp(5.5,A.x,ra),A.y,0);rollA.rotation.z=(1-ra)*7;rollB.position.set(lerp(6,Bp.x,rb),Bp.y,0);rollB.rotation.z=(1-rb)*7;
     const sk=eOut(prog(lt,2.3,2.9));strip.scale.set(Math.max(.001,sk),1,1);
-    const sp=spring(lt-3.4,13,.42);sticker.scale.setScalar(lt<3.3?.0001:lerp(1.6,1,sp));sticker.rotation.z=(1-sp)*.6;
-    show(num,lt,.25,8.45,30);words(h,lt,[.4],8.45);words(h2,lt,[.7],8.45);show(ban,lt,2.4,8.45);show(ban,lt,2.4,8.45,50);show(ask,lt,4.95,8.45)}}}
+    const sp=spring(lt-3.4,13,.42);sticker.scale.setScalar(lt<3.3?.0001:lerp(1.6,1,sp));sticker.rotation.z=(1-sp)*.6;scene.updateMatrixWorld(true);this.anchors={sticker:proj(sticker.getWorldPosition(new THREE.Vector3()),cam)};
+    show(num,lt,.25,99,30);words(h,lt,[.4],99);words(h2,lt,[.7],99);show(ban,lt,2.4,99);show(ban,lt,2.4,99,50);show(ask,lt,4.95,99)}}}
 
 /* ================= S5 · No registration: forms fall like dominoes ================= */
 function S5(){const [r,ov]=root();const {scene,cam}=stage({r:6});
@@ -162,16 +189,16 @@ function S5(){const [r,ov]=root();const {scene,cam}=stage({r:6});
   const tape=el('div','tape',null,ov);tape.style.cssText+='left:268px;top:300px;width:700px;height:30px;transform:rotate(-3deg) scaleX(0)';
   const h2=txt(ov,'h1','<span class="red">NEEDED.</span>',380);
   return {root:r,scene,cam,update(lt){
-    cam.position.set(5.6+Math.sin(lt*.3)*.3,6.4,12.6);cam.lookAt(-.3,1.0,-.8);
+    cam.position.set(6.3+Math.sin(lt*.3)*.25,7.3,14.6);cam.lookAt(-.05,1.05,-.45);
     panels.forEach((pv,i)=>{const a=eIn(prog(lt,2.7+i*.25,3.2+i*.25));pv.rotation.x=-a*1.42});
-    const bk=spring(lt-4.0,10,.5);bg.position.set(.2,lerp(-.5,2.6,bk)+Math.sin(lt*2)*.06,1.9);bg.rotation.set(-.12,-.45+Math.sin(lt*1.3)*.05,.05);bg.scale.setScalar(Math.max(.001,bk));bg.visible=lt>3.9;
-    show(num,lt,.25,6.45,30);words(h,lt,[.35],6.45);const tk=eOut(prog(lt,.85,1.15));tape.style.transform=`rotate(-3deg) scaleX(${tk})`;tape.style.opacity=1-prog(lt,6.45,6.8);
-    words(h2,lt,[1.45],6.45)},bubbleAt:[540,980]}}
+    const bk=spring(lt-4.0,10,.5);bg.position.set(-.35,lerp(-.5,3.0,bk)+Math.sin(lt*2)*.06,1.9);bg.lookAt(cam.position);bg.rotateY(-.3+Math.sin(lt*1.3)*.04);bg.rotateZ(.04);bg.scale.setScalar(Math.max(.001,bk*1.22));bg.visible=lt>3.9;scene.updateMatrixWorld(true);this.anchors={bubble:proj(bg.getWorldPosition(new THREE.Vector3()),cam)};
+    show(num,lt,.25,99,30);words(h,lt,[.35],99);const tk=eOut(prog(lt,.85,1.15));tape.style.transform=`rotate(-3deg) scaleX(${tk})`;tape.style.opacity=1;
+    words(h2,lt,[1.45],99)},bubbleAt:[540,980]}}
 
 /* ================= S6 · Pickup at your place ================= */
 function S6(){const [r,ov]=root();const {scene,cam}=stage({r:6,fov:32});
   scene.add(at(rbox(6.3,.3,4.7,.14,M.W),0,.15,0));
-  const path=new THREE.CatmullRomCurve3([V(-1.75,.31,-.85),V(-.9,.31,-.6),V(.1,.31,.15),V(1.05,.31,.85),V(1.7,.31,1.15)]);
+  const path=new THREE.CatmullRomCurve3([V(-2.2,.31,-.3),V(-1.55,.31,.2),V(-.45,.31,.45),V(.6,.31,.95),V(1.25,.31,1.6)]);
   const road=[];for(let i=0;i<=60;i++)road.push(path.getPointAt(i/60));scene.add(ribbon(road,.85,.03,M.G));
   for(let i=1;i<12;i++){const u=i/12,p=path.getPointAt(u),tg=path.getTangentAt(u);const d=at(rbox(.2,.012,.05,.02,M.W),p.x,.33,p.z);d.rotation.y=Math.atan2(-tg.z,tg.x);scene.add(d)}
   // JDC building with a sign on the roof
@@ -183,8 +210,8 @@ function S6(){const [r,ov]=root();const {scene,cam}=stage({r:6,fov:32});
   // customer's home
   const roofS=new THREE.Shape();roofS.moveTo(-.68,0);roofS.lineTo(0,.55);roofS.lineTo(.68,0);roofS.closePath();
   const home=grp(at(rbox(1.15,.8,1.0,.08,M.W),0,.4,0),at(ext(roofS,1.1,.05,M.R),0,.78,0),at(rbox(.26,.42,.05,.04,M.Y),-.2,.24,.51),at(rbox(.24,.22,.05,.04,M.G2),.25,.48,.51));
-  home.position.set(2.3,.3,1.25);home.rotation.y=-.35;scene.add(home);
-  const pk=parcel(.42,.32,.36);scene.add(pk);const pkHome=V(1.75,.46,1.65);
+  home.position.set(2.55,.3,.45);home.rotation.y=-.75;scene.add(home);
+  const pk=parcel(.42,.32,.36);scene.add(pk);const pkHome=V(1.86,.46,.92);
   // van with the service point's name on both sides
   const van=new THREE.Group();scene.add(van);
   const side=canvasTex(1024,256,(g,w,h)=>{g.fillStyle='#D40511';g.font='400 96px ArchivoBlack';g.save();g.translate(30,120);g.scale(.86,1);g.fillText('JDC CENGKARENG',0,0);g.restore();g.fillStyle='#1B1912';g.font='800 48px Mono';g.fillText('PICKUP · +62 877-7589-7478',34,205)});
@@ -197,17 +224,17 @@ function S6(){const [r,ov]=root();const {scene,cam}=stage({r:6,fov:32});
   const num=txt(ov,'eyebrow','04',214,'font-size:40px');const h=txt(ov,'h1','<span>WE PICK UP</span>',262);const h2=txt(ov,'h1','<span class="red">AT YOUR PLACE.</span>',376,'font-size:104px');
   const sub=txt(ov,'sub','<span class="pillW">No need to bring it to JDC Cengkareng</span>',1395);
   return {root:r,scene,cam,update(lt){
-    const yaw=Math.sin(lt*.2)*.12;cam.fov=38;cam.updateProjectionMatrix();cam.position.set(-.05+Math.sin(yaw)*16,11.5,Math.cos(yaw)*16);cam.lookAt(-.05,1.2,-.1);
-    const go=eIO(prog(lt,.6,3.1)),back=eIO(prog(lt,4.7,7.4));let u=.03+go*.88-back*.86;u=clamp(u,0,1);
+    const yaw=Math.sin(lt*.2)*.12;cam.fov=38;cam.updateProjectionMatrix();cam.position.set(Math.sin(yaw)*16.4,12.3,Math.cos(yaw)*16.4);cam.lookAt(0,.75,.1);
+    const go=eIO(prog(lt,.6,3.1)),back=eIO(prog(lt,4.7,7.4));let u=.06+go*.86-back*.84;u=clamp(u,0,1);
     const p=path.getPointAt(u),tg=path.getTangentAt(u);van.position.set(p.x,.31,p.z);
     const turn=eIO(prog(lt,3.9,4.6));van.rotation.y=Math.atan2(-tg.z,tg.x)+turn*Math.PI;van.position.y+=Math.abs(Math.sin(lt*14))*.012*(go>0&&go<1||back>0&&back<1?1:0);
-    const hop=prog(lt,3.3,3.95);const vp=van.position.clone().add(V(0,.75,0));
+    this.anchors={home:proj(home.position.clone().add(V(0,1.85,0)),cam),van:proj(van.position,cam)};const hop=prog(lt,3.3,3.95);const vp=van.position.clone().add(V(0,.75,0));
     if(hop<=0){pk.position.copy(pkHome);pk.scale.setScalar(1);pk.visible=true}else{const q=pkHome.clone().lerp(vp,eIO(hop));q.y+=Math.sin(hop*Math.PI)*.9;pk.position.copy(q);pk.rotation.y=hop*3;pk.scale.setScalar(1-eIn(hop)*.85);pk.visible=hop<1}
-    show(num,lt,.2,9.45,30);words(h,lt,[.3],9.45);words(h2,lt,[1.5],9.45);show(sub,lt,5.05,9.45)}}}
+    show(num,lt,.2,99,30);words(h,lt,[.3],99);words(h2,lt,[1.5],99);show(sub,lt,5.05,99)}}}
 
 /* ================= S7 · How it works: chat → box ================= */
 function S7(){const [r,ov]=root();const {scene,cam}=stage({r:5});
-  const phone=phoneObj(1.55);phone.position.set(-1.05,2.0,.3);phone.rotation.set(-.08,.32,-.06);scene.add(phone);
+  const phone=phoneObj(1.55);phone.position.set(-.85,2.0,.3);phone.rotation.set(-.08,.32,-.06);scene.add(phone);
   const chat=canvasTex(560,1220,()=>{});const scr=new THREE.Mesh(new THREE.PlaneGeometry(.8*1.55,1.72*1.55),new THREE.MeshBasicMaterial({map:chat,toneMapped:false}));scr.position.set(0,-.01*1.55,.1*1.55+.04);phone.add(scr);
   const pinAnchor=new THREE.Object3D();phone.add(pinAnchor);
   let last='';
@@ -226,7 +253,7 @@ function S7(){const [r,ov]=root();const {scene,cam}=stage({r:5});
       g.fillStyle='#1B1912';g.font='700 22px Jakarta';g.fillText('JDC Cengkareng · Lot 7A–7B',42,y+140);pinAnchor.position.set((189/w-.5)*.8*1.55,(.5-(y+60)/h)*1.72*1.55,.18)}
     chat.needsUpdate=true}
   // dieline that folds into the parcel
-  const bx=new THREE.Group();bx.position.set(1.45,0,-.7);bx.rotation.y=-.5;scene.add(bx);const s=1.0,th=.05;
+  const bx=new THREE.Group();bx.position.set(1.35,0,-1.9);bx.scale.setScalar(1.2);bx.rotation.y=-.5;scene.add(bx);const s=1.0,th=.05;
   bx.add(at(rbox(s,th,s,.02,M.Yl),0,th/2,0));
   const sides=[[0,1],[0,-1],[1,0],[-1,0]].map(([x,z])=>{const pv=new THREE.Group();pv.position.set(x*s/2,th,z*s/2);const p=rbox(x?s*.98:s,th,x?s:s*.98,.02,M.Y);p.geometry=new RoundedBoxGeometryFix(x?s:s,th,x?s:s);
     p.position.set(x*s/2,0,z*s/2);pv.add(p);bx.add(pv);return {pv,x,z}});
@@ -239,58 +266,90 @@ function S7(){const [r,ov]=root();const {scene,cam}=stage({r:5});
   const stepAt=[.7,3.4,5.8];
   return {root:r,scene,cam,update(lt,t){
     cam.position.set(.2+Math.sin(lt*.25)*.4,4.2,14.2);cam.lookAt(.3,1.25,0);
-    phone.position.y=2.0+Math.sin(lt*1.4)*.05;drawChat(lt);
+    phone.position.y=2.05+Math.sin(lt*1.4)*.05;drawChat(lt);
     // fold: sides 6.4–7.5 (staggered), lid 7.6–8.1, tape 8.0, label 8.3, stamp 8.6
     sides.forEach(({pv,x,z},i)=>{const a=eIO(prog(lt,6.4+i*.15,7.1+i*.15))*Math.PI/2;if(x)pv.rotation.z=x*a;else pv.rotation.x=-z*a});
     lid.rotation.x=eIO(prog(lt,7.55,8.1))*Math.PI/2;
     btape.visible=lt>8.0;btape.scale.set(1,1,Math.max(.001,eOut(prog(lt,8.0,8.3))));btape.position.y=s+th*1.5+.012;
     const ls=spring(lt-8.3,14,.45);blab.visible=lt>8.25;blab.scale.setScalar(Math.max(.001,lerp(1.5,1,ls)));
-    const sk=spring(lt-8.6,12,.45);stamp.visible=lt>8.55;stamp.position.set(1.95,lerp(3.2,1.65,sk),-.1);stamp.rotation.set(.9,0,.3);
+    const sk=spring(lt-8.6,12,.45);stamp.visible=lt>8.55;stamp.position.set(1.95,lerp(3.6,2.05,sk),-1.25);stamp.rotation.set(.9,0,.3);this.anchors={stamp:proj(stamp.position,cam)};
     scene.updateMatrixWorld(true);this.pinScreen=proj(pinAnchor.getWorldPosition(new THREE.Vector3()),cam);
-    show(eb,lt,.25,11.3,30);words(h,lt,[.4,.65,.9],11.3);
-    steps.forEach((e,i)=>{const k=spring(lt-(stepAt[i]-.15),15,.55);e.style.opacity=clamp((lt-(stepAt[i]-.15))*6)*(1-prog(lt,11.3,11.6));e.style.transform=`translateX(${(1-k)*-80}px)`;e.classList.toggle('on',lt>=stepAt[i]&&(i===2||lt<stepAt[i+1]))})}}}
+    show(eb,lt,.25,99,30);words(h,lt,[.4,.65,.9],99);
+    steps.forEach((e,i)=>{const k=spring(lt-(stepAt[i]-.15),15,.55);e.style.opacity=clamp((lt-(stepAt[i]-.15))*6);e.style.transform=`translateX(${(1-k)*-80}px)`;e.classList.toggle('on',lt>=stepAt[i]&&(i===2||lt<stepAt[i+1]))})}}}
 function RoundedBoxGeometryFix(w,h,d){return new THREE.BoxGeometry(w,h,d)}
 
 /* ================= S8 · Location (GPT diorama, 2.5D) ================= */
 function S8(){const [r,ov]=root();
-  const wrap=el('div',null,null,ov);wrap.style.cssText='position:absolute;left:40px;top:560px;width:1000px;height:564px;perspective:1600px';
+  const wrap=el('div',null,null,ov);wrap.style.cssText='position:absolute;left:20px;top:650px;width:1040px;height:587px;perspective:1600px';
   const map=el('div',null,'<img src="../../inbox/jdc/jdc_A21_airport-diorama.png" style="width:100%;height:100%;display:block">',wrap);map.style.cssText='position:absolute;inset:0;transform-origin:50% 60%;filter:drop-shadow(0 30px 30px rgba(107,74,0,.28))';
   const pin=el('img',null,null,ov);pin.src='../../inbox/jdc/jdc_A23_map-pin.png';pin.style.cssText='position:absolute;width:190px;height:190px';
   const plab=el('div',null,'<span style="font:700 15px Mono;letter-spacing:.14em;color:#D40511;display:block">SERVICE POINT</span>JDC CENGKARENG',ov);plab.style.cssText='position:absolute;background:#fff;border-radius:16px;padding:10px 18px 12px;font:400 30px ArchivoBlack;color:#1B1912;box-shadow:0 14px 0 -6px rgba(122,90,0,.25);white-space:nowrap;transform-origin:50% 100%';
   const plane=el('img',null,null,ov);plane.src='../../inbox/jdc/jdc_A22_cargo-plane.png';plane.style.cssText='position:absolute;width:300px;height:300px';
   const eb=txt(ov,'eyebrow','FIND US',214);const h=txt(ov,'h2','<span>SOEWARNA BUSINESS PARK</span>',268,'font-size:70px');
-  const lot=txt(ov,'sub','<span class="pillR">LOT 7A–7B</span>',358);const air=txt(ov,'sub',"Soekarno-Hatta International Airport Area",470,'font:700 30px Mono;letter-spacing:.06em;color:#6d6656');
+  const lot=txt(ov,'sub','<span class="pillR">LOT 7A–7B</span>',358);const air=txt(ov,'sub','<span class="pillW" style="display:inline-flex;align-items:center;gap:12px;font:700 27px Mono;letter-spacing:.04em"><svg viewBox="0 0 24 30" style="width:22px;height:28px"><path d="M12 29C5 20 1 15 1 10.5A11 11 0 0 1 23 10.5C23 15 19 20 12 29Z" fill="#D40511"/><circle cx="12" cy="10.5" r="4.2" fill="#fff"/></svg>Soekarno-Hatta International Airport Area</span>',1300);
   const hero=[.581,.7];
   return {root:r,scene:null,cam:null,update(lt){
     const kb=eOut(lt/10);map.style.transform=`rotateX(${12-kb*4}deg) rotateZ(${-1+kb*2}deg) scale(${1+kb*.06})`;
-    const px=40+hero[0]*1000,py=560+hero[1]*564-kb*10;const d=spring(lt-.75,12,.38);
-    pin.style.left=(px-95)+'px';pin.style.top=(py-170-(1-d)*420)+'px';pin.style.opacity=clamp((lt-.75)*8);pin.style.transform=`scale(${lerp(.8,1,d)},${lerp(1.25,1,d)})`;
+    const px=20+hero[0]*1040,py=650+hero[1]*587-kb*10;const d=spring(lt-.75,12,.38);
+    this.anchors={pin:[px,py-6]};pin.style.left=(px-95)+'px';pin.style.top=(py-170-(1-d)*420)+'px';pin.style.opacity=clamp((lt-.75)*8);pin.style.transform=`scale(${lerp(.8,1,d)},${lerp(1.25,1,d)})`;
     const lk=spring(lt-2.75,14,.5);plab.style.left=(px-plab.offsetWidth/2)+'px';plab.style.top=(py-300)+'px';plab.style.opacity=clamp((lt-2.75)*6);plab.style.transform=`scale(${lk})`;
-    const f=eIO(prog(lt,5.2,8.6));plane.style.left=lerp(-320,1150,f)+'px';plane.style.top=lerp(1200,380,f)+'px';plane.style.transform=`rotate(-24deg) scale(${lerp(.55,1.05,f)})`;plane.style.opacity=f>0&&f<1?1:0;
-    show(eb,lt,.25,9.35,30);words(h,lt,[.45],9.35);show(lot,lt,2.75,9.35);show(air,lt,4.75,9.35,30)}}}
+    const f=eIO(prog(lt,5.2,8.6));plane.style.left=lerp(-320,1150,f)+'px';plane.style.top=lerp(1260,470,f)+'px';plane.style.transform=`rotate(-24deg) scale(${lerp(.55,1.05,f)})`;plane.style.opacity=f>0&&f<1?1:0;
+    show(eb,lt,.25,99,30);words(h,lt,[.45],99);show(lot,lt,2.75,99);show(air,lt,4.75,99,30)}}}
 
 /* ================= S9 · End card: seal it ================= */
-function S9(){const [r,ov]=root();const {scene,cam}=stage({r:4});
-  scene.add(at(puck(1.9,.16,.07,M.W),0,.08,0));
+function S9(){const [r,ov]=root();const {scene,cam}=stage({r:5});
+  const tt=at(puck(1.9,.16,.07,M.W),0,.08,0);scene.add(tt);
   const box=new THREE.Group();box.position.set(0,.16,0);scene.add(box);const bw=1.9,bh=1.35,bd=1.45,t=.07;
   box.add(at(rbox(bw,bh,bd,.16,M.Y),0,bh/2,0));box.add(at(rbox(bw-.12,.02,bd-.12,.01,M.Yin),0,bh-.01,0));
   const flaps=[[0,1,bd/2,bw],[0,-1,bd/2,bw],[1,0,bw*.42,bd],[-1,0,bw*.42,bd]].map(([x,z,len,wid],i)=>{const pv=new THREE.Group();pv.position.set(x*bw/2,bh,z*bd/2);
     const f=rbox(x?len:wid-.04,t*.8,x?wid-.04:len,.03,M.Y);f.position.set(-x*len/2,0,-z*len/2);pv.add(f);box.add(pv);return {pv,x,z,i}});
   const tp=at(rbox(.42,.03,bd+.06,.015,new THREE.MeshPhysicalMaterial({map:tapeTex(Math.PI/2),roughness:.45,clearcoat:.3})),0,bh+.06,0);box.add(tp);
   const lab=at(new THREE.Mesh(new THREE.PlaneGeometry(1.4,.93),new THREE.MeshPhysicalMaterial({map:labelTex({top:'SHIP WITH',num:'WA 0877 7589 7478'}),roughness:.55})),0,bh*.5,bd/2+.012);box.add(lab);
+  // phone that dials the number in sync with the voice-over
+  const PS=1.18,phone=phoneObj(PS);scene.add(phone);
+  const dial=canvasTex(560,1220,()=>{});const scr=new THREE.Mesh(new THREE.PlaneGeometry(.8*PS,1.72*PS),new THREE.MeshBasicMaterial({map:dial,toneMapped:false}));scr.position.set(0,-.01*PS,.1*PS+.04);phone.add(scr);
+  const NUM='087775897478',D=[6.95,7.25,7.58,7.9,8.3,8.64,8.98,9.34,10.05,10.4,10.74,11.08];
+  const typed=lt=>D.filter(d=>lt>=d).length;const fmt=n=>NUM.slice(0,n).replace(/^(\d{4})(\d{0,4})(\d{0,4}).*/,(m,a,b,c)=>[a,b,c].filter(Boolean).join(' '))||NUM.slice(0,n);
+  let lastKey='';
+  function drawDial(lt){const n=typed(lt),pressed=D.findIndex(d=>lt>=d&&lt<d+.2),done=lt>=11.45,go=lt>=11.95,caret=Math.floor(lt*2.5)%2;
+    const key=[n,pressed,done,go,caret].join();if(key===lastKey)return;lastKey=key;const g=dial.userData.g,w=560,h=1220;
+    g.fillStyle='#F4F0E6';g.fillRect(0,0,w,h);g.fillStyle='#FFCC00';g.fillRect(0,0,w,160);
+    g.fillStyle='#D40511';g.beginPath();g.arc(72,88,44,0,7);g.fill();g.fillStyle='#fff';g.font='400 30px ArchivoBlack';g.textAlign='center';g.fillText('JDC',72,99);g.textAlign='left';
+    g.fillStyle='#1B1912';g.font='800 34px Jakarta';g.fillText('JDC Cengkareng',134,80);g.font='700 21px Mono';g.fillStyle='#6E1A0A';g.fillText('SERVICE POINT · WHATSAPP',134,116);
+    g.fillStyle='#fff';g.beginPath();g.roundRect(28,196,504,150,28);g.fill();g.strokeStyle=n>0&&!done?'#D40511':'#E6DFCC';g.lineWidth=4;g.stroke();
+    g.fillStyle='#8a7f66';g.font='700 20px Mono';g.fillText('PHONE NUMBER',56,236);
+    const txtN=fmt(n);g.fillStyle='#1B1912';g.font='800 50px Mono';g.fillText(txtN,56,306);if(!done&&caret){const tw=g.measureText(txtN).width;g.fillStyle='#D40511';g.fillRect(60+tw,264,5,52)}
+    if(!done){const keys='123456789 0 '.split('');keys.forEach((k,i)=>{if(k===' ')return;const cx=110+(i%3)*170,cy=470+Math.floor(i/3)*160;const on=pressed>=0&&NUM[pressed]===k;
+      g.fillStyle=on?'#D40511':'#fff';g.beginPath();g.arc(cx,cy,64,0,7);g.fill();if(!on){g.strokeStyle='#E6DFCC';g.lineWidth=3;g.stroke()}
+      g.fillStyle=on?'#fff':'#1B1912';g.font='800 50px Mono';g.textAlign='center';g.fillText(k,cx,cy+18);g.textAlign='left'})}
+    else{g.fillStyle='#fff';g.beginPath();g.roundRect(28,390,504,330,28);g.fill();g.fillStyle='#2BB673';g.beginPath();g.arc(92,470,30,0,7);g.fill();g.strokeStyle='#fff';g.lineWidth=7;g.beginPath();g.moveTo(78,471);g.lineTo(89,483);g.lineTo(108,458);g.stroke();
+      g.fillStyle='#1B1912';g.font='800 32px Jakarta';g.fillText('Contact ready',140,464);g.fillStyle='#8a7f66';g.font='600 24px Jakarta';g.fillText('JDC Cengkareng · Service Point',140,500);
+      g.fillStyle='#6d6656';g.font='600 23px Jakarta';g.fillText('Soewarna Business Park, Lot 7A–7B',56,574);g.fillText('Soekarno-Hatta Int’l Airport Area',56,608);
+      g.fillStyle=go?'#1E8F57':'#2BB673';g.beginPath();g.roundRect(56,640,448,64,32);g.fill();g.fillStyle='#fff';g.font='800 28px Jakarta';g.textAlign='center';g.fillText(go?'Opening chat…':'Start chat',280,682);g.textAlign='left';
+      if(go){g.fillStyle='#FFCC00';g.beginPath();g.roundRect(150,770,382,110,26);g.fill();g.fillStyle='#1B1912';g.font='700 27px Jakarta';g.fillText('Hi JDC Cengkareng!',176,815);g.fillText('I want to ship…',176,853)}}
+    dial.needsUpdate=true}
   const eb=txt(ov,'eyebrow','DHL EXPRESS SERVICE POINT',214);const h=txt(ov,'h1','<span class="red">JDC CENGKARENG</span>',262,'font-size:104px');
   const tag=txt(ov,'h1','<span>SHIPPING,</span> <span class="red">UNBOXED.</span>',270,'font-size:90px');
-  const cta=txt(ov,'sub','<span class="pillR" style="font-size:44px;display:inline-flex;align-items:center;gap:16px"><img src="../preview/whatsapp.svg" style="height:50px;transform:skewX(8deg)">CHAT ON WHATSAPP</span>',1150);
-  const numEl=txt(ov,'sub','<span id="bigNum" style="position:relative;display:inline-block;font:800 92px Mono;color:#1B1912;letter-spacing:-.01em">0877 7589 7478<i id="hl" style="position:absolute;left:0;top:8px;bottom:6px;width:0;background:rgba(255,204,0,.55);mix-blend-mode:multiply;border-radius:10px"></i></span>',1268);
-  const pick=txt(ov,'sub','<span class="pillW" style="background:#FFCC00;font:700 28px Mono;letter-spacing:.1em">✦ PICKUP AVAILABLE ✦</span>',1400);
+  const cta=txt(ov,'sub','<span class="pillR" style="font-size:40px;display:inline-flex;align-items:center;gap:16px"><img src="../preview/whatsapp.svg" style="height:46px;transform:skewX(8deg)">CHAT ON WHATSAPP</span>',1222);
+  const numEl=txt(ov,'sub',NUM.split('').map((c,i)=>`<span class="dg" style="display:inline-block;margin-right:${i===3||i===7?'26px':'0'}">${c}</span>`).join(''),1318,'font:800 88px Mono;color:#1B1912;letter-spacing:-.01em');
+  const digits=[...numEl.querySelectorAll('.dg')];
+  const pick=txt(ov,'sub','<span class="pillW" style="background:#FFCC00;font:700 26px Mono;letter-spacing:.1em">✦ PICKUP AVAILABLE ✦</span>',1448);
   return {root:r,scene,cam,update(lt){
-    cam.position.set(Math.sin(lt*.22)*.6,4.5,11.2);cam.lookAt(0,-.1,0);box.rotation.y=-.35+Math.sin(lt*.3)*.08+(lt<1.3?(1-eOut(lt/1.3))*.4:0);
+    cam.position.set(Math.sin(lt*.22)*.5,4.5,11.2);cam.lookAt(0,-.1,0);
+    // box seals (0–2.4), then steps back to make room for the phone (4.6–5.5)
+    const mv=eIO(prog(lt,4.6,5.5));box.position.set(lerp(0,-1.45,mv),.16,lerp(0,-.9,mv));box.scale.setScalar(lerp(1,.62,mv));tt.position.set(lerp(0,-1.45,mv),.08,lerp(0,-.9,mv));tt.scale.setScalar(lerp(1,.62,mv));
+    box.rotation.y=-.35+Math.sin(lt*.3)*.08+(lt<1.3?(1-eOut(lt/1.3))*.4:0)+mv*.5;
     flaps.forEach(({pv,x,z,i})=>{const c=spring(lt-(.15+i*.18),12,.5);const a=lerp(2.05,0,clamp(c,0,1.2));if(x)pv.rotation.z=-x*a;else pv.rotation.x=z*a;});
     const tk=eOut(prog(lt,1.3,1.6));tp.scale.set(1,1,Math.max(.001,tk));tp.visible=lt>1.28;
     const ls=spring(lt-1.9,14,.45);lab.visible=lt>1.85;lab.scale.setScalar(Math.max(.001,lerp(1.5,1,ls)));
-    show(eb,lt,1.3,11.15,30);words(h,lt,[3.2],11.15);words(tag,lt,[11.5,11.75]);tag.style.opacity=lt>11.4?1:0;
-    show(cta,lt,4.4);show(numEl,lt,5.0);show(pick,lt,5.6);
-    const hl=document.getElementById('hl');if(hl)hl.style.width=(eIO(prog(lt,6.9,11.2))*100)+'%'}}}
+    const pr=spring(lt-4.75,9,.55);phone.visible=lt>4.7;phone.position.set(.42,lerp(-4.5,.82,pr)+Math.sin(lt*1.5)*.04,1.4);phone.rotation.set(-.12,-.22+Math.sin(lt*.6)*.04,.03);drawDial(lt);
+    scene.updateMatrixWorld(true);
+    this.anchors={box:proj(box.localToWorld(new THREE.Vector3(0,bh,0)),cam),cta:[540,1262],num:[540,1372]};
+    show(eb,lt,1.3,99,30);words(h,lt,[3.2],99);
+    const tg=lt>=11.6;eb.style.opacity=tg?1-prog(lt,11.6,11.8):eb.style.opacity;h.style.opacity=tg?1-prog(lt,11.6,11.8):1;words(tag,lt,[11.75,11.95]);tag.style.opacity=lt>11.7?1:0;
+    show(cta,lt,5.3);show(numEl,lt,5.9);show(pick,lt,6.4);
+    digits.forEach((e,i)=>{const on=lt>=D[i],k=spring(lt-D[i],18,.4);e.style.color=on?'#1B1912':'rgba(27,25,18,.13)';e.style.transform=on?`translateY(${(1-k)*-26}px) scale(${1+(1-Math.min(k,1))*.25})`:'none';
+      e.style.background=on&&lt<D[i]+.32?'rgba(255,204,0,.75)':'transparent';e.style.borderRadius='10px'})}}}
 
 return {s1:S1(),s2:S2(),s3:S3(),s4:S4(),s5:S5(),s6:S6(),s7:S7(),s8:S8(),s9:S9()};
 }

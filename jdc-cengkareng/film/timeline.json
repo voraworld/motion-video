@@ -1,33 +1,653 @@
 {
- "fps": 30, "duration": 85, "bpm": 120,
+ "fps": 30,
+ "duration": 86,
+ "bpm": 120,
  "scenes": [
-  {"id":"s1","t0":0,"t1":6},{"id":"s2","t0":6,"t1":13},{"id":"s3","t0":13,"t1":23},{"id":"s4","t0":23,"t1":32},
-  {"id":"s5","t0":32,"t1":39},{"id":"s6","t0":39,"t1":49},{"id":"s7","t0":49,"t1":61},{"id":"s8","t0":61,"t1":71},{"id":"s9","t0":71,"t1":85}
+  {
+   "id": "s1",
+   "t0": 0,
+   "t1": 6
+  },
+  {
+   "id": "s2",
+   "t0": 6,
+   "t1": 14
+  },
+  {
+   "id": "s3",
+   "t0": 14,
+   "t1": 24
+  },
+  {
+   "id": "s4",
+   "t0": 24,
+   "t1": 32
+  },
+  {
+   "id": "s5",
+   "t0": 32,
+   "t1": 40
+  },
+  {
+   "id": "s6",
+   "t0": 40,
+   "t1": 50
+  },
+  {
+   "id": "s7",
+   "t0": 50,
+   "t1": 62
+  },
+  {
+   "id": "s8",
+   "t0": 62,
+   "t1": 72
+  },
+  {
+   "id": "s9",
+   "t0": 72,
+   "t1": 86
+  }
  ],
- "vo": [["s1",0.8],["s2",6.6],["s3a",13.6],["s3b",19.6],["s4",23.6],["s5",32.6],["s6",39.6],["s7a",49.7],["s7b",52.4],["s7c",54.8],["s8",61.6],["s9",71.6]],
+ "vo": [
+  [
+   "s1",
+   0.8
+  ],
+  [
+   "s2",
+   6.4
+  ],
+  [
+   "s3a",
+   14.6
+  ],
+  [
+   "s3b",
+   20.6
+  ],
+  [
+   "s4",
+   24.6
+  ],
+  [
+   "s5",
+   32.6
+  ],
+  [
+   "s6",
+   40.6
+  ],
+  [
+   "s7a",
+   50.7
+  ],
+  [
+   "s7b",
+   53.4
+  ],
+  [
+   "s7c",
+   55.8
+  ],
+  [
+   "s8",
+   62.6
+  ],
+  [
+   "s9",
+   72.6
+  ]
+ ],
  "captions": [
-  [0.8,3.9,"Shipping overseas? It just got a whole lot easier."],
-  [6.6,10.9,"Meet DHL Express Service Point, JDC Cengkareng."],
-  [13.6,16.0,"Book your shipment from anywhere, at any time."],
-  [19.6,21.7,"At home, at the office, or on the go."],
-  [23.6,30.0,"Enjoy competitive rates, plus special promotional discounts. Just ask us about the current promo."],
-  [32.6,36.4,"There's no registration needed. Skip the sign-up, completely."],
-  [39.6,46.3,"Can't drop by? We'll pick up your shipment from your place, so you don't need to bring it to JDC Cengkareng."],
-  [49.7,51.5,"Just send us a WhatsApp message,"],
-  [52.4,53.8,"tell us what you need to ship,"],
-  [54.8,57.5,"and we'll prepare everything, all the way to done."],
-  [61.6,69.2,"Find us at Soewarna Business Park, Lot 7A to 7B, in the Soekarno-Hatta International Airport area."],
-  [71.6,82.4,"DHL Express Service Point, JDC Cengkareng. WhatsApp us today: 0877 7589 7478."]
+  [
+   0.8,
+   3.8999999999999995,
+   "Shipping overseas? It just got a whole lot easier."
+  ],
+  [
+   6.4,
+   10.7,
+   "Meet DHL Express Service Point, JDC Cengkareng."
+  ],
+  [
+   14.6,
+   17.0,
+   "Book your shipment from anywhere, at any time."
+  ],
+  [
+   20.6,
+   22.7,
+   "At home, at the office, or on the go."
+  ],
+  [
+   24.6,
+   31.0,
+   "Enjoy competitive rates, plus special promotional discounts. Just ask us about the current promo."
+  ],
+  [
+   32.6,
+   36.4,
+   "There's no registration needed. Skip the sign-up, completely."
+  ],
+  [
+   40.6,
+   47.3,
+   "Can't drop by? We'll pick up your shipment from your place, so you don't need to bring it to JDC Cengkareng."
+  ],
+  [
+   50.7,
+   52.5,
+   "Just send us a WhatsApp message,"
+  ],
+  [
+   53.4,
+   54.8,
+   "tell us what you need to ship,"
+  ],
+  [
+   55.8,
+   58.5,
+   "and we'll prepare everything, all the way to done."
+  ],
+  [
+   62.6,
+   70.2,
+   "Find us at Soewarna Business Park, Lot 7A to 7B, in the Soekarno-Hatta International Airport area."
+  ],
+  [
+   72.6,
+   83.4,
+   "DHL Express Service Point, JDC Cengkareng. WhatsApp us today: 0877 7589 7478."
+  ]
  ],
  "sfx": [
-  [0.0,"boom",0.7],[2.2,"tick",0.4],[4.4,"rip",0.8],[5.45,"whoosh",0.8],[6.0,"boom",1.0],
-  [7.0,"print",0.6],[9.2,"whoosh",0.4],[10.25,"slap",0.7],[12.5,"zip",0.8],[12.95,"rip",0.8],
-  [14.6,"beep",0.5],[16.6,"beep",0.5],[18.6,"beep",0.5],[22.6,"sweep",0.6],
-  [24.5,"roll",0.6],[25.3,"stretch",0.5],[26.4,"slap",0.8],[31.6,"whoosh",0.8],
-  [33.4,"rip",0.6],[34.7,"tick",0.5],[34.95,"tick",0.5],[35.2,"tick",0.5],[35.45,"tick",0.5],[35.7,"thud",0.6],[36.2,"pop",0.6],[38.5,"pop",0.8],
-  [39.9,"engine",0.5],[42.6,"pop",0.6],[44.4,"engine",0.5],[48.5,"whoosh",0.7],
-  [50.3,"pop",0.6],[52.6,"pop",0.6],[55.0,"pop",0.6],[55.4,"fold",0.5],[56.4,"fold",0.5],[57.0,"zip",0.5],[57.6,"stamp",0.8],[60.4,"whoosh",0.7],
-  [62.4,"thud",0.6],[64.3,"tick",0.5],[66.5,"jet",0.7],[70.4,"whoosh",0.8],
-  [71.3,"thud",0.6],[71.6,"thud",0.5],[72.3,"zip",0.6],[72.9,"slap",0.7],[75.4,"pop",0.6],[78.0,"beep",0.4],[82.5,"logo",0.8]
+  [
+   0.0,
+   "boom",
+   0.7
+  ],
+  [
+   2.2,
+   "tick",
+   0.4
+  ],
+  [
+   4.4,
+   "rip",
+   0.8
+  ],
+  [
+   5.45,
+   "whoosh",
+   0.8
+  ],
+  [
+   6.0,
+   "impact",
+   1.1
+  ],
+  [
+   7.9,
+   "rumble",
+   0.8
+  ],
+  [
+   9.0,
+   "boom",
+   1.0
+  ],
+  [
+   9.0,
+   "impact",
+   1.2
+  ],
+  [
+   9.05,
+   "pop",
+   0.6
+  ],
+  [
+   9.25,
+   "pop",
+   0.5
+  ],
+  [
+   10.2,
+   "print",
+   0.6
+  ],
+  [
+   11.4,
+   "whoosh",
+   0.4
+  ],
+  [
+   12.5,
+   "slap",
+   0.7
+  ],
+  [
+   13.34,
+   "swoosh",
+   0.9
+  ],
+  [
+   13.8,
+   "tick",
+   0.5
+  ],
+  [
+   14,
+   "impact",
+   1.0
+  ],
+  [
+   15.6,
+   "beep",
+   0.5
+  ],
+  [
+   17.6,
+   "beep",
+   0.5
+  ],
+  [
+   19.6,
+   "beep",
+   0.5
+  ],
+  [
+   23.34,
+   "swoosh",
+   0.9
+  ],
+  [
+   23.8,
+   "tick",
+   0.5
+  ],
+  [
+   24,
+   "impact",
+   1.0
+  ],
+  [
+   25.5,
+   "roll",
+   0.6
+  ],
+  [
+   26.3,
+   "stretch",
+   0.5
+  ],
+  [
+   27.4,
+   "slap",
+   0.8
+  ],
+  [
+   31.34,
+   "swoosh",
+   0.9
+  ],
+  [
+   31.8,
+   "tick",
+   0.5
+  ],
+  [
+   32,
+   "impact",
+   1.0
+  ],
+  [
+   33.4,
+   "rip",
+   0.6
+  ],
+  [
+   34.7,
+   "tick",
+   0.5
+  ],
+  [
+   34.95,
+   "tick",
+   0.5
+  ],
+  [
+   35.2,
+   "tick",
+   0.5
+  ],
+  [
+   35.45,
+   "tick",
+   0.5
+  ],
+  [
+   35.7,
+   "thud",
+   0.6
+  ],
+  [
+   36.2,
+   "pop",
+   0.6
+  ],
+  [
+   39.34,
+   "swoosh",
+   0.9
+  ],
+  [
+   39.8,
+   "tick",
+   0.5
+  ],
+  [
+   40,
+   "impact",
+   1.0
+  ],
+  [
+   40.9,
+   "engine",
+   0.5
+  ],
+  [
+   43.6,
+   "pop",
+   0.6
+  ],
+  [
+   45.4,
+   "engine",
+   0.5
+  ],
+  [
+   49.34,
+   "swoosh",
+   0.9
+  ],
+  [
+   49.8,
+   "tick",
+   0.5
+  ],
+  [
+   50,
+   "impact",
+   1.0
+  ],
+  [
+   51.3,
+   "pop",
+   0.6
+  ],
+  [
+   53.6,
+   "pop",
+   0.6
+  ],
+  [
+   56.0,
+   "pop",
+   0.6
+  ],
+  [
+   56.4,
+   "fold",
+   0.5
+  ],
+  [
+   57.4,
+   "fold",
+   0.5
+  ],
+  [
+   58.0,
+   "zip",
+   0.5
+  ],
+  [
+   58.6,
+   "stamp",
+   0.8
+  ],
+  [
+   61.34,
+   "swoosh",
+   0.9
+  ],
+  [
+   61.8,
+   "tick",
+   0.5
+  ],
+  [
+   62,
+   "impact",
+   1.0
+  ],
+  [
+   63.4,
+   "thud",
+   0.6
+  ],
+  [
+   65.3,
+   "tick",
+   0.5
+  ],
+  [
+   67.5,
+   "jet",
+   0.7
+  ],
+  [
+   70.6,
+   "swoosh",
+   0.9
+  ],
+  [
+   70.95,
+   "tick",
+   0.45
+  ],
+  [
+   71.0,
+   "swoosh",
+   0.7
+  ],
+  [
+   71.055,
+   "tick",
+   0.45
+  ],
+  [
+   71.16,
+   "tick",
+   0.45
+  ],
+  [
+   71.265,
+   "tick",
+   0.45
+  ],
+  [
+   71.37,
+   "tick",
+   0.45
+  ],
+  [
+   71.475,
+   "tick",
+   0.45
+  ],
+  [
+   71.58,
+   "tick",
+   0.45
+  ],
+  [
+   71.685,
+   "tick",
+   0.45
+  ],
+  [
+   71.79,
+   "tick",
+   0.45
+  ],
+  [
+   71.895,
+   "tick",
+   0.45
+  ],
+  [
+   72.0,
+   "impact",
+   1.1
+  ],
+  [
+   72.3,
+   "thud",
+   0.6
+  ],
+  [
+   72.6,
+   "thud",
+   0.5
+  ],
+  [
+   73.3,
+   "zip",
+   0.6
+  ],
+  [
+   73.9,
+   "slap",
+   0.7
+  ],
+  [
+   76.75,
+   "whoosh",
+   0.5
+  ],
+  [
+   78.95,
+   "key",
+   0.55
+  ],
+  [
+   79.25,
+   "key",
+   0.55
+  ],
+  [
+   79.58,
+   "key",
+   0.55
+  ],
+  [
+   79.9,
+   "key",
+   0.55
+  ],
+  [
+   80.3,
+   "key",
+   0.55
+  ],
+  [
+   80.64,
+   "key",
+   0.55
+  ],
+  [
+   80.98,
+   "key",
+   0.55
+  ],
+  [
+   81.34,
+   "key",
+   0.55
+  ],
+  [
+   82.05,
+   "key",
+   0.55
+  ],
+  [
+   82.4,
+   "key",
+   0.55
+  ],
+  [
+   82.74,
+   "key",
+   0.55
+  ],
+  [
+   83.08,
+   "key",
+   0.55
+  ],
+  [
+   83.95,
+   "pop",
+   0.6
+  ],
+  [
+   84.0,
+   "impact",
+   1.0
+  ],
+  [
+   84.0,
+   "logo",
+   0.8
+  ]
+ ],
+ "transitions": [
+  {
+   "b": 14,
+   "mode": "ringY",
+   "dir": 1
+  },
+  {
+   "b": 24,
+   "mode": "ringX",
+   "dir": 1
+  },
+  {
+   "b": 32,
+   "mode": "helix",
+   "dir": 1
+  },
+  {
+   "b": 40,
+   "mode": "ringY",
+   "dir": -1
+  },
+  {
+   "b": 50,
+   "mode": "cube",
+   "dir": 1
+  },
+  {
+   "b": 62,
+   "mode": "ringX",
+   "dir": -1
+  },
+  {
+   "b": 72,
+   "mode": "recap",
+   "dir": 1
+  }
  ]
 }

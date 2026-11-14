@@ -8,12 +8,13 @@ Tidak ada video yang 100% tidak bisa diedit. Yang bisa dilakukan adalah membuat 
 
 | Lapisan | Di mana | Kenapa sulit diganti |
 |---|---|---|
-| Nama di objek 3D | Lakban di flap kardus (adegan 1), lakban dan label di box (2, 9), price tag "JDC" (4), bubble chat "Hi, JDC Cengkareng!" (5), papan nama gedung dan sisi van "JDC CENGKARENG · PICKUP" (6), header chat, nomor dan label di box (7), label pin lokasi (8) | Teksnya ikut berputar, miring, kena bayangan dan tertutup objek lain. Menutupnya harus frame demi frame mengikuti perspektif. |
-| Micro-print latar | Seluruh latar dari detik 0–85: teks kecil diagonal "JDC CENGKARENG · SERVICE POINT · +62 877-7589-7478 · SOEWARNA BUSINESS PARK LOT 7A–7B" | Teksnya bergerak terus di belakang semua objek, jadi tidak bisa ditambal dengan gambar diam. Mengganti nama berarti membuat ulang seluruh latar. |
-| Transisi lakban | Detik 12,5–13,3: lakban merah selebar layar bertuliskan "JDC CENGKARENG ✦ SERVICE POINT" | Teksnya penuh satu layar dan bergerak. |
+| Nama di objek 3D | Lakban di flap kardus (adegan 1), lakban dan label di box (2, 9), price tag "JDC" (4), bubble chat "Hi, JDC Cengkareng!" (5), papan nama gedung dan sisi van "JDC CENGKARENG · PICKUP" (6), header chat, nomor dan label di box (7), label pin lokasi (8), layar HP yang mengetik nomor dan kartu kontak "JDC Cengkareng" (9), kartu carousel berisi semua adegan (transisi) | Teksnya ikut berputar, miring, kena bayangan dan tertutup objek lain. Menutupnya harus frame demi frame mengikuti perspektif. |
+| Micro-print latar | Seluruh latar dari detik 0–86: teks kecil diagonal "JDC CENGKARENG · SERVICE POINT · +62 877-7589-7478 · SOEWARNA BUSINESS PARK LOT 7A–7B" | Teksnya bergerak terus di belakang semua objek, jadi tidak bisa ditambal dengan gambar diam. Mengganti nama berarti membuat ulang seluruh latar. |
+| Reveal nama | Detik 9: huruf JDC CENGKARENG terlempar dari kardus, berputar dan mendarat, dengan cahaya dan konfeti di atasnya | Setiap huruf bergerak sendiri-sendiri di jalur melengkung; tidak bisa ditimpa teks lain tanpa animasi ulang per huruf. |
 | Header | Logo plus baris "SERVICE POINT · JDC CENGKARENG", latar garis diagonal bergerak | Ada animasi di belakang teks, jadi kotak penutup langsung kelihatan. |
 | Footer kartu label | Nama, alamat, nomor, chip pickup, strip micro-text bergulir, kilau yang melintas tiap 8 detik, garis diagonal bergerak | Ada tiga elemen bergerak di belakang dan di atas teks. Tambalan statis akan memotong kilau dan micro-text. |
-| Dekorasi parallax | 7 bentuk geometris melayang di depan dan belakang adegan | Melintas di atas area yang mungkin ditambal. |
+| Transisi carousel | Setiap pergantian adegan, semua adegan (yang berisi nama, nomor dan alamat) berputar sebagai kartu 3D; di detik 70,6–72,5 kesembilan kartu berputar satu putaran penuh | Nama muncul di banyak kartu sekaligus dalam perspektif dan blur gerak. |
+| Elemen grafis | Ikon, ring, konfeti dan percikan yang menempel ke objek tiap adegan | Bergerak di atas dan sekitar area yang mungkin ditambal. |
 | Caption | Kata per kata, termasuk nama dan nomor | Sinkron dengan suara. Kalau suaranya diganti, caption-nya ikut salah. |
 
 ## 2. Di dalam audio

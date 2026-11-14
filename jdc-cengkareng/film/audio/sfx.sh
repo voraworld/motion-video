@@ -18,4 +18,8 @@ ff -f lavfi -i "aevalsrc=0.7*sin(2*PI*(380+900*exp(-28*t))*t)*exp(-22*t):s=48000
 ff -f lavfi -i "aevalsrc=0.3*sgn(sin(2*PI*(46+6*sin(2*PI*3*t))*t))+0.2*sin(2*PI*92*t):s=48000:d=2.4" -af "lowpass=f=600,afade=t=in:d=0.3,afade=t=out:st=1.7:d=0.7,volume=0.8" "$D/engine.wav"
 ff -f lavfi -i "anoisesrc=d=0.45:c=pink:a=0.6:r=48000" -af "bandpass=f=900:w=600,afade=t=in:d=0.08,afade=t=out:st=0.2:d=0.25,volume=1.2" "$D/fold.wav"
 ff -f lavfi -i "anoisesrc=d=2.6:c=pink:a=0.9:r=48000" -af "highpass=f=250,lowpass=f=3500,afade=t=in:d=0.9,afade=t=out:st=1.5:d=1.1,volume=1.4" "$D/jet.wav"
+ff -f lavfi -i "anoisesrc=d=1.15:c=brown:a=0.9:r=48000" -af "lowpass=f=420,tremolo=f=18:d=0.85,afade=t=in:st=0:d=1.0:curve=exp,afade=t=out:st=1.05:d=0.1,volume=2.2" "$D/rumble.wav"
+ff -f lavfi -i "aevalsrc=0.6*sin(2*PI*1250*t)*exp(-90*t)+0.4*sin(2*PI*380*t)*exp(-60*t):s=48000:d=0.09" "$D/key.wav"
+ff -f lavfi -i "aevalsrc=1.0*sin(2*PI*(42+150*exp(-12*t))*t)*exp(-4.5*t):s=48000:d=1.3" -f lavfi -i "anoisesrc=d=0.5:c=white:a=0.9:r=48000" -f lavfi -i "aevalsrc=0.5*sin(2*PI*180*t)*exp(-30*t):s=48000:d=0.2" -filter_complex "[1]highpass=f=2500,afade=t=out:st=0.01:d=0.45,volume=0.55[n];[0][n][2]amix=inputs=3:normalize=0,alimiter=limit=0.95" "$D/impact.wav"
+ff -f lavfi -i "anoisesrc=d=0.75:c=pink:a=0.9:r=48000" -af "highpass=f=300,lowpass=f=6000,afade=t=in:st=0:d=0.45:curve=exp,afade=t=out:st=0.5:d=0.25,aecho=0.6:0.4:40:0.3,volume=1.8" "$D/swoosh.wav"
 ls "$D" | paste -sd' '
