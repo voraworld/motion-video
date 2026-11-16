@@ -133,13 +133,23 @@ const fS = (t: number) => interpolate(t, T.srg, [0, 1], { ...clamp, easing: Easi
 
 // ── Camera ──────────────────────────────────────────────────────────────────────────────────────────────
 type Cam = { c: Pt; s: number; tilt: number; roll: number; fy: number };
-const mixCam = (a: Cam, b: Cam, k: number): Cam => ({
-  c: { x: lerp(a.c.x, b.c.x, k), y: lerp(a.c.y, b.c.y, k) },
-  s: Math.exp(lerp(Math.log(a.s), Math.log(b.s), k)),
-  tilt: lerp(a.tilt, b.tilt, k),
-  roll: lerp(a.roll, b.roll, k),
-  fy: lerp(a.fy, b.fy, k),
-});
+/**
+ * Zoom-aware camera mix: the scale moves in log space and the centre follows 1/scale, so the point we zoom
+ * towards stays on screen the whole way (a plain lerp would leave us staring at open sea mid-dive).
+ */
+const mixCam = (a: Cam, b: Cam, k: number): Cam => {
+  const s = Math.exp(lerp(Math.log(a.s), Math.log(b.s), k));
+  const big = Math.abs(Math.log(b.s / a.s)) > 0.4;
+  const w = big ? (1 / s - 1 / a.s) / (1 / b.s - 1 / a.s) : k;
+  return {
+    c: { x: lerp(a.c.x, b.c.x, w), y: lerp(a.c.y, b.c.y, w) },
+    s,
+    tilt: lerp(a.tilt, b.tilt, k),
+    roll: lerp(a.roll, b.roll, k),
+    fy: lerp(a.fy, b.fy, k),
+  };
+};
+
 const S_PER_RAD = (MAP.pxPerDeg * 180) / Math.PI;
 const GLOBE_END_S = 9;
 const OVERVIEW = 0.335;
@@ -257,14 +267,15 @@ const usePlates = () => {
       img.onload = () => {
         out[p.key] = img;
         left -= 1;
-        if (left === 0) {
-          setImgs(out);
-          continueRender(handle);
-        }
+        if (left === 0) setImgs(out);
       };
       img.src = staticFile(p.file);
     }
   }, [handle]);
+  // release the frame only after the canvas has been drawn with the plates (layout effects run first)
+  useEffect(() => {
+    if (imgs) continueRender(handle);
+  }, [imgs, handle]);
   return imgs;
 };
 
@@ -311,22 +322,23 @@ const MapCanvas: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
         [-1400, -1400],
         [CW + 1400, CH + 1400],
       ]);
-    const path = geoPath(proj, ctx);
-    ctx.beginPath();
-    path(LAND50);
-    let landDrawn = true;
-    ctx.fillStyle = LAND;
-    ctx.fill();
-    if (cam.s < 60) {
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "#B9C3CC";
-      ctx.stroke();
-    }
+    const landD = geoPath(proj)(LAND50) ?? "";
     const centre = proj.invert?.([fx, fy]);
-    if (centre && cam.s > 60 && !geoContains(LAND50, centre)) landDrawn = false;
-    void landDrawn;
+    ctx.fillStyle = LAND;
+    if (landD.length < 8) {
+      // the whole view is inside one island: the rectangle clip comes back empty
+      if (centre && geoContains(LAND50, centre)) ctx.fillRect(-2000, -2000, CW + 4000, CH + 4000);
+    } else {
+      const p2d = new Path2D(landD);
+      ctx.fill(p2d);
+      if (cam.s < 60) {
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#B9C3CC";
+        ctx.stroke(p2d);
+      }
+    }
     // city plates (real streets), fading in as the camera reaches street level
-    const plateOn = interpolate(Math.log(cam.s), [Math.log(18), Math.log(70)], [0, 1], clamp);
+    const plateOn = interpolate(Math.log(cam.s), [Math.log(5), Math.log(28)], [0, 1], clamp);
     if (plates && plateOn > 0) {
       for (const p of PLATES) {
         const [x0, y0] = W2S({ x: p.x0, y: p.y0 });
@@ -768,7 +780,7 @@ const CompassButton: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
 const Attribution: React.FC<{ t: number }> = ({ t }) => {
   const on = interpolate(t, [3.8, 4.4, T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp);
   return (
-    <div style={{ position: "absolute", left: 50, top: 1322, fontFamily: FONT_MONO, fontSize: 15, color: "rgba(43,28,21,.55)", opacity: on * (1 - sheetVis(t)) }}>
+    <div style={{ position: "absolute", left: 50, top: 334, fontFamily: FONT_MONO, fontSize: 15, color: "rgba(43,28,21,.55)", opacity: on }}>
       © OpenStreetMap contributors · OpenFreeMap · Natural Earth
     </div>
   );
