@@ -7,7 +7,7 @@ import { BRAND, FONT_BODY, FrameTheme, ZONES } from "./tokens";
  * Official logo at the very top and the website at the very bottom, from frame 0 to the end.
  * `endCardFrom`: the header logo fades out there, because the end card shows the big logo.
  */
-export const BrandFrame: React.FC<{ theme: FrameTheme; endCardFrom?: number }> = ({ theme, endCardFrom }) => {
+export const BrandFrame: React.FC<{ theme: FrameTheme; endCardFrom?: number; align?: "center" | "left" }> = ({ theme, endCardFrom, align = "center" }) => {
   const frame = useCurrentFrame();
   const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
   const headerOpacity =
@@ -16,7 +16,17 @@ export const BrandFrame: React.FC<{ theme: FrameTheme; endCardFrom?: number }> =
   const ink = dark ? "rgba(255,255,255,.88)" : "rgba(43,28,21,.78)";
   return (
     <AbsoluteFill style={{ pointerEvents: "none" }}>
-      <div style={{ position: "absolute", top: ZONES.headerTop, left: 0, right: 0, display: "flex", justifyContent: "center", opacity: headerOpacity }}>
+      <div
+        style={{
+          position: "absolute",
+          top: ZONES.headerTop,
+          left: align === "left" ? ZONES.sideSafe : 0,
+          right: 0,
+          display: "flex",
+          justifyContent: align === "left" ? "flex-start" : "center",
+          opacity: headerOpacity,
+        }}
+      >
         <Logo height={ZONES.headerHeight} theme={theme} />
       </div>
       <div
