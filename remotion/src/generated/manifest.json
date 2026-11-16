@@ -61,10 +61,53 @@
         "file": "audio/vo/e01/b07.wav",
         "duration": 4.352
       }
+    ],
+    "e02": [
+      {
+        "start": 0,
+        "file": "audio/vo/e02/b00.wav",
+        "duration": 2.731
+      },
+      {
+        "start": 4,
+        "file": "audio/vo/e02/b01.wav",
+        "duration": 4.459
+      },
+      {
+        "start": 10,
+        "file": "audio/vo/e02/b02.wav",
+        "duration": 6.379
+      },
+      {
+        "start": 19,
+        "file": "audio/vo/e02/b03.wav",
+        "duration": 7.936
+      },
+      {
+        "start": 28,
+        "file": "audio/vo/e02/b04.wav",
+        "duration": 5.547
+      },
+      {
+        "start": 34,
+        "file": "audio/vo/e02/b05.wav",
+        "duration": 4.608
+      },
+      {
+        "start": 39,
+        "file": "audio/vo/e02/b06.wav",
+        "duration": 6.229
+      },
+      {
+        "start": 48,
+        "file": "audio/vo/e02/b07.wav",
+        "duration": 4.885
+      }
     ]
   },
   "music": {
-    "e01": "audio/music/e01.wav"
+    "e01": "audio/music/e01.wav",
+    "e02": "audio/music/e02.wav"
   },
   "hf": {
     "e01-hook": "hf/e01-hook.webm",
@@ -72,7 +115,13 @@
     "e01-logo": "hf/e01-logo.webm",
     "e01-medallion": "hf/e01-medallion.webm",
     "e01-rolled": "hf/e01-rolled.webm",
-    "e01-team": "hf/e01-team.webm"
+    "e01-team": "hf/e01-team.webm",
+    "e02-door": "hf/e02-door.webm",
+    "e02-hook": "hf/e02-hook.webm",
+    "e02-lanes": "hf/e02-lanes.webm",
+    "e02-logo": "hf/e02-logo.webm",
+    "e02-pib": "hf/e02-pib.webm",
+    "e02-stuck": "hf/e02-stuck.webm"
   },
   "sfx": {
     "boom": "sfx/boom.wav",

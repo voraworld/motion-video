@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!--
+      E02 "stuck" insert (34–39 s), transparent WebM → remotion/public/hf/e02-stuck.webm.
+      "Data doesn't match?" → a warning sign glitches in the headline zone (no new words on screen).
+      "Every extra day" → +1 DAY. drops and jams with an RGB split; "storage and container charges" → +COST.
+      The two lines then pulse like a meter that keeps ticking (the jammed gate shakes in Remotion).
+      Icons: Phosphor Icons 2.1.1 fill (MIT), drawn as CSS masks so they take the brand colours.
+    -->
+    <style>
+      @font-face { font-family: "League Gothic"; src: url("assets/LeagueGothic-var.woff2") format("woff2"); font-weight: 400; }
+      :root { --white: #fff7ef; --red: #ff4b3a; --cyan: #2fd6ff; --amber: #f5a623; --font-cond: "League Gothic", sans-serif; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 100%; height: 100%; font-family: var(--font-cond); }
+      .icon { position: absolute; background: currentColor; -webkit-mask: var(--m) center / contain no-repeat; mask: var(--m) center / contain no-repeat; }
+      #warn { left: 80px; top: 420px; width: 300px; height: 300px; color: var(--amber); --m: url("assets/warning.svg"); filter: drop-shadow(0 0 30px rgba(245, 166, 35, 0.6)); }
+      .line { position: absolute; left: 80px; height: 230px; white-space: nowrap; font-size: 250px; line-height: 0.9; }
+      #day { top: 420px; width: 560px; }
+      #cost { top: 646px; width: 600px; }
+      .copy { position: absolute; left: 0; top: 0; }
+      .red { color: var(--red); mix-blend-mode: screen; }
+      .cyan { color: var(--cyan); mix-blend-mode: screen; opacity: 0.85; }
+      .main { color: var(--white); text-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); }
+      #cost .main { color: var(--red); }
+      #ico-day { left: 690px; top: 456px; width: 170px; height: 170px; color: var(--white); --m: url("assets/calendar-plus.svg"); }
+      #ico-cost { left: 690px; top: 682px; width: 170px; height: 170px; color: var(--red); --m: url("assets/coins.svg"); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="e02-stuck" data-start="0" data-duration="5" data-width="1080" data-height="1920">
+      <div id="warn" class="icon clip" data-start="0" data-duration="1.5" data-track-index="0"></div>
+      <div id="day" class="line clip" data-start="1.3" data-duration="3.7" data-track-index="1" data-layout-allow-overlap>
+        <div class="copy red">+1 DAY.</div><div class="copy cyan">+1 DAY.</div><div class="copy main">+1 DAY.</div>
+      </div>
+      <div id="cost" class="line clip" data-start="2.35" data-duration="2.65" data-track-index="2" data-layout-allow-overlap>
+        <div class="copy red">+COST.</div><div class="copy cyan">+COST.</div><div class="copy main">+COST.</div>
+      </div>
+      <div id="ico-day" class="icon clip" data-start="1.3" data-duration="3.7" data-track-index="3"></div>
+      <div id="ico-cost" class="icon clip" data-start="2.35" data-duration="2.65" data-track-index="4"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      // Warning sign: flicker on like a faulty lamp, then glitch away when the cost appears.
+      [[0.02, 1], [0.08, 0.15], [0.12, 1], [0.2, 0.3], [0.24, 1]].forEach(([t, o]) => tl.set("#warn", { opacity: o }, t));
+      tl.fromTo("#warn", { scale: 1.35 }, { scale: 1, duration: 0.3, ease: "back.out(2)" }, 0.02);
+      tl.to("#warn", { scale: 1.06, duration: 0.25, ease: "sine.inOut", yoyo: true, repeat: 3 }, 0.35);
+      tl.to("#warn", { opacity: 0, x: -40, filter: "blur(12px)", duration: 0.16, ease: "power2.in" }, 1.18);
+      // Gravity drop with a jam: the line lands, squashes and judders.
+      const jam = (line, icon, at) => {
+        tl.fromTo(line, { y: -420, opacity: 0, scaleY: 1.25 }, { y: 0, opacity: 1, scaleY: 1, duration: 0.18, ease: "power3.in" }, at);
+        tl.to(line, { scaleY: 0.84, duration: 0.05 }, at + 0.18);
+        tl.to(line, { scaleY: 1, duration: 0.4, ease: "elastic.out(1.1, 0.35)" }, at + 0.23);
+        tl.fromTo(icon, { scale: 0, rotation: -30 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2.4)" }, at + 0.16);
+        const jumps = [[-14, 3], [12, -3], [-9, 1], [16, 4], [-6, -2], [4, 1], [0, 0]];
+        jumps.forEach(([x, y], i) => {
+          tl.set(`${line} .red`, { x, y }, at + 0.2 + i * 0.06);
+          tl.set(`${line} .cyan`, { x: -x * 0.8, y: -y }, at + 0.2 + i * 0.06);
+        });
+        tl.set([`${line} .red`, `${line} .cyan`], { x: 2, y: 0 }, at + 0.65);
+      };
+      jam("#day", "#ico-day", 1.32);
+      jam("#cost", "#ico-cost", 2.37);
+      // The meter keeps ticking: short pulses until the gate breaks open.
+      tl.set(["#day", "#cost"], { transformOrigin: "0% 50%" }, 0);
+      [3.2, 3.7, 4.2].forEach((t) => {
+        tl.to(["#day", "#cost"], { scale: 1.05, duration: 0.05, ease: "none" }, t);
+        tl.to(["#day", "#cost"], { scale: 1, duration: 0.3, ease: "power2.out" }, t + 0.05);
+      });
+      tl.to(["#day", "#cost", "#ico-day", "#ico-cost"], { opacity: 0, filter: "blur(14px)", x: 260, duration: 0.22, ease: "power3.in", stagger: 0.03 }, 4.72);
+      window.__timelines["e02-stuck"] = tl;
+    </script>
+  </body>
+</html>

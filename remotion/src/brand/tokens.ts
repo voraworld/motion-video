@@ -6,10 +6,12 @@ import { staticFile } from "remotion";
 export const FONT_DISPLAY = "Archivo Black";
 export const FONT_BODY = "Plus Jakarta Sans";
 export const FONT_MONO = "JetBrains Mono";
+export const FONT_CONDENSED = "League Gothic";
 
 loadFont({ family: FONT_DISPLAY, url: staticFile("fonts/ArchivoBlack-400.woff2"), weight: "400" });
 loadFont({ family: FONT_BODY, url: staticFile("fonts/PlusJakartaSans-var.woff2"), weight: "200 800" });
 loadFont({ family: FONT_MONO, url: staticFile("fonts/JetBrainsMono-var.woff2"), weight: "100 800" });
+loadFont({ family: FONT_CONDENSED, url: staticFile("fonts/LeagueGothic-var.woff2"), weight: "400" });
 
 /** UGC brand colours, sampled from the official logo. */
 export const BRAND = {

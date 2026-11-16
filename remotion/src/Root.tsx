@@ -2,11 +2,13 @@ import React from "react";
 import { Composition, Folder } from "remotion";
 import { EPISODES, FPS, HEIGHT, WIDTH, sec } from "./data";
 import { E01ExportRelay } from "./episodes/E01ExportRelay";
+import { E02GateByGate } from "./episodes/E02GateByGate";
 import { Scaffold } from "./episodes/Scaffold";
 
 /** Episodes with a finished bespoke composition. Everything else plays the timing scaffold. */
 const BESPOKE: Record<string, React.FC> = {
   E01: E01ExportRelay,
+  E02: E02GateByGate,
 };
 
 export const RemotionRoot: React.FC = () => {
