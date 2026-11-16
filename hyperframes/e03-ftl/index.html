@@ -13,8 +13,9 @@
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
       #root { position: relative; width: 100%; height: 100%; color: var(--ink); }
-      .serif { font-family: "DM Serif Display", serif; font-weight: 400; }
-      .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; letter-spacing: 0.04em; }
+      .serif { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+      .light { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 300; letter-spacing: -0.01em; }
+      .mono { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 700; letter-spacing: 0.14em; }
       .card { position: absolute; left: 80px; width: 880px; perspective: 1400px; }
       .sheet { position: relative; width: 100%; height: 100%; transform-origin: 50% 0%; background: var(--paper);
         border: 2.5px solid var(--ink); border-radius: 6px; box-shadow: 0 18px 40px rgba(43,28,21,.22), 0 2px 0 rgba(43,28,21,.15); }
@@ -22,19 +23,19 @@
       .tick { position: absolute; width: 14px; height: 14px; border-color: var(--orange); border-style: solid; }
       .w { display: inline-block; }
       .row { position:absolute; left:84px; width:500px; height:120px; display:flex; align-items:baseline; gap:14px; white-space:nowrap; }
-      .acr { font-size:108px; line-height:1; color:#c8471a; }
-      .eq { font-size:64px; line-height:1; color:var(--ink); opacity:.8; }
-      .mean { font-size:34px; line-height:1; color:var(--ink); letter-spacing:.05em; }
+      .acr { font-size:92px; line-height:1; color:#c8471a; }
+      .eq { font-family:"Plus Jakarta Sans",sans-serif; font-weight:300; font-size:60px; line-height:1; color:var(--ink); opacity:.7; }
+      .mean { font-size:30px; line-height:1; color:var(--ink); }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="e03-ftl" data-start="0" data-duration="10" data-width="1080" data-height="1920">
-      <div id="ra" class="row clip" data-start="0" data-duration="10" data-track-index="0" style="top:1396px" data-layout-allow-overlap>
+    <div id="root" data-composition-id="e03-ftl" data-start="0" data-duration="8.6" data-width="1080" data-height="1920">
+      <div id="ra" class="row clip" data-start="0" data-duration="8.6" data-track-index="0" style="top:1396px" data-layout-allow-overlap>
         <span class="acr serif"><span class="w">F</span><span class="w">T</span><span class="w">L</span></span>
         <span class="eq serif">=</span>
         <span class="mean mono">WHOLE TRUCK</span>
       </div>
-      <div id="rb" class="row clip" data-start="0" data-duration="10" data-track-index="1" style="top:1556px" data-layout-allow-overlap>
+      <div id="rb" class="row clip" data-start="0" data-duration="8.6" data-track-index="1" style="top:1556px" data-layout-allow-overlap>
         <span class="acr serif"><span class="w">L</span><span class="w">T</span><span class="w">L</span></span>
         <span class="eq serif">=</span>
         <span class="mean mono">SHARED</span>
@@ -44,15 +45,15 @@
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
       tl.set("#rb", { opacity: 0 }, 0);
-      tl.fromTo("#ra .acr .w", { y: 70, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.32, ease: "back.out(2)", stagger: 0.05 }, 1.45);
-      tl.fromTo("#ra .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.22, ease: "power3.out", transformOrigin: "0% 50%" }, 1.45 + 0.22);
-      tl.fromTo("#ra .mean", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "power2.out" }, 1.45 + 0.32);
-      tl.set("#rb", { opacity: 1 }, 4 - 0.01);
-      tl.fromTo("#rb .acr .w", { y: 70, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.32, ease: "back.out(2)", stagger: 0.05 }, 4);
-      tl.fromTo("#rb .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.22, ease: "power3.out", transformOrigin: "0% 50%" }, 4 + 0.22);
-      tl.fromTo("#rb .mean", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "power2.out" }, 4 + 0.32);
-      tl.to("#ra", { opacity: 0.42, duration: 0.3 }, 4);
-      tl.to(["#ra", "#rb"], { opacity: 0, y: 30, filter: "blur(8px)", duration: 0.28, ease: "power2.in", stagger: 0.04 }, 9.55);
+      tl.fromTo("#ra .acr .w", { y: 40, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, ease: "power3.out", stagger: 0.07 }, 1.84 - 0.1);
+      tl.fromTo("#ra .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.22, ease: "power3.out", transformOrigin: "0% 50%" }, 1.84 + 0.22);
+      tl.fromTo("#ra .mean", { clipPath: "inset(0 100% 0 0)", x: -12 }, { clipPath: "inset(0 0% 0 0)", x: 0, duration: 0.7, ease: "power3.out" }, 1.84 + 0.3);
+      tl.set("#rb", { opacity: 1 }, 4.41 - 0.01);
+      tl.fromTo("#rb .acr .w", { y: 40, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, ease: "power3.out", stagger: 0.07 }, 4.41 - 0.1);
+      tl.fromTo("#rb .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.22, ease: "power3.out", transformOrigin: "0% 50%" }, 4.41 + 0.22);
+      tl.fromTo("#rb .mean", { clipPath: "inset(0 100% 0 0)", x: -12 }, { clipPath: "inset(0 0% 0 0)", x: 0, duration: 0.7, ease: "power3.out" }, 4.41 + 0.3);
+      tl.to("#ra", { opacity: 0.42, duration: 0.3 }, 4.41);
+      tl.to(["#ra", "#rb"], { opacity: 0, y: 30, filter: "blur(8px)", duration: 0.28, ease: "power2.in", stagger: 0.04 }, 8.15);
       window.__timelines["e03-ftl"] = tl;
     </script>
   </body>

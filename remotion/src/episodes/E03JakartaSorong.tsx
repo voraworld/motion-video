@@ -6,7 +6,7 @@ import land110 from "world-atlas/land-110m.json";
 import land50 from "world-atlas/land-50m.json";
 import { asset, beatsOf, getEpisode, sec } from "../data";
 import { BrandFrame } from "../brand/BrandFrame";
-import { BRAND, FONT_BODY, FONT_MONO, FONT_SERIF } from "../brand/tokens";
+import { BRAND, FONT_BODY } from "../brand/tokens";
 import { Captions } from "../shared/Captions";
 import { HfOverlay } from "../shared/HfOverlay";
 import { Shake } from "../shared/Impact";
@@ -98,34 +98,35 @@ const airAt = (f: number) => {
 
 // ── Timeline (VO word starts from whisper timestamps on the generated VO) ────────────────────────────────
 const T = {
-  slam: 0.5,
-  net: [0.6, 2.6] as const, // inter-island network draws in (hook)
-  modes: [6.65, 7.17, 8.15] as const, // "a truck, a ship, then another truck"
-  tear: [9.55, 10.75] as const, // the example route tears Jakarta → Sorong
-  dive1: [11.3, 12.4] as const,
-  jkt: [12.4, 20.6] as const,
-  ftl: 13.54,
-  ltl: 16.08,
-  out1: [20.6, 22.1] as const,
-  toShip: 20.9,
-  sea: [21.9, 29.4] as const,
-  fcl: 22.71,
-  lcl: 25.31,
-  dive2: [29.4, 30.4] as const,
-  toTruck: 29.95,
-  srg: [30.4, 31.75] as const,
-  door: 31.75,
-  handoff: [32.3, 33.29] as const,
-  stuck: 34.9, // end of the last-mile hold
-  out2: [35.0, 36.3] as const,
-  everyLeg: 36.48,
-  legFtl: 37.57,
-  legLtl: 38.11,
-  air: 38.68,
-  legFcl: 41.0,
-  legLcl: 41.72,
-  pinToG: [44.0, 44.5] as const,
-  logo: 44.0,
+  // word starts from data/e03-words.json (whisper timestamps on the generated VO)
+  slam: 1.9, // the globe hands over to the chart
+  net: [1.7, 4.1] as const, // inter-island network draws in
+  modes: [7.31, 8.0, 9.19] as const, // "a truck, a ship, then another truck"
+  tear: [10.90, 12.10] as const, // the example route tears Jakarta → Sorong
+  dive1: [12.15, 13.2] as const,
+  jkt: [13.2, 21.3] as const,
+  ftl: 14.84,
+  ltl: 17.41,
+  out1: [21.3, 22.8] as const,
+  toShip: 21.6,
+  sea: [22.6, 30.0] as const,
+  fcl: 23.49,
+  lcl: 26.25,
+  dive2: [30.0, 31.0] as const,
+  toTruck: 30.55,
+  srg: [31.0, 32.28] as const,
+  door: 32.28,
+  handoff: [32.85, 33.91] as const,
+  stuck: 35.3, // end of the last-mile hold
+  out2: [35.4, 36.8] as const,
+  everyLeg: 37.19,
+  legFtl: 38.22,
+  legLtl: 39.04,
+  air: 39.92,
+  legFcl: 41.89,
+  legLcl: 42.59,
+  pinToG: [44.4, 44.9] as const,
+  logo: 44.4,
 };
 const ease = Easing.inOut(Easing.sin);
 const fJ = (t: number) => interpolate(t, T.jkt, [0, 1], { ...clamp, easing: ease });
@@ -159,7 +160,10 @@ const SEA_S = 0.62;
 const STREET_J = 330;
 const STREET_S = 420;
 const NAV_TILT = 46;
-const globeR = (t: number) => 300 * Math.pow((S_PER_RAD * GLOBE_END_S) / 300, Easing.in(Easing.cubic)(prog(t, 0, T.slam)));
+const globeR = (t: number) => {
+  const r0 = 380 * (1 + 0.06 * prog(t, 0, 0.7));
+  return r0 * Math.pow((S_PER_RAD * GLOBE_END_S) / r0, io(prog(t, 0.7, T.slam)));
+};
 /** Navigation-style heading: the route ahead points up the screen (smoothed). */
 const headingRoll = (pl: Poly, f: number, span = 0.03) => {
   let sx = 0;
@@ -185,11 +189,11 @@ const camera = (t: number): Cam => {
   const navJ = (tt: number): Cam => ({ c: at(ROAD_J, fJ(tt)), s: STREET_J, tilt: NAV_TILT, roll: unwrap(headingRoll(ROAD_J, fJ(tt)), 0), fy: 1150 });
   const navS = (tt: number): Cam => ({ c: at(ROAD_S, fS(tt)), s: STREET_S, tilt: NAV_TILT, roll: unwrap(headingRoll(ROAD_S, fS(tt), 0.05), 0), fy: 1150 });
   if (t < T.slam) return { ...net, s: globeR(t) / S_PER_RAD };
-  if (t < 9.0) return mixCam(net, net2, io(prog(t, T.slam, 9.0)));
-  if (t < T.dive1[0]) return mixCam(net2, over, io(prog(t, 9.0, 10.2)));
+  if (t < 10.4) return mixCam(net, net2, io(prog(t, T.slam, 10.4)));
+  if (t < T.dive1[0]) return mixCam(net2, over, io(prog(t, 10.4, 11.7)));
   if (t < T.dive1[1]) return mixCam(over, navJ(T.jkt[0]), Easing.bezier(0.6, 0, 0.2, 1)(prog(t, ...T.dive1)));
   if (t < T.out1[0]) {
-    const zoomOut = 1 - 0.32 * Math.sin(Math.PI * prog(t, 15.4, 19.0)) * (t > 15.4 && t < 19.0 ? 1 : 0);
+    const zoomOut = 1 - 0.32 * Math.sin(Math.PI * prog(t, 16.6, 20.2)) * (t > 16.6 && t < 20.2 ? 1 : 0);
     const c = navJ(t);
     return { ...c, s: c.s * zoomOut };
   }
@@ -288,7 +292,7 @@ const NETC: Pt = (() => {
   return { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: (Math.min(...ys) + Math.max(...ys)) / 2 };
 })();
 const netAlpha = (t: number) =>
-  Math.max(interpolate(t, [T.net[0], T.net[0] + 0.4, 9.3, 10.3], [0, 1, 1, 0.12], clamp) * (t < T.dive1[0] ? 1 : 0), interpolate(t, [T.out2[1] - 0.4, T.out2[1] + 0.3, T.pinToG[0], T.pinToG[0] + 0.5], [0, 1, 1, 0], clamp));
+  Math.max(interpolate(t, [T.net[0], T.net[0] + 0.4, 10.7, 11.7], [0, 1, 1, 0.12], clamp) * (t < T.dive1[0] ? 1 : 0), interpolate(t, [T.out2[1] - 0.4, T.out2[1] + 0.3, T.pinToG[0], T.pinToG[0] + 0.5], [0, 1, 1, 0], clamp));
 
 const CW = 1840;
 const CH = 2660;
@@ -414,8 +418,8 @@ const MapCanvas: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
       ctx.globalAlpha = 1;
     };
     const wide = cam.s < 3;
-    const cw = wide ? 12 : 26;
-    const iw = wide ? 7 : 16;
+    const cw = wide ? 6.5 : 22;
+    const iw = wide ? 3.6 : 14;
     // inter-island network (general part + UGC beat)
     const na = netAlpha(t);
     if (na > 0.01) {
@@ -424,21 +428,41 @@ const MapCanvas: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
         const drawn = t < T.out2[0] ? interpolate(t, [d0, d0 + 0.7], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) }) : interpolate(t, [T.out2[1] - 0.3 + i * 0.04, T.out2[1] + 0.4 + i * 0.04], [0, 1], clamp);
         if (drawn <= 0) return;
         const n = Math.max(2, Math.round(pts.length * drawn));
-        line(pts.slice(0, n), DEEP, wide ? 9 : 14, na * 0.9);
-        line(pts.slice(0, n), ORANGE, wide ? 5 : 8, na);
+        const seg = pts.slice(0, n);
+        ctx.shadowColor = "rgba(242,106,31,.55)";
+        ctx.shadowBlur = 10;
+        line(seg, ORANGE, 2.6, na * 0.95);
+        ctx.shadowBlur = 0;
+        // a short light travels along every finished lane
+        if (drawn >= 1) {
+          const f = (t * 0.22 + i * 0.137) % 1;
+          const a0 = Math.floor(f * (pts.length - 1));
+          const glint = pts.slice(Math.max(0, a0 - 4), a0 + 1);
+          ctx.shadowColor = "rgba(255,214,150,.9)";
+          ctx.shadowBlur = 12;
+          line(glint, "#FFF3DF", 3.4, na);
+          ctx.shadowBlur = 0;
+        }
       });
-      for (const p of PORT_PTS) {
+      PORT_PTS.forEach((p, i) => {
         const [x, y] = W2S(p);
+        const ph = (t * 0.5 + i * 0.29) % 1;
+        ctx.globalAlpha = na * (1 - ph) * 0.6;
+        ctx.beginPath();
+        ctx.arc(x, y, 6 + ph * 18, 0, Math.PI * 2);
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = ORANGE;
+        ctx.stroke();
         ctx.globalAlpha = na;
         ctx.beginPath();
-        ctx.arc(x, y, 11, 0, Math.PI * 2);
+        ctx.arc(x, y, 5.5, 0, Math.PI * 2);
         ctx.fillStyle = "#fff";
         ctx.fill();
-        ctx.lineWidth = 6;
+        ctx.lineWidth = 2.5;
         ctx.strokeStyle = ORANGE;
         ctx.stroke();
         ctx.globalAlpha = 1;
-      }
+      });
     }
     if (rs.air > 0) {
       const airPts = Array.from({ length: 80 }, (_, i) => airAt((i / 79) * rs.air));
@@ -450,8 +474,13 @@ const MapCanvas: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
     }
     for (const a of rs.ahead) {
       const pts = rs.tear < 1 && a === FULL.pts ? split(FULL, rs.tear)[0] : a;
+      if (wide) {
+        ctx.shadowColor = "rgba(242,106,31,.6)";
+        ctx.shadowBlur = 14;
+      }
       line(pts, DEEP, cw);
       line(pts, ORANGE, iw);
+      ctx.shadowBlur = 0;
       if (rs.glow > 0) line(pts, "#FFF7EF", wide ? 3 : 5, rs.glow, [12, 18]);
     }
   });
@@ -464,7 +493,7 @@ const LAND110 = feature(land110 as any, (land110 as any).objects.land);
 const GRAT = geoGraticule10();
 const Globe: React.FC<{ t: number }> = ({ t }) => {
   if (t > T.slam + 0.02) return null;
-  const k = Easing.out(Easing.cubic)(prog(t, 0, 0.42));
+  const k = io(prog(t, 0, 1.45));
   const r = globeR(t);
   const proj = geoOrthographic()
     .scale(r)
@@ -475,20 +504,27 @@ const Globe: React.FC<{ t: number }> = ({ t }) => {
       [1100, 1940],
     ]);
   const path = geoPath(proj);
-  const fade = interpolate(t, [0.38, 0.48], [1, 0], clamp);
+  const fade = interpolate(t, [T.slam - 0.4, T.slam], [1, 0], clamp);
+  const halo = r * 1.18;
   return (
     <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, opacity: fade }}>
       <defs>
-        <radialGradient id="e03-globe" cx="40%" cy="36%" r="70%">
-          <stop offset="0" stopColor="#CFE7F8" />
-          <stop offset="0.7" stopColor={WATER} />
-          <stop offset="1" stopColor="#7FB6DD" />
+        <radialGradient id="e03-globe" cx="38%" cy="32%" r="72%">
+          <stop offset="0" stopColor="#FFD39A" />
+          <stop offset="0.35" stopColor="#F7A13A" />
+          <stop offset="0.75" stopColor={ORANGE} />
+          <stop offset="1" stopColor={DEEP} />
+        </radialGradient>
+        <radialGradient id="e03-halo">
+          <stop offset="0.78" stopColor="rgba(242,106,31,.32)" />
+          <stop offset="1" stopColor="rgba(242,106,31,0)" />
         </radialGradient>
       </defs>
-      <circle cx={540} cy={1000} r={r + 40} fill="rgba(166,209,240,.25)" />
-      <path d={path({ type: "Sphere" }) ?? ""} fill="url(#e03-globe)" stroke="#7FA9C9" strokeWidth={3} />
-      <path d={path(GRAT) ?? ""} fill="none" stroke="#FFFFFF" strokeOpacity={0.35} strokeWidth={1.2} />
-      <path d={path(LAND110 as never) ?? ""} fill={LAND} stroke="#9EAAB5" strokeWidth={1.4} />
+      <circle cx={540} cy={1060} r={halo} fill="url(#e03-halo)" />
+      <path d={path({ type: "Sphere" }) ?? ""} fill="url(#e03-globe)" />
+      <path d={path(GRAT) ?? ""} fill="none" stroke="#FFFFFF" strokeOpacity={0.22} strokeWidth={1} />
+      <path d={path(LAND110 as never) ?? ""} fill="#FFF4E8" stroke="#FFFFFF" strokeWidth={1.2} />
+      <path d={path({ type: "Sphere" }) ?? ""} fill="none" stroke="rgba(255,255,255,.55)" strokeWidth={1.5} />
       
     </svg>
   );
@@ -714,7 +750,7 @@ const NavBanner: React.FC<{ t: number }> = ({ t }) => {
 /** Bottom sheet (like a navigation app's trip card). */
 const sheetVis = (t: number) =>
   Math.max(
-    interpolate(t, [4.3, 4.8, 8.75, 9.1], [0, 1, 1, 0], clamp),
+    interpolate(t, [5.0, 5.5, 10.2, 10.55], [0, 1, 1, 0], clamp),
     interpolate(t, [T.ftl - 0.7, T.ftl - 0.2, T.out1[0] - 0.2, T.out1[0] + 0.2], [0, 1, 1, 0], clamp),
     interpolate(t, [T.fcl - 0.7, T.fcl - 0.2, T.dive2[0] - 0.2, T.dive2[0] + 0.2], [0, 1, 1, 0], clamp),
     interpolate(t, [T.srg[0], T.srg[0] + 0.4, T.stuck - 0.35, T.stuck], [0, 1, 1, 0], clamp),
@@ -795,7 +831,7 @@ const Loader: React.FC<{ t: number; kind: "truck" | "container" }> = ({ t, kind 
 
 /** General part: truck → ship → truck, each mode lights up on the VO word. */
 const ModesSheet: React.FC<{ t: number }> = ({ t }) => {
-  if (t < 4.2 || t > 9.2) return null;
+  if (t < 4.9 || t > 10.6) return null;
   const v = sheetVis(t);
   const top = SHEET.top + (1 - v) * 460;
   const items = [
@@ -835,8 +871,8 @@ const LastMileSheet: React.FC<{ t: number }> = ({ t }) => {
   return (
     <div style={{ position: "absolute", left: SHEET.left, top, width: SHEET.w, height: SHEET.h }}>
       <div style={{ position: "absolute", left: 44, top: 46, overflow: "hidden", height: 120 }}>
-        <div style={{ fontFamily: FONT_SERIF, fontSize: 108, lineHeight: 1, color: INK, translate: `0 ${(1 - inK) * 110}%`, whiteSpace: "nowrap" }}>
-          LAST <span style={{ color: DEEP }}>MILE</span>
+        <div style={{ fontFamily: FONT_BODY, fontWeight: 800, letterSpacing: "-0.02em", fontSize: 96, lineHeight: 1.05, color: INK, translate: `0 ${(1 - inK) * 110}%`, whiteSpace: "nowrap" }}>
+          LAST <span style={{ color: DEEP, fontWeight: 300 }}>MILE</span>
         </div>
       </div>
       {/* handoff chain */}
@@ -881,7 +917,7 @@ const CompassButton: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
 const Attribution: React.FC<{ t: number }> = ({ t }) => {
   const on = interpolate(t, [0.6, 1.0, T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp);
   return (
-    <div style={{ position: "absolute", left: 50, top: 334, fontFamily: FONT_MONO, fontSize: 15, color: "rgba(43,28,21,.55)", opacity: on }}>
+    <div style={{ position: "absolute", left: 50, top: 334, fontFamily: FONT_BODY, fontSize: 15, color: "rgba(43,28,21,.55)", opacity: on }}>
       © OpenStreetMap contributors · OpenFreeMap · Natural Earth
     </div>
   );
@@ -903,14 +939,14 @@ export const E03JakartaSorong: React.FC = () => {
   const frame = useCurrentFrame();
   const t = frame / 30;
   const cam = camera(t);
-  const mapOn = interpolate(t, [0.38, 0.48], [0, 1], clamp) * interpolate(t, [T.pinToG[0], T.logo + 0.2], [1, 0], clamp);
-  const topVeil = Math.max(interpolate(t, [0, 0.6, 11.2, 11.6], [0, 1, 1, 0], clamp), interpolate(t, [T.out2[1] - 0.4, T.out2[1], T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp));
+  const mapOn = interpolate(t, [T.slam - 0.4, T.slam], [0, 1], clamp) * interpolate(t, [T.pinToG[0], T.logo + 0.2], [1, 0], clamp);
+  const topVeil = Math.max(interpolate(t, [0, 0.6, 12.2, 12.6], [0, 1, 1, 0], clamp), interpolate(t, [T.out2[1] - 0.4, T.out2[1], T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp));
   const hits = [T.slam, T.dive1[1] - 0.05, T.out1[0] + 0.3, T.dive2[1] - 0.05, T.door + 0.35, T.out2[0] + 0.1].map(sec);
   const turnTicks = MAP.roads.jakarta.steps.filter((s) => s.name && s.at > 0.02 && s.at < 0.8).map((s) => interpolate(s.at, [0, 1], T.jkt));
   const sfx: SfxCue[] = [
-    { at: 0, name: "whoosh", volume: 0.7 },
-    { at: sec(T.slam), name: "boom", volume: 0.9 },
-    { at: sec(T.slam), name: "horn", volume: 0.7 },
+    { at: sec(0.6), name: "whoosh", volume: 0.4 },
+    { at: sec(T.slam - 0.1), name: "boom", volume: 0.5 },
+    { at: sec(0.1), name: "horn", volume: 0.45 },
     { at: sec(T.net[0]), name: "whoosh", volume: 0.5 },
     ...T.modes.map((m) => ({ at: sec(m), name: "stamp", volume: 0.35 })),
     { at: sec(T.tear[0]), name: "whoosh", volume: 0.55 },
@@ -969,12 +1005,10 @@ export const E03JakartaSorong: React.FC = () => {
       <LastMileSheet t={t} />
       <ModesSheet t={t} />
 
-      <HfOverlay clip="e03-hook" from={0} durationInFrames={sec(4)} fallback={null} />
-      <HfOverlay clip="e03-modes" from={sec(4)} durationInFrames={sec(5)} fallback={null} />
-      <HfOverlay clip="e03-example" from={sec(9)} durationInFrames={sec(3)} fallback={null} />
-      <HfOverlay clip="e03-ftl" from={sec(12)} durationInFrames={sec(9)} fallback={null} />
-      <HfOverlay clip="e03-fcl" from={sec(21)} durationInFrames={sec(9)} fallback={null} />
-      <HfOverlay clip="e03-ugc" from={sec(35)} durationInFrames={sec(9)} fallback={null} />
+      {beats.map((b, i) => {
+        const clip = ["e03-hook", "e03-modes", "e03-example", "e03-ftl", "e03-fcl", null, "e03-ugc", null][i];
+        return clip ? <HfOverlay key={clip} clip={clip} from={b.from} durationInFrames={b.to - b.from} fallback={null} /> : null;
+      })}
 
       <EndCard t={t} />
       <HfOverlay clip="e03-logo" from={sec(T.logo)} durationInFrames={sec(ep.dur - T.logo)} fallback={null} />

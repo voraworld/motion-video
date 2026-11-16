@@ -375,62 +375,62 @@
   "beats": [
    [
     0,
-    4,
+    4.4,
     "hook",
     "R+H",
     "Thousands of islands. One shipment. How does it cross?",
     "THOUSANDS OF ISLANDS"
    ],
    [
-    4,
-    9,
+    4.4,
+    10.6,
     "edu",
     "R+H",
     "Door to door, inter-island cargo often rides a truck, a ship, then another truck.",
     "TRUCK → SHIP → TRUCK"
    ],
    [
-    9,
-    12,
+    10.6,
+    13.0,
     "edu",
     "R+H",
     "Take Jakarta to Sorong.",
     "EXAMPLE: JAKARTA → SORONG"
    ],
    [
-    12,
-    21,
+    13.0,
+    21.6,
     "edu",
     "R+H",
     "First mile, by truck. FTL means a full truck just for you. LTL means you share the truck and pay for your space.",
     "FTL = WHOLE TRUCK / LTL = SHARED"
    ],
    [
-    21,
-    30,
+    21.6,
+    30.4,
     "edu",
     "R+H",
     "Across the sea, by ship. FCL: a whole container is yours. LCL: your cargo shares a container with others.",
     "FCL = WHOLE BOX / LCL = SHARED"
    ],
    [
-    30,
-    35,
+    30.4,
+    35.4,
     "edu",
     "R",
     "Last mile: another truck to the door. Every mode switch is a handoff.",
     "LAST MILE"
    ],
    [
-    35,
-    44,
+    35.4,
+    44.4,
     "ugc",
     "R+H",
     "UGC Logistics plans every leg: FTL, LTL, domestic air, and inter-island FCL or LCL.",
     "EVERY LEG. ONE PLAN."
    ],
    [
-    44,
+    44.4,
     50,
     "cta",
     "R",
@@ -444,7 +444,7 @@
    "bpm": 122,
    "style": "Island adventure, tropical-orchestral",
    "prompt": "Upbeat, cheerful and epic adventure track, 122 BPM, major key. Bright tropical house groove with Indonesian-inspired hand percussion and bamboo marimba, layered with sweeping orchestral strings and big drums. Ship-horn style brass swell at the start. Builds as the route crosses the sea, short pause at 0:30, triumphant chorus at 0:36. Instrumental, no vocals.",
-   "cues": "0:00 horn swell · 0:12 groove · 0:21 sea section lift · 0:31 pause · 0:35 chorus"
+   "cues": "0:00 horn swell · 0:13 groove · 0:22 sea section lift · 0:31 pause · 0:35 chorus"
   },
   "facts": [
    [

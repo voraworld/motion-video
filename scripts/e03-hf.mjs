@@ -8,6 +8,16 @@ const ICONS = process.env.PHOSPHOR_DIR ?? "/tmp/claude-0/-home-user-motion-video
 const icon = (name, size = 48, color = "currentColor") =>
   readFileSync(join(ICONS, `${name}-fill.svg`), "utf8").replace(/<svg[^>]*>/, `<svg viewBox="0 0 256 256" width="${size}" height="${size}" fill="${color}" aria-hidden="true">`).trim();
 
+// Word starts measured on the generated VO (data/e03-words.json, written from whisper timestamps).
+const WORDS = JSON.parse(readFileSync(new URL("../data/e03-words.json", import.meta.url), "utf8"));
+const EP = JSON.parse(readFileSync(new URL("../data/episodes.json", import.meta.url), "utf8")).find((e) => e.id === "E03");
+const beatDur = (i) => +(EP.beats[i][1] - EP.beats[i][0]).toFixed(2);
+const word = (i, w, n = 0) => {
+  const hits = WORDS[i].words.filter((x) => x.w === w);
+  if (!hits[n]) throw new Error(`word ${w} #${n} not found in beat ${i}`);
+  return +(hits[n].t - EP.beats[i][0]).toFixed(2);
+};
+
 const INK = "#2b1c15";
 const ORANGE = "#f26a1f";
 const AMBER = "#f5a623";
@@ -29,8 +39,9 @@ const head = (id, extraCss = "") => `<!doctype html>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
       #root { position: relative; width: 100%; height: 100%; color: var(--ink); }
-      .serif { font-family: "DM Serif Display", serif; font-weight: 400; }
-      .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; letter-spacing: 0.04em; }
+      .serif { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+      .light { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 300; letter-spacing: -0.01em; }
+      .mono { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 700; letter-spacing: 0.14em; }
       .card { position: absolute; left: 80px; width: 880px; perspective: 1400px; }
       .sheet { position: relative; width: 100%; height: 100%; transform-origin: 50% 0%; background: var(--paper);
         border: 2.5px solid var(--ink); border-radius: 6px; box-shadow: 0 18px 40px rgba(43,28,21,.22), 0 2px 0 rgba(43,28,21,.15); }
@@ -91,13 +102,13 @@ const pairClip = (id, dur, a, b) => {
         <span class="mean mono">${c.meaning}</span>
       </div>`;
   const enter = (key, at) => `
-      tl.fromTo("#${key} .acr .w", { y: 70, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.32, ease: "back.out(2)", stagger: 0.05 }, ${at});
+      tl.fromTo("#${key} .acr .w", { y: 40, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, ease: "power3.out", stagger: 0.07 }, ${at} - 0.1);
       tl.fromTo("#${key} .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.22, ease: "power3.out", transformOrigin: "0% 50%" }, ${at} + 0.22);
-      tl.fromTo("#${key} .mean", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "power2.out" }, ${at} + 0.32);`;
+      tl.fromTo("#${key} .mean", { clipPath: "inset(0 100% 0 0)", x: -12 }, { clipPath: "inset(0 0% 0 0)", x: 0, duration: 0.7, ease: "power3.out" }, ${at} + 0.3);`;
   return `${head(id, `      .row { position:absolute; left:84px; width:500px; height:120px; display:flex; align-items:baseline; gap:14px; white-space:nowrap; }
-      .acr { font-size:108px; line-height:1; color:#c8471a; }
-      .eq { font-size:64px; line-height:1; color:var(--ink); opacity:.8; }
-      .mean { font-size:34px; line-height:1; color:var(--ink); letter-spacing:.05em; }`)}
+      .acr { font-size:92px; line-height:1; color:#c8471a; }
+      .eq { font-family:"Plus Jakarta Sans",sans-serif; font-weight:300; font-size:60px; line-height:1; color:var(--ink); opacity:.7; }
+      .mean { font-size:30px; line-height:1; color:var(--ink); }`)}
   <body>
     <div id="root" data-composition-id="${id}" data-start="0" data-duration="${dur}" data-width="1080" data-height="1920">${row("ra", a, 1396)}${row("rb", b, 1556)}
     </div>
@@ -117,20 +128,26 @@ const pairClip = (id, dur, a, b) => {
 
 const CLIPS = {};
 
-// Hook: THOUSANDS / OF ISLANDS slams in on the VO words.
-CLIPS["e03-hook"] = `${head("e03-hook", `      .l { position:absolute; left:80px; width:900px; font-size:140px; line-height:1; white-space:nowrap; }
-      #l1 { top:214px; } #l2 { top:360px; color:#c8471a; }`)}
+// Hook: THOUSANDS / OF ISLANDS, letters converge (tracking in) with a soft blur, calm and premium.
+const HOOK_D = beatDur(0);
+CLIPS["e03-hook"] = `${head("e03-hook", `      .l { position:absolute; left:80px; width:900px; font-size:118px; line-height:1.02; white-space:nowrap; }
+      #l1 { top:220px; } #l2 { top:350px; color:#c8471a; }`)}
   <body>
-    <div id="root" data-composition-id="e03-hook" data-start="0" data-duration="4" data-width="1080" data-height="1920">
-      <div id="l1" class="l serif clip" data-start="0" data-duration="4" data-track-index="0">${"THOUSANDS".split("").map((c) => `<span class="w">${c}</span>`).join("")}</div>
-      <div id="l2" class="l serif clip" data-start="0" data-duration="4" data-track-index="1"><span class="w">OF</span> <span class="w">ISLANDS</span></div>
+    <div id="root" data-composition-id="e03-hook" data-start="0" data-duration="${HOOK_D}" data-width="1080" data-height="1920">
+      <div id="l1" class="l serif clip" data-start="0" data-duration="${HOOK_D}" data-track-index="0">${"THOUSANDS".split("").map((c) => `<span class="w">${c}</span>`).join("")}</div>
+      <div id="l2" class="l light clip" data-start="0" data-duration="${HOOK_D}" data-track-index="1">${"OF ISLANDS".split("").map((c) => (c === " " ? " " : `<span class="w">${c}</span>`)).join("")}</div>
     </div>
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      tl.fromTo("#l1 .w", { y: -90, opacity: 0, scale: 1.7, filter: "blur(10px)" }, { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.22, ease: "expo.out", stagger: 0.03 }, 0.1);
-      tl.fromTo("#l2 .w", { y: 120, opacity: 0, rotationX: -80 }, { y: 0, opacity: 1, rotationX: 0, duration: 0.4, ease: "back.out(2)", stagger: 0.12 }, 0.62);
-      tl.to(["#l1", "#l2"], { y: -60, opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in", stagger: 0.05 }, 3.6);
+      const track = (sel, at) => {
+        const ws = document.querySelectorAll(sel + " .w");
+        const mid = (ws.length - 1) / 2;
+        ws.forEach((w, i) => tl.fromTo(w, { x: (i - mid) * 26, opacity: 0, filter: "blur(14px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 1.2, ease: "power3.out" }, at));
+      };
+      track("#l1", ${word(0, "thousands")});
+      track("#l2", ${word(0, "islands") - 0.15});
+      tl.to(["#l1", "#l2"], { y: -30, opacity: 0, filter: "blur(10px)", duration: 0.5, ease: "power2.in", stagger: 0.06 }, ${HOOK_D - 0.55});
       window.__timelines["e03-hook"] = tl;
     </script>
   </body>
@@ -139,26 +156,27 @@ CLIPS["e03-hook"] = `${head("e03-hook", `      .l { position:absolute; left:80px
 
 // The general pattern: TRUCK → SHIP → TRUCK, each word lands on the VO.
 const arrow = (id) => `<svg class="arr" id="${id}" width="130" height="80" viewBox="0 0 130 80"><path d="M8 40 H104" stroke="${ORANGE}" stroke-width="14" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/><path d="M84 16 L112 40 L84 64" fill="none" stroke="${ORANGE}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0"/></svg>`;
-CLIPS["e03-modes"] = `${head("e03-modes", `      .m { position:absolute; left:80px; height:130px; display:flex; align-items:center; gap:22px; font-size:118px; line-height:1; white-space:nowrap; }
+const MODES_D = beatDur(1);
+CLIPS["e03-modes"] = `${head("e03-modes", `      .m { position:absolute; left:80px; height:130px; display:flex; align-items:center; gap:22px; font-size:104px; line-height:1; white-space:nowrap; }
       #m1 { top:214px; } #m2 { top:344px; color:#2f6e97; } #m3 { top:474px; }`)}
   <body>
-    <div id="root" data-composition-id="e03-modes" data-start="0" data-duration="5" data-width="1080" data-height="1920">
-      <div id="m1" class="m serif clip" data-start="0" data-duration="5" data-track-index="0"><span class="w">TRUCK</span>${arrow("a1")}</div>
-      <div id="m2" class="m serif clip" data-start="0" data-duration="5" data-track-index="1"><span class="w">SHIP</span>${arrow("a2")}</div>
-      <div id="m3" class="m serif clip" data-start="0" data-duration="5" data-track-index="2"><span class="w">TRUCK</span></div>
+    <div id="root" data-composition-id="e03-modes" data-start="0" data-duration="${MODES_D}" data-width="1080" data-height="1920">
+      <div id="m1" class="m serif clip" data-start="0" data-duration="${MODES_D}" data-track-index="0"><span class="w">TRUCK</span>${arrow("a1")}</div>
+      <div id="m2" class="m serif clip" data-start="0" data-duration="${MODES_D}" data-track-index="1"><span class="w">SHIP</span>${arrow("a2")}</div>
+      <div id="m3" class="m serif clip" data-start="0" data-duration="${MODES_D}" data-track-index="2"><span class="w">TRUCK</span></div>
     </div>
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      const land = (sel, at) => tl.fromTo(sel, { x: -80, opacity: 0, filter: "blur(10px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }, at);
+      const land = (sel, at) => tl.fromTo(sel, { x: -50, opacity: 0, filter: "blur(10px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, ease: "power3.out" }, at);
       const draw = (id, at) => {
         tl.to("#" + id + " path:first-child", { attr: { "stroke-dashoffset": 0 }, duration: 0.3, ease: "power2.out" }, at);
         tl.to("#" + id + " path:last-child", { opacity: 1, duration: 0.06 }, at + 0.24);
       };
-      land("#m1 .w", 2.6); draw("a1", 2.85);
-      land("#m2 .w", 3.12); draw("a2", 3.4);
-      land("#m3 .w", 4.05);
-      tl.to([".m"], { opacity: 0, y: -40, filter: "blur(8px)", duration: 0.25, ease: "power2.in", stagger: 0.04 }, 4.72);
+      land("#m1 .w", ${word(1, "truck") - 0.1}); draw("a1", ${word(1, "truck") + 0.3});
+      land("#m2 .w", ${word(1, "ship") - 0.1}); draw("a2", ${word(1, "ship") + 0.3});
+      land("#m3 .w", ${word(1, "truck", 1) - 0.1});
+      tl.to([".m"], { opacity: 0, y: -30, filter: "blur(8px)", duration: 0.4, ease: "power2.in", stagger: 0.05 }, ${MODES_D - 0.5});
       window.__timelines["e03-modes"] = tl;
     </script>
   </body>
@@ -166,16 +184,17 @@ CLIPS["e03-modes"] = `${head("e03-modes", `      .m { position:absolute; left:80
 `;
 
 // The example: EXAMPLE tag, JAKARTA → SORONG.
+const EX_D = beatDur(2);
 CLIPS["e03-example"] = `${head("e03-example", `      #tag { position:absolute; left:84px; top:214px; height:58px; padding:0 20px; display:flex; align-items:center; border-radius:30px; background:var(--orange); color:#fff; font-size:30px; letter-spacing:.18em; }
-      #l1 { position:absolute; left:80px; top:290px; font-size:150px; line-height:1; white-space:nowrap; }
+      #l1 { position:absolute; left:80px; top:290px; font-size:132px; line-height:1; white-space:nowrap; }
       #l2 { position:absolute; left:80px; top:450px; width:900px; height:160px; white-space:nowrap; }
-      #sorong { position:absolute; left:250px; top:0; font-size:150px; line-height:1; color:#c8471a; }
+      #sorong { position:absolute; left:250px; top:0; font-size:132px; line-height:1; color:#c8471a; }
       #arrow { position:absolute; left:0; top:36px; }`)}
   <body>
-    <div id="root" data-composition-id="e03-example" data-start="0" data-duration="3" data-width="1080" data-height="1920">
-      <div id="tag" class="mono clip" data-start="0" data-duration="3" data-track-index="0">EXAMPLE</div>
-      <div id="l1" class="serif clip" data-start="0" data-duration="3" data-track-index="1">${"JAKARTA".split("").map((c) => `<span class="w">${c}</span>`).join("")}</div>
-      <div id="l2" class="clip" data-start="0" data-duration="3" data-track-index="2" data-layout-allow-overlap>
+    <div id="root" data-composition-id="e03-example" data-start="0" data-duration="${EX_D}" data-width="1080" data-height="1920">
+      <div id="tag" class="mono clip" data-start="0" data-duration="${EX_D}" data-track-index="0">EXAMPLE</div>
+      <div id="l1" class="serif clip" data-start="0" data-duration="${EX_D}" data-track-index="1">${"JAKARTA".split("").map((c) => `<span class="w">${c}</span>`).join("")}</div>
+      <div id="l2" class="clip" data-start="0" data-duration="${EX_D}" data-track-index="2" data-layout-allow-overlap>
         <svg id="arrow" width="230" height="110" viewBox="0 0 230 110"><path id="arrowPath" d="M8 55 C 70 20, 140 90, 205 55" fill="none" stroke="${ORANGE}" stroke-width="14" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/><path id="arrowHead" d="M180 28 L216 55 L180 82" fill="none" stroke="${ORANGE}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0"/></svg>
         <div id="sorong" class="serif">${"SORONG".split("").map((c) => `<span class="w">${c}</span>`).join("")}</div>
       </div>
@@ -184,11 +203,11 @@ CLIPS["e03-example"] = `${head("e03-example", `      #tag { position:absolute; l
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
       tl.fromTo("#tag", { scaleX: 0, opacity: 0, transformOrigin: "0% 50%" }, { scaleX: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, 0.02);
-      tl.fromTo("#l1 .w", { y: -60, opacity: 0, scale: 1.7, filter: "blur(10px)" }, { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.22, ease: "expo.out", stagger: 0.035 }, 0.3);
-      tl.to("#arrowPath", { strokeDashoffset: 0, duration: 0.36, ease: "power3.inOut" }, 0.7);
-      tl.to("#arrowHead", { opacity: 1, duration: 0.08 }, 1.0);
-      tl.fromTo("#sorong .w", { x: -80, opacity: 0, filter: "blur(12px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.26, ease: "power3.out", stagger: 0.04 }, 0.98);
-      tl.to(["#tag", "#l1", "#l2"], { y: -60, opacity: 0, filter: "blur(10px)", duration: 0.28, ease: "power2.in", stagger: 0.04 }, 2.66);
+      tl.fromTo("#l1 .w", { y: 30, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out", stagger: 0.04 }, ${word(2, "jakarta") - 0.12});
+      tl.to("#arrowPath", { strokeDashoffset: 0, duration: 0.45, ease: "power3.inOut" }, ${word(2, "sorong") - 0.35});
+      tl.to("#arrowHead", { opacity: 1, duration: 0.08 }, ${word(2, "sorong") + 0.05});
+      tl.fromTo("#sorong .w", { x: -40, opacity: 0, filter: "blur(12px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out", stagger: 0.04 }, ${word(2, "sorong") - 0.1});
+      tl.to(["#tag", "#l1", "#l2"], { y: -40, opacity: 0, filter: "blur(10px)", duration: 0.32, ease: "power2.in", stagger: 0.04 }, ${EX_D - 0.38});
       window.__timelines["e03-example"] = tl;
     </script>
   </body>
@@ -197,48 +216,49 @@ CLIPS["e03-example"] = `${head("e03-example", `      #tag { position:absolute; l
 
 CLIPS["e03-ftl"] = pairClip(
   "e03-ftl",
-  10,
-  { acr: "FTL", meaning: "WHOLE TRUCK", at: 1.45 },
-  { acr: "LTL", meaning: "SHARED", at: 4.0 },
+  beatDur(3),
+  { acr: "FTL", meaning: "WHOLE TRUCK", at: word(3, "ftl") },
+  { acr: "LTL", meaning: "SHARED", at: word(3, "ltl") },
 );
 CLIPS["e03-fcl"] = pairClip(
   "e03-fcl",
-  10,
-  { acr: "FCL", meaning: "WHOLE BOX", at: 1.62 },
-  { acr: "LCL", meaning: "SHARED", at: 4.22 },
+  beatDur(4),
+  { acr: "FCL", meaning: "WHOLE BOX", at: word(4, "fcl") },
+  { acr: "LCL", meaning: "SHARED", at: word(4, "lcl") },
 );
 
 const legs = [
-  { at: 2.55, icon: "truck", text: "FTL", row: 0, col: 0 },
-  { at: 3.1, icon: "truck", text: "LTL", row: 0, col: 1 },
-  { at: 3.66, icon: "airplane-tilt", text: "DOMESTIC AIR", row: 0, col: 2 },
-  { at: 5.98, icon: "boat", text: "FCL", row: 1, col: 0 },
-  { at: 6.7, icon: "boat", text: "LCL", row: 1, col: 1 },
+  { at: word(6, "ftl"), icon: "truck", text: "FTL", row: 0, col: 0 },
+  { at: word(6, "ltl"), icon: "truck", text: "LTL", row: 0, col: 1 },
+  { at: word(6, "domestic"), icon: "airplane-tilt", text: "DOMESTIC AIR", row: 0, col: 2 },
+  { at: word(6, "fcl"), icon: "boat", text: "FCL", row: 1, col: 0 },
+  { at: word(6, "lcl"), icon: "boat", text: "LCL", row: 1, col: 1 },
 ];
 const legX = [80, 290, 500];
-CLIPS["e03-ugc"] = `${head("e03-ugc", `      .line { position:absolute; left:80px; font-size:132px; line-height:1; white-space:nowrap; }
-      #h1 { top:214px; } #h2 { top:350px; color:var(--orange); }
+const UGC_D = beatDur(6);
+CLIPS["e03-ugc"] = `${head("e03-ugc", `      .line { position:absolute; left:80px; font-size:104px; line-height:1.05; white-space:nowrap; }
+      #h1 { top:220px; } #h2 { top:334px; color:#c8471a; font-weight:300; }
       .leg { position:absolute; height:74px; padding:0 22px 0 8px; display:flex; align-items:center; gap:14px; background:var(--paper);
         border:2.5px solid var(--ink); border-radius:40px; box-shadow:0 8px 18px rgba(43,28,21,.18); font-size:30px; white-space:nowrap; }
       .leg .i { width:56px; height:56px; border-radius:50%; background:var(--orange); display:grid; place-items:center; }`)}
   <body>
-    <div id="root" data-composition-id="e03-ugc" data-start="0" data-duration="8" data-width="1080" data-height="1920">
-      <div id="h1" class="line serif clip" data-start="0" data-duration="8" data-track-index="0"><span class="w">EVERY</span> <span class="w">LEG.</span></div>
-      <div id="h2" class="line serif clip" data-start="0" data-duration="8" data-track-index="1"><span class="w">ONE</span> <span class="w">PLAN.</span></div>
+    <div id="root" data-composition-id="e03-ugc" data-start="0" data-duration="${UGC_D}" data-width="1080" data-height="1920">
+      <div id="h1" class="line serif clip" data-start="0" data-duration="${UGC_D}" data-track-index="0"><span class="w">EVERY</span> <span class="w">LEG.</span></div>
+      <div id="h2" class="line serif clip" data-start="0" data-duration="${UGC_D}" data-track-index="1"><span class="w">ONE</span> <span class="w">PLAN.</span></div>
 ${legs
   .map(
     (l, i) =>
-      `      <div id="leg${i}" class="leg mono clip" data-start="0" data-duration="8" data-track-index="${i + 2}" style="left:${legX[l.col]}px;top:${520 + l.row * 96}px"><div class="i">${icon(l.icon, 34, "#fff")}</div>${l.text}</div>`,
+      `      <div id="leg${i}" class="leg mono clip" data-start="0" data-duration="${UGC_D}" data-track-index="${i + 2}" style="left:${legX[l.col]}px;top:${476 + l.row * 96}px"><div class="i">${icon(l.icon, 34, "#fff")}</div>${l.text}</div>`,
   )
   .join("\n")}
     </div>
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      tl.fromTo("#h1 .w", { y: 90, opacity: 0, rotationX: -80 }, { y: 0, opacity: 1, rotationX: 0, duration: 0.45, ease: "back.out(1.8)", stagger: 0.1 }, 1.4);
-      tl.fromTo("#h2 .w", { y: 90, opacity: 0, rotationX: -80 }, { y: 0, opacity: 1, rotationX: 0, duration: 0.45, ease: "back.out(1.8)", stagger: 0.1 }, 1.85);
-${legs.map((l, i) => `      tl.fromTo("#leg${i}", { scale: 1.5, opacity: 0, rotation: -8 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.3, ease: "back.out(2.6)" }, ${l.at});`).join("\n")}
-      tl.to([".line", ".leg"], { opacity: 0, y: -40, filter: "blur(8px)", duration: 0.25, ease: "power2.in", stagger: 0.03 }, 7.6);
+      tl.fromTo("#h1 .w", { y: 36, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.7, ease: "power3.out", stagger: 0.12 }, ${word(6, "every") - 0.15});
+      tl.fromTo("#h2 .w", { y: 36, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.7, ease: "power3.out", stagger: 0.12 }, ${word(6, "leg") + 0.1});
+${legs.map((l, i) => `      tl.fromTo("#leg${i}", { scale: 0.86, opacity: 0, y: 14 }, { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, ${l.at - 0.08});`).join("\n")}
+      tl.to([".line", ".leg"], { opacity: 0, y: -30, filter: "blur(8px)", duration: 0.4, ease: "power2.in", stagger: 0.03 }, ${UGC_D - 0.5});
       window.__timelines["e03-ugc"] = tl;
     </script>
   </body>
