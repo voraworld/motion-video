@@ -121,7 +121,7 @@ const city = (lon, lat, seed, rot) => {
       x += len + r() * 0.6;
     }
   }
-  const minor = lines.map(([a, b]) => `M${a[0]} ${a[1]}L${b[0]} ${b[1]}`).join("");
+  const minor = lines.flatMap(([a, b]) => [a[0], a[1], b[0], b[1]]);
   const major = [];
   for (let k = 0; k < 5; k++) {
     const ang = rot + (k / 5) * Math.PI + r() * 0.3;
@@ -130,9 +130,9 @@ const city = (lon, lat, seed, rot) => {
       const off = Math.sin(s * 0.35 + k) * 0.8;
       pts.push([cx + Math.cos(ang) * s - Math.sin(ang) * off, cy + Math.sin(ang) * s + Math.cos(ang) * off]);
     }
-    major.push("M" + pts.map((p) => p.map((v) => v.toFixed(3)).join(" ")).join("L"));
+    major.push(pts.map((p) => p.map((v) => Math.round(v * 1000) / 1000)));
   }
-  return { cx, cy, minor, major: major.join("") };
+  return { cx, cy, minor, major };
 };
 
 // Street-level truck legs (manhattan-ish, lon/lat)

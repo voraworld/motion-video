@@ -21,88 +21,48 @@
       .sheet::before { content: ""; position: absolute; inset: 8px; border: 1px solid rgba(43,28,21,.45); border-radius: 3px; pointer-events: none; }
       .tick { position: absolute; width: 14px; height: 14px; border-color: var(--orange); border-style: solid; }
       .w { display: inline-block; }
-
+      .row { position:absolute; left:80px; top:236px; width:880px; height:220px; display:flex; align-items:baseline; gap:22px; white-space:nowrap; transform-origin:0% 0%; }
+      .acr { font-size:216px; line-height:1; color:#c8471a; }
+      .eq { font-size:120px; line-height:1; color:var(--ink); opacity:.85; }
+      .mean { font-size:54px; line-height:1; color:var(--ink); letter-spacing:.06em; }
+      #ra .rule, #rb .rule { position:absolute; left:4px; bottom:-14px; width:420px; height:7px; border-radius:4px; background:linear-gradient(90deg,var(--orange),var(--amber)); transform-origin:0 50%; }
     </style>
   </head>
   <body>
     <div id="root" data-composition-id="e03-fcl" data-start="0" data-duration="10" data-width="1080" data-height="1920">
-      <div id="ca" class="card clip" data-start="0" data-duration="10" data-track-index="0" style="top:214px;height:236px">
-        <div class="sheet" style="rotate:-1.2deg">
-          <div class="tick" style="left:-2px;top:-2px;border-width:4px 0 0 4px"></div><div class="tick" style="right:-2px;top:-2px;border-width:4px 4px 0 0"></div><div class="tick" style="left:-2px;bottom:-2px;border-width:0 0 4px 4px"></div><div class="tick" style="right:-2px;bottom:-2px;border-width:0 4px 4px 0"></div>
-          <div style="position:absolute;left:34px;top:26px;width:300px">
-            <div class="serif" style="font-size:118px;line-height:1;color:#c8471a">FCL</div>
-            <div class="mono" style="font-size:31px;line-height:1.15;margin-top:12px">= WHOLE BOX</div>
-          </div>
-          <div style="position:absolute;right:26px;top:22px"><svg viewBox="0 0 520 190" width="520" height="190"><defs>
-  <pattern id="hatchA" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#efe3cc"/><line x1="0" y1="0" x2="0" y2="10" stroke="#2b1c15" stroke-width="2.5" opacity=".55"/></pattern>
-  <pattern id="hatchB" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#e9dcc2"/><circle cx="6" cy="6" r="2.2" fill="#2b1c15" opacity=".5"/></pattern>
-  <pattern id="hatchC" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="10" height="10" fill="#f1e6d1"/><line x1="0" y1="0" x2="0" y2="10" stroke="#2b1c15" stroke-width="1.6" opacity=".45"/><line x1="5" y1="0" x2="5" y2="10" stroke="#2b1c15" stroke-width="1.6" opacity=".45"/></pattern>
-  <linearGradient id="og" x1="0" x2="1"><stop offset="0" stop-color="#c0392b"/><stop offset=".5" stop-color="#f26a1f"/><stop offset="1" stop-color="#f5a623"/></linearGradient>
-</defs>
-  <rect x="10" y="14" width="500" height="160" rx="6" fill="#fffaf0" stroke="#2b1c15" stroke-width="4"/>
-  <line x1="30" y1="20" x2="30" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="50.5" y1="20" x2="50.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="71" y1="20" x2="71" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="91.5" y1="20" x2="91.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="112" y1="20" x2="112" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="132.5" y1="20" x2="132.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="153" y1="20" x2="153" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="173.5" y1="20" x2="173.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="194" y1="20" x2="194" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="214.5" y1="20" x2="214.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="235" y1="20" x2="235" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="255.5" y1="20" x2="255.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="276" y1="20" x2="276" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="296.5" y1="20" x2="296.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="317" y1="20" x2="317" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="337.5" y1="20" x2="337.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="358" y1="20" x2="358" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="378.5" y1="20" x2="378.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="399" y1="20" x2="399" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="419.5" y1="20" x2="419.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="440" y1="20" x2="440" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="460.5" y1="20" x2="460.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="481" y1="20" x2="481" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/>
-  <rect id="cad-b0" x="26" y="28" width="108" height="62" rx="4" fill="url(#og)" stroke="#2b1c15" stroke-width="3"/><rect id="cad-b1" x="144" y="28" width="108" height="62" rx="4" fill="url(#og)" stroke="#2b1c15" stroke-width="3"/><rect id="cad-b2" x="262" y="28" width="108" height="62" rx="4" fill="url(#og)" stroke="#2b1c15" stroke-width="3"/><rect id="cad-b3" x="380" y="28" width="108" height="62" rx="4" fill="url(#og)" stroke="#2b1c15" stroke-width="3"/><rect id="cad-b4" x="26" y="98" width="108" height="62" rx="4" fill="url(#og)" stroke="#2b1c15" stroke-width="3"/><rect id="cad-b5" x="144" y="98" width="108" height="62" rx="4" fill="url(#og)" stroke="#2b1c15" stroke-width="3"/><rect id="cad-b6" x="262" y="98" width="108" height="62" rx="4" fill="url(#og)" stroke="#2b1c15" stroke-width="3"/><rect id="cad-b7" x="380" y="98" width="108" height="62" rx="4" fill="url(#og)" stroke="#2b1c15" stroke-width="3"/>
-  <rect x="10" y="14" width="500" height="160" rx="6" fill="none" stroke="#2b1c15" stroke-width="4"/>
-  <circle cx="16" cy="20" r="5" fill="#2b1c15"/><circle cx="504" cy="20" r="5" fill="#2b1c15"/><circle cx="16" cy="168" r="5" fill="#2b1c15"/><circle cx="504" cy="168" r="5" fill="#2b1c15"/>
-</svg></div>
-          <div class="ico" style="position:absolute;left:250px;top:30px;width:64px;height:64px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center"><svg viewBox="0 0 256 256" width="38" height="38" fill="#fff" aria-hidden="true"><path d="M223.68,66.15,135.68,18a15.88,15.88,0,0,0-15.36,0l-88,48.17a16,16,0,0,0-8.32,14v95.64a16,16,0,0,0,8.32,14l88,48.17a15.88,15.88,0,0,0,15.36,0l88-48.17a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,120,47.65,76,128,32l80.35,44Zm8,99.64V133.83l80-43.78v85.76Z"/></svg></div>
-        </div>
+      <div id="ra" class="row clip" data-start="0" data-duration="10" data-track-index="0" data-layout-allow-overlap>
+        <span class="acr serif"><span class="w">F</span><span class="w">C</span><span class="w">L</span></span>
+        <span class="eq serif">=</span>
+        <span class="mean mono">WHOLE BOX</span>
       </div>
-      <div id="cb" class="card clip" data-start="0" data-duration="10" data-track-index="1" style="top:476px;height:236px">
-        <div class="sheet" style="rotate:1deg">
-          <div class="tick" style="left:-2px;top:-2px;border-width:4px 0 0 4px"></div><div class="tick" style="right:-2px;top:-2px;border-width:4px 4px 0 0"></div><div class="tick" style="left:-2px;bottom:-2px;border-width:0 0 4px 4px"></div><div class="tick" style="right:-2px;bottom:-2px;border-width:0 4px 4px 0"></div>
-          <div style="position:absolute;left:34px;top:26px;width:300px">
-            <div class="serif" style="font-size:118px;line-height:1;color:#c8471a">LCL</div>
-            <div class="mono" style="font-size:31px;line-height:1.15;margin-top:12px">= SHARED</div>
-          </div>
-          <div style="position:absolute;right:26px;top:22px"><svg viewBox="0 0 520 190" width="520" height="190"><defs>
-  <pattern id="hatchA" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#efe3cc"/><line x1="0" y1="0" x2="0" y2="10" stroke="#2b1c15" stroke-width="2.5" opacity=".55"/></pattern>
-  <pattern id="hatchB" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#e9dcc2"/><circle cx="6" cy="6" r="2.2" fill="#2b1c15" opacity=".5"/></pattern>
-  <pattern id="hatchC" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="10" height="10" fill="#f1e6d1"/><line x1="0" y1="0" x2="0" y2="10" stroke="#2b1c15" stroke-width="1.6" opacity=".45"/><line x1="5" y1="0" x2="5" y2="10" stroke="#2b1c15" stroke-width="1.6" opacity=".45"/></pattern>
-  <linearGradient id="og" x1="0" x2="1"><stop offset="0" stop-color="#c0392b"/><stop offset=".5" stop-color="#f26a1f"/><stop offset="1" stop-color="#f5a623"/></linearGradient>
-</defs>
-  <rect x="10" y="14" width="500" height="160" rx="6" fill="#fffaf0" stroke="#2b1c15" stroke-width="4"/>
-  <line x1="30" y1="20" x2="30" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="50.5" y1="20" x2="50.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="71" y1="20" x2="71" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="91.5" y1="20" x2="91.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="112" y1="20" x2="112" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="132.5" y1="20" x2="132.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="153" y1="20" x2="153" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="173.5" y1="20" x2="173.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="194" y1="20" x2="194" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="214.5" y1="20" x2="214.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="235" y1="20" x2="235" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="255.5" y1="20" x2="255.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="276" y1="20" x2="276" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="296.5" y1="20" x2="296.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="317" y1="20" x2="317" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="337.5" y1="20" x2="337.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="358" y1="20" x2="358" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="378.5" y1="20" x2="378.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="399" y1="20" x2="399" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="419.5" y1="20" x2="419.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="440" y1="20" x2="440" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="460.5" y1="20" x2="460.5" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/><line x1="481" y1="20" x2="481" y2="168" stroke="#2b1c15" stroke-width="1.2" opacity=".18"/>
-  <rect id="cbd-b0" x="26" y="28" width="108" height="62" rx="4" fill="url(#hatchA)" stroke="#2b1c15" stroke-width="3"/><rect id="cbd-b1" x="144" y="28" width="108" height="62" rx="4" fill="url(#hatchB)" stroke="#2b1c15" stroke-width="3"/><rect id="cbd-b2" x="262" y="28" width="108" height="62" rx="4" fill="url(#og)" stroke="#2b1c15" stroke-width="3"/><rect id="cbd-b3" x="380" y="28" width="108" height="62" rx="4" fill="url(#hatchC)" stroke="#2b1c15" stroke-width="3"/><rect id="cbd-b4" x="26" y="98" width="108" height="62" rx="4" fill="url(#hatchB)" stroke="#2b1c15" stroke-width="3"/><rect id="cbd-b5" x="144" y="98" width="108" height="62" rx="4" fill="url(#og)" stroke="#2b1c15" stroke-width="3"/><rect id="cbd-b6" x="262" y="98" width="108" height="62" rx="4" fill="url(#hatchA)" stroke="#2b1c15" stroke-width="3"/><rect id="cbd-b7" x="380" y="98" width="108" height="62" rx="4" fill="url(#hatchC)" stroke="#2b1c15" stroke-width="3"/>
-  <rect x="10" y="14" width="500" height="160" rx="6" fill="none" stroke="#2b1c15" stroke-width="4"/>
-  <circle cx="16" cy="20" r="5" fill="#2b1c15"/><circle cx="504" cy="20" r="5" fill="#2b1c15"/><circle cx="16" cy="168" r="5" fill="#2b1c15"/><circle cx="504" cy="168" r="5" fill="#2b1c15"/>
-</svg></div>
-          <div class="ico" style="position:absolute;left:250px;top:30px;width:64px;height:64px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center"><svg viewBox="0 0 256 256" width="38" height="38" fill="#fff" aria-hidden="true"><path d="M64.12,147.8a4,4,0,0,1-4,4.2H16a8,8,0,0,1-7.8-6.17,8.35,8.35,0,0,1,1.62-6.93A67.79,67.79,0,0,1,37,117.51a40,40,0,1,1,66.46-35.8,3.94,3.94,0,0,1-2.27,4.18A64.08,64.08,0,0,0,64,144C64,145.28,64,146.54,64.12,147.8Zm182-8.91A67.76,67.76,0,0,0,219,117.51a40,40,0,1,0-66.46-35.8,3.94,3.94,0,0,0,2.27,4.18A64.08,64.08,0,0,1,192,144c0,1.28,0,2.54-.12,3.8a4,4,0,0,0,4,4.2H240a8,8,0,0,0,7.8-6.17A8.33,8.33,0,0,0,246.17,138.89Zm-89,43.18a48,48,0,1,0-58.37,0A72.13,72.13,0,0,0,65.07,212,8,8,0,0,0,72,224H184a8,8,0,0,0,6.93-12A72.15,72.15,0,0,0,157.19,182.07Z"/></svg></div>
-        </div>
+      <div id="rb" class="row clip" data-start="0" data-duration="10" data-track-index="1" data-layout-allow-overlap>
+        <span class="acr serif"><span class="w">L</span><span class="w">C</span><span class="w">L</span></span>
+        <span class="eq serif">=</span>
+        <span class="mean mono">SHARED</span>
       </div>
     </div>
     <script>
+      document.querySelectorAll(".row").forEach((r) => { const d = document.createElement("div"); d.className = "rule"; r.appendChild(d); });
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      tl.fromTo("#ca .sheet", { rotationX: -100, opacity: 0 }, { rotationX: 8, opacity: 1, duration: 0.32, ease: "power3.in" }, 1.68);
-      tl.to("#ca .sheet", { rotationX: 0, duration: 0.35, ease: "back.out(3)" }, 1.68 + 0.32);
-      tl.fromTo("#ca .serif", { scale: 1.6, opacity: 0, filter: "blur(10px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "expo.out", transformOrigin: "0% 50%" }, 1.68 + 0.25);
-      tl.fromTo("#ca .mono", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "power2.out" }, 1.68 + 0.45);
-      tl.fromTo("#ca .ico", { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.4)" }, 1.68 + 0.4);
-      tl.fromTo("#cad-b0", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 1.68 + 0.55 + 0 * 0.11);
-      tl.fromTo("#cad-b1", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 1.68 + 0.55 + 1 * 0.11);
-      tl.fromTo("#cad-b2", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 1.68 + 0.55 + 2 * 0.11);
-      tl.fromTo("#cad-b3", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 1.68 + 0.55 + 3 * 0.11);
-      tl.fromTo("#cad-b4", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 1.68 + 0.55 + 4 * 0.11);
-      tl.fromTo("#cad-b5", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 1.68 + 0.55 + 5 * 0.11);
-      tl.fromTo("#cad-b6", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 1.68 + 0.55 + 6 * 0.11);
-      tl.fromTo("#cad-b7", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 1.68 + 0.55 + 7 * 0.11);
-      tl.fromTo("#cb .sheet", { rotationX: -100, opacity: 0 }, { rotationX: 8, opacity: 1, duration: 0.32, ease: "power3.in" }, 4.28);
-      tl.to("#cb .sheet", { rotationX: 0, duration: 0.35, ease: "back.out(3)" }, 4.28 + 0.32);
-      tl.fromTo("#cb .serif", { scale: 1.6, opacity: 0, filter: "blur(10px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "expo.out", transformOrigin: "0% 50%" }, 4.28 + 0.25);
-      tl.fromTo("#cb .mono", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "power2.out" }, 4.28 + 0.45);
-      tl.fromTo("#cb .ico", { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.4)" }, 4.28 + 0.4);
-      tl.fromTo("#cbd-b0", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 4.28 + 0.55 + 0 * 0.11);
-      tl.fromTo("#cbd-b1", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 4.28 + 0.55 + 1 * 0.11);
-      tl.fromTo("#cbd-b2", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 4.28 + 0.55 + 2 * 0.11);
-      tl.fromTo("#cbd-b3", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 4.28 + 0.55 + 3 * 0.11);
-      tl.fromTo("#cbd-b4", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 4.28 + 0.55 + 4 * 0.11);
-      tl.fromTo("#cbd-b5", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 4.28 + 0.55 + 5 * 0.11);
-      tl.fromTo("#cbd-b6", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 4.28 + 0.55 + 6 * 0.11);
-      tl.fromTo("#cbd-b7", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, 4.28 + 0.55 + 7 * 0.11);
-      // The shared load: your slot pulses so it reads as "yours".
-      tl.to("#cbd-b2, #cbd-b5", { scale: 1.08, transformOrigin: "50% 50%", duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut" }, 4.28 + 1.3);
-      tl.to(["#ca .sheet", "#cb .sheet"], { rotationX: -96, opacity: 0, duration: 0.3, ease: "power3.in", stagger: 0.06 }, 9.45);
+      tl.set("#rb", { opacity: 0 }, 0);
+      tl.fromTo("#ra .acr .w", { y: -120, opacity: 0, filter: "blur(12px)", scaleY: 1.3 }, { y: 0, opacity: 1, filter: "blur(0px)", scaleY: 1, duration: 0.24, ease: "power3.in", stagger: 0.06 }, 1.62);
+      tl.to("#ra .acr .w", { scaleY: 0.88, duration: 0.05, stagger: 0.06, transformOrigin: "50% 100%" }, 1.62 + 0.24);
+      tl.to("#ra .acr .w", { scaleY: 1, duration: 0.35, ease: "elastic.out(1, 0.45)", stagger: 0.06 }, 1.62 + 0.29);
+      tl.fromTo("#ra .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.25, ease: "power3.out", transformOrigin: "0% 50%" }, 1.62 + 0.3);
+      tl.fromTo("#ra .mean", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power2.out" }, 1.62 + 0.42);
+      tl.fromTo("#ra .rule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.out" }, 1.62 + 0.5);
+      // The first term becomes a ledger line at the top; the second lands big below it.
+      tl.to("#ra", { y: -30, scale: 0.5, duration: 0.5, ease: "power3.inOut" }, 4.22 - 0.35);
+      tl.to("#ra .rule", { opacity: 0, duration: 0.2 }, 4.22 - 0.35);
+      tl.set("#rb", { opacity: 1, y: 110 }, 4.22 - 0.05);
+      tl.fromTo("#rb .acr .w", { y: -120, opacity: 0, filter: "blur(12px)", scaleY: 1.3 }, { y: 0, opacity: 1, filter: "blur(0px)", scaleY: 1, duration: 0.24, ease: "power3.in", stagger: 0.06 }, 4.22);
+      tl.to("#rb .acr .w", { scaleY: 0.88, duration: 0.05, stagger: 0.06, transformOrigin: "50% 100%" }, 4.22 + 0.24);
+      tl.to("#rb .acr .w", { scaleY: 1, duration: 0.35, ease: "elastic.out(1, 0.45)", stagger: 0.06 }, 4.22 + 0.29);
+      tl.fromTo("#rb .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.25, ease: "power3.out", transformOrigin: "0% 50%" }, 4.22 + 0.3);
+      tl.fromTo("#rb .mean", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power2.out" }, 4.22 + 0.42);
+      tl.fromTo("#rb .rule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.out" }, 4.22 + 0.5);
+      tl.to(["#ra", "#rb"], { opacity: 0, y: "-=40", filter: "blur(10px)", duration: 0.3, ease: "power2.in", stagger: 0.05 }, 9.5);
       window.__timelines["e03-fcl"] = tl;
     </script>
   </body>

@@ -82,44 +82,39 @@ const containerSvg = (id, fills) => `<svg viewBox="0 0 520 190" width="520" heig
 
 const ORANGE_FILL = "url(#og)";
 
-/** Two cards: acronym + meaning on the left, a load diagram on the right. */
-const pairClip = (id, dur, a, b, kind) => {
-  const diag = (pfx, fills) => (kind === "truck" ? truckSvg(pfx, fills) : containerSvg(pfx, fills));
-  const fillsA = kind === "truck" ? Array(4).fill(ORANGE_FILL) : Array(8).fill(ORANGE_FILL);
-  const fillsB =
-    kind === "truck"
-      ? ["url(#hatchA)", ORANGE_FILL, "url(#hatchB)", "url(#hatchC)"]
-      : ["url(#hatchA)", "url(#hatchB)", ORANGE_FILL, "url(#hatchC)", "url(#hatchB)", ORANGE_FILL, "url(#hatchA)", "url(#hatchC)"];
-  const n = fillsA.length;
-  const card = (key, c, top, rot, fills) => `
-      <div id="${key}" class="card clip" data-start="0" data-duration="${dur}" data-track-index="${key === "ca" ? 0 : 1}" style="top:${top}px;height:236px">
-        <div class="sheet" style="rotate:${rot}deg">
-          ${corners}
-          <div style="position:absolute;left:34px;top:26px;width:300px">
-            <div class="serif" style="font-size:118px;line-height:1;color:#c8471a">${c.acr}</div>
-            <div class="mono" style="font-size:31px;line-height:1.15;margin-top:12px">= ${c.meaning}</div>
-          </div>
-          <div style="position:absolute;right:26px;top:22px">${diag(`${key}d`, fills)}</div>
-          <div class="ico" style="position:absolute;left:250px;top:30px;width:64px;height:64px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center">${icon(c.icon, 38, "#fff")}</div>
-        </div>
+/** Editorial type: the first term lands big, then shrinks into a ledger line while the second term takes the stage. */
+const pairClip = (id, dur, a, b) => {
+  const row = (key, c) => `
+      <div id="${key}" class="row clip" data-start="0" data-duration="${dur}" data-track-index="${key === "ra" ? 0 : 1}" data-layout-allow-overlap>
+        <span class="acr serif">${c.acr.split("").map((ch) => `<span class="w">${ch}</span>`).join("")}</span>
+        <span class="eq serif">=</span>
+        <span class="mean mono">${c.meaning}</span>
       </div>`;
-  const anim = (key, at, slots) => `
-      tl.fromTo("#${key} .sheet", { rotationX: -100, opacity: 0 }, { rotationX: 8, opacity: 1, duration: 0.32, ease: "power3.in" }, ${at});
-      tl.to("#${key} .sheet", { rotationX: 0, duration: 0.35, ease: "back.out(3)" }, ${at} + 0.32);
-      tl.fromTo("#${key} .serif", { scale: 1.6, opacity: 0, filter: "blur(10px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "expo.out", transformOrigin: "0% 50%" }, ${at} + 0.25);
-      tl.fromTo("#${key} .mono", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "power2.out" }, ${at} + 0.45);
-      tl.fromTo("#${key} .ico", { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.4)" }, ${at} + 0.4);
-      ${Array.from({ length: slots }, (_, i) => `tl.fromTo("#${key}d-${kind === "truck" ? "p" : "b"}${i}", { y: -160, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "bounce.out" }, ${at} + 0.55 + ${i} * 0.11);`).join("\n      ")}`;
-  return `${head(id)}
+  const enter = (key, at) => `
+      tl.fromTo("#${key} .acr .w", { y: -120, opacity: 0, filter: "blur(12px)", scaleY: 1.3 }, { y: 0, opacity: 1, filter: "blur(0px)", scaleY: 1, duration: 0.24, ease: "power3.in", stagger: 0.06 }, ${at});
+      tl.to("#${key} .acr .w", { scaleY: 0.88, duration: 0.05, stagger: 0.06, transformOrigin: "50% 100%" }, ${at} + 0.24);
+      tl.to("#${key} .acr .w", { scaleY: 1, duration: 0.35, ease: "elastic.out(1, 0.45)", stagger: 0.06 }, ${at} + 0.29);
+      tl.fromTo("#${key} .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.25, ease: "power3.out", transformOrigin: "0% 50%" }, ${at} + 0.3);
+      tl.fromTo("#${key} .mean", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power2.out" }, ${at} + 0.42);
+      tl.fromTo("#${key} .rule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.out" }, ${at} + 0.5);`;
+  return `${head(id, `      .row { position:absolute; left:80px; top:236px; width:880px; height:220px; display:flex; align-items:baseline; gap:22px; white-space:nowrap; transform-origin:0% 0%; }
+      .acr { font-size:216px; line-height:1; color:#c8471a; }
+      .eq { font-size:120px; line-height:1; color:var(--ink); opacity:.85; }
+      .mean { font-size:54px; line-height:1; color:var(--ink); letter-spacing:.06em; }
+      #ra .rule, #rb .rule { position:absolute; left:4px; bottom:-14px; width:420px; height:7px; border-radius:4px; background:linear-gradient(90deg,var(--orange),var(--amber)); transform-origin:0 50%; }`)}
   <body>
-    <div id="root" data-composition-id="${id}" data-start="0" data-duration="${dur}" data-width="1080" data-height="1920">${card("ca", a, 214, -1.2, fillsA)}${card("cb", b, 476, 1.0, fillsB)}
+    <div id="root" data-composition-id="${id}" data-start="0" data-duration="${dur}" data-width="1080" data-height="1920">${row("ra", a)}${row("rb", b)}
     </div>
     <script>
+      document.querySelectorAll(".row").forEach((r) => { const d = document.createElement("div"); d.className = "rule"; r.appendChild(d); });
       window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });${anim("ca", a.at, n)}${anim("cb", b.at, n)}
-      // The shared load: your slot pulses so it reads as "yours".
-      tl.to("#cbd-${kind === "truck" ? "p1" : "b2"}, #cbd-${kind === "truck" ? "p1" : "b5"}", { scale: 1.08, transformOrigin: "50% 50%", duration: 0.25, yoyo: true, repeat: 3, ease: "sine.inOut" }, ${b.at} + 1.3);
-      tl.to(["#ca .sheet", "#cb .sheet"], { rotationX: -96, opacity: 0, duration: 0.3, ease: "power3.in", stagger: 0.06 }, ${dur - 0.55});
+      const tl = gsap.timeline({ paused: true });
+      tl.set("#rb", { opacity: 0 }, 0);${enter("ra", a.at)}
+      // The first term becomes a ledger line at the top; the second lands big below it.
+      tl.to("#ra", { y: -30, scale: 0.5, duration: 0.5, ease: "power3.inOut" }, ${b.at} - 0.35);
+      tl.to("#ra .rule", { opacity: 0, duration: 0.2 }, ${b.at} - 0.35);
+      tl.set("#rb", { opacity: 1, y: 110 }, ${b.at} - 0.05);${enter("rb", b.at)}
+      tl.to(["#ra", "#rb"], { opacity: 0, y: "-=40", filter: "blur(10px)", duration: 0.3, ease: "power2.in", stagger: 0.05 }, ${dur - 0.5});
       window.__timelines["${id}"] = tl;
     </script>
   </body>
@@ -160,16 +155,14 @@ CLIPS["e03-hook"] = `${head("e03-hook", `      #l1 { position:absolute; left:80p
 CLIPS["e03-ftl"] = pairClip(
   "e03-ftl",
   10,
-  { acr: "FTL", meaning: "WHOLE TRUCK", icon: "truck", at: 1.5 },
-  { acr: "LTL", meaning: "SHARED", icon: "users-three", at: 4.05 },
-  "truck",
+  { acr: "FTL", meaning: "WHOLE TRUCK", at: 1.45 },
+  { acr: "LTL", meaning: "SHARED", at: 4.0 },
 );
 CLIPS["e03-fcl"] = pairClip(
   "e03-fcl",
   10,
-  { acr: "FCL", meaning: "WHOLE BOX", icon: "cube", at: 1.68 },
-  { acr: "LCL", meaning: "SHARED", icon: "users-three", at: 4.28 },
-  "container",
+  { acr: "FCL", meaning: "WHOLE BOX", at: 1.62 },
+  { acr: "LCL", meaning: "SHARED", at: 4.22 },
 );
 
 // Zero ODOL: an overloaded truck, a limit line, a weighbridge gauge and a no-entry stamp.
