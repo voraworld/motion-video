@@ -9,6 +9,13 @@
       "customs-checkpoint": "assets/e01/customs-checkpoint.png",
       "terminal-crane": "assets/e01/terminal-crane.png",
       "warehouse-stuffing-station": "assets/e01/warehouse-stuffing-station.png"
+    },
+    "e02": {
+      "background-plate": "assets/e02/background-plate.png",
+      "delivery-truck-at-gate": "assets/e02/delivery-truck-at-gate.png",
+      "falling-container": "assets/e02/falling-container.png",
+      "gate-arm": "assets/e02/gate-arm.png",
+      "porthole": "assets/e02/porthole.png"
     }
   },
   "vo": {},
