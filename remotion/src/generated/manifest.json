@@ -131,42 +131,42 @@
       {
         "start": 0,
         "file": "audio/vo/e03/b00.wav",
-        "duration": 3.008
+        "duration": 3.264
       },
       {
-        "start": 4,
+        "start": 4.4,
         "file": "audio/vo/e03/b01.wav",
-        "duration": 4.651
+        "duration": 5.248
       },
       {
-        "start": 9,
+        "start": 10.6,
         "file": "audio/vo/e03/b02.wav",
-        "duration": 1.579
+        "duration": 1.643
       },
       {
-        "start": 12,
+        "start": 13,
         "file": "audio/vo/e03/b03.wav",
-        "duration": 6.869
+        "duration": 7.275
       },
       {
-        "start": 21,
+        "start": 21.6,
         "file": "audio/vo/e03/b04.wav",
-        "duration": 7.125
+        "duration": 7.659
       },
       {
-        "start": 30,
+        "start": 30.4,
         "file": "audio/vo/e03/b05.wav",
-        "duration": 3.925
+        "duration": 4.16
       },
       {
-        "start": 35,
+        "start": 35.4,
         "file": "audio/vo/e03/b06.wav",
-        "duration": 7.445
+        "duration": 8.085
       },
       {
-        "start": 44,
+        "start": 44.4,
         "file": "audio/vo/e03/b07.wav",
-        "duration": 3.307
+        "duration": 3.605
       }
     ]
   },

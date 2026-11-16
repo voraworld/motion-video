@@ -106,9 +106,9 @@ const pairClip = (id, dur, a, b) => {
       tl.fromTo("#${key} .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.22, ease: "power3.out", transformOrigin: "0% 50%" }, ${at} + 0.22);
       tl.fromTo("#${key} .mean", { clipPath: "inset(0 100% 0 0)", x: -12 }, { clipPath: "inset(0 0% 0 0)", x: 0, duration: 0.7, ease: "power3.out" }, ${at} + 0.3);`;
   return `${head(id, `      .row { position:absolute; left:84px; width:500px; height:120px; display:flex; align-items:baseline; gap:14px; white-space:nowrap; }
-      .acr { font-size:92px; line-height:1; color:#c8471a; }
+      .acr { font-size:80px; line-height:1; color:#c8471a; }
       .eq { font-family:"Plus Jakarta Sans",sans-serif; font-weight:300; font-size:60px; line-height:1; color:var(--ink); opacity:.7; }
-      .mean { font-size:30px; line-height:1; color:var(--ink); }`)}
+      .mean { font-size:27px; line-height:1; color:var(--ink); }`)}
   <body>
     <div id="root" data-composition-id="${id}" data-start="0" data-duration="${dur}" data-width="1080" data-height="1920">${row("ra", a, 1396)}${row("rb", b, 1556)}
     </div>

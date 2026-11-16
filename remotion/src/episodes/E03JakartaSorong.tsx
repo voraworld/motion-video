@@ -776,10 +776,10 @@ const Loader: React.FC<{ t: number; kind: "truck" | "container" }> = ({ t, kind 
   const win = truck ? [T.ftl - 0.7, T.out1[0] + 0.2] : [T.fcl - 0.7, T.dive2[0] + 0.2];
   if (t < win[0] || t > win[1] || v <= 0) return null;
   const img = truck ? { name: "open-trailer-iso", w: 1392, h: 986, a: [435, 668], b: [1268, 375] } : { name: "open-container-iso", w: 1400, h: 991, a: [270, 820], b: [1120, 430] };
-  const W = 470;
+  const W = 420;
   const k = W / img.w;
   const H = img.h * k;
-  const left = SHEET.left + SHEET.w - W - 20;
+  const left = SHEET.left + SHEET.w - W - 14;
   const top = SHEET.top + (SHEET.h - H) / 2 + 8 + (1 - v) * 460;
   const n = 6;
   const shared = t >= a2 - 0.15;
