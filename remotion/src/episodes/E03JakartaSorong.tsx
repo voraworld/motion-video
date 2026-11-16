@@ -9,7 +9,6 @@ import { BrandFrame } from "../brand/BrandFrame";
 import { BRAND, FONT_BODY } from "../brand/tokens";
 import { Captions } from "../shared/Captions";
 import { HfOverlay } from "../shared/HfOverlay";
-import { Shake } from "../shared/Impact";
 import { PHOSPHOR, PhosphorName } from "../shared/phosphor";
 import { SfxCue, SoundLayer } from "../shared/SoundLayer";
 import MAP from "../generated/e03-map.json";
@@ -79,6 +78,67 @@ const ROAD_J = poly(MAP.roads.jakarta.pts.map(pt));
 const ROAD_S = poly(MAP.roads.sorong.pts.map(pt));
 const SEA = poly([ROAD_J.pts[ROAD_J.pts.length - 1], ...MAP.sea.slice(1, -1).map(pt), ROAD_S.pts[0]]);
 const FULL = poly([...ROAD_J.pts, ...SEA.pts.slice(1), ...ROAD_S.pts.slice(1)]);
+/**
+ * Motion tracks: the route resampled at equal steps and smoothed, so the vehicle glides instead of following
+ * every zig-zag of the road data. `head` = vehicle heading (lightly smoothed), `roll` = camera roll (heavily
+ * smoothed over ~±200 m and unwrapped into one continuous curve, so the map never jitters or spins).
+ */
+type Track = { x: Float64Array; y: Float64Array; head: Float64Array; roll: Float64Array; n: number };
+const makeTrack = (pl: Poly, n: number, rPos: number, rHead: number, rRoll: number): Track => {
+  const raw = Array.from({ length: n }, (_, i) => at(pl, i / (n - 1)));
+  const avg = (arr: number[], i: number, r: number) => {
+    let sum = 0;
+    let c = 0;
+    for (let k = Math.max(0, i - r); k <= Math.min(arr.length - 1, i + r); k++) {
+      sum += arr[k];
+      c++;
+    }
+    return sum / c;
+  };
+  const rx = raw.map((p) => p.x);
+  const ry = raw.map((p) => p.y);
+  const x = Float64Array.from(rx, (_, i) => avg(rx, i, rPos));
+  const y = Float64Array.from(ry, (_, i) => avg(ry, i, rPos));
+  const dirAt = (i: number, r: number) => {
+    let sx = 0;
+    let sy = 0;
+    for (let k = Math.max(1, i - r); k <= Math.min(n - 1, i + r); k++) {
+      const dx = x[k] - x[k - 1];
+      const dy = y[k] - y[k - 1];
+      const l = Math.hypot(dx, dy) || 1;
+      sx += dx / l;
+      sy += dy / l;
+    }
+    return (Math.atan2(sy, sx) * 180) / Math.PI;
+  };
+  const head = Float64Array.from({ length: n }, (_, i) => dirAt(i, rHead));
+  const roll = new Float64Array(n);
+  for (let i = 0; i < n; i++) {
+    let r = -dirAt(i, rRoll) - 90;
+    if (i === 0) {
+      while (r > 180) r -= 360;
+      while (r <= -180) r += 360;
+    } else {
+      while (r - roll[i - 1] > 180) r -= 360;
+      while (r - roll[i - 1] < -180) r += 360;
+    }
+    roll[i] = r;
+  }
+  return { x, y, head, roll, n };
+};
+const trackAt = (tr: Track, f: number) => {
+  const u = Math.max(0, Math.min(1, f)) * (tr.n - 1);
+  const i = Math.min(tr.n - 2, Math.floor(u));
+  const k = u - i;
+  return {
+    x: tr.x[i] + (tr.x[i + 1] - tr.x[i]) * k,
+    y: tr.y[i] + (tr.y[i + 1] - tr.y[i]) * k,
+    head: tr.head[i] + (((((tr.head[i + 1] - tr.head[i]) % 360) + 540) % 360) - 180) * k,
+    roll: tr.roll[i] + (tr.roll[i + 1] - tr.roll[i]) * k,
+  };
+};
+const TR_J = makeTrack(ROAD_J, 900, 6, 6, 26);
+const TR_S = makeTrack(ROAD_S, 500, 6, 6, 26);
 const JAKARTA = ROAD_J.pts[0];
 const SORONG = ROAD_S.pts[0];
 const DOOR = ROAD_S.pts[ROAD_S.pts.length - 1];
@@ -164,30 +224,18 @@ const globeR = (t: number) => {
   const r0 = 380 * (1 + 0.06 * prog(t, 0, 0.7));
   return r0 * Math.pow((S_PER_RAD * GLOBE_END_S) / r0, io(prog(t, 0.7, T.slam)));
 };
-/** Navigation-style heading: the route ahead points up the screen (smoothed). */
-const headingRoll = (pl: Poly, f: number, span = 0.03) => {
-  let sx = 0;
-  let sy = 0;
-  for (let k = -3; k <= 3; k++) {
-    const p = at(pl, f + k * span);
-    sx += Math.cos(p.a);
-    sy += Math.sin(p.a);
-  }
-  return -(Math.atan2(sy, sx) * 180) / Math.PI - 90;
-};
-const unwrap = (deg: number, ref: number) => {
-  let d = deg;
-  while (d - ref > 180) d -= 360;
-  while (d - ref < -180) d += 360;
-  return d;
-};
-
 const camera = (t: number): Cam => {
   const over: Cam = { c: OVER, s: OVERVIEW, tilt: 24, roll: 0, fy: 1120 };
   const net: Cam = { c: NETC, s: NET_S, tilt: 0, roll: 0, fy: 1060 };
   const net2: Cam = { c: NETC, s: NET_S * 1.08, tilt: 22, roll: 0, fy: 1100 };
-  const navJ = (tt: number): Cam => ({ c: at(ROAD_J, fJ(tt)), s: STREET_J, tilt: NAV_TILT, roll: unwrap(headingRoll(ROAD_J, fJ(tt)), 0), fy: 1150 });
-  const navS = (tt: number): Cam => ({ c: at(ROAD_S, fS(tt)), s: STREET_S, tilt: NAV_TILT, roll: unwrap(headingRoll(ROAD_S, fS(tt), 0.05), 0), fy: 1150 });
+  const navJ = (tt: number): Cam => {
+    const q = trackAt(TR_J, fJ(tt));
+    return { c: { x: q.x, y: q.y }, s: STREET_J, tilt: NAV_TILT, roll: q.roll, fy: 1150 };
+  };
+  const navS = (tt: number): Cam => {
+    const q = trackAt(TR_S, fS(tt));
+    return { c: { x: q.x, y: q.y }, s: STREET_S, tilt: NAV_TILT, roll: q.roll, fy: 1150 };
+  };
   if (t < T.slam) return { ...net, s: globeR(t) / S_PER_RAD };
   if (t < 10.4) return mixCam(net, net2, io(prog(t, T.slam, 10.4)));
   if (t < T.dive1[0]) return mixCam(net2, over, io(prog(t, 10.4, 11.7)));
@@ -579,46 +627,56 @@ const SPRITES: { from: number; name: string; len: number; w: number; h: number }
   { from: T.toShip, name: "nav-ship-top", len: 250, w: 433, h: 1501 },
   { from: T.toTruck, name: "nav-truck-top", len: 210, w: 713, h: 1475 },
 ];
-const vehiclePos = (t: number) => (t < T.toShip ? at(ROAD_J, fJ(t)) : t < T.toTruck ? at(SEA, fSea(t)) : at(ROAD_S, fS(t)));
+const TR_SEA = makeTrack(SEA, 1200, 8, 10, 10);
+const vehicleAt = (t: number) => (t < T.toShip ? trackAt(TR_J, fJ(t)) : t < T.toTruck ? trackAt(TR_SEA, fSea(t)) : trackAt(TR_S, fS(t)));
+/**
+ * The vehicle in 2.5D: the 3D top-view sprite is stacked in thin layers along Z on the tilted map, so the body has
+ * real thickness and visible sides at any heading; the lower layers are darker (ambient occlusion), and a soft
+ * shadow sits on the map plane.
+ */
 const Vehicle: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
   if (t < T.dive1[0] + 0.25 || t >= T.door) return null;
-  const pos = vehiclePos(t);
-  const p = toScreen(cam, pos);
+  const q = vehicleAt(t);
+  const p = toScreen(cam, q);
   const m = [...SPRITES].reverse().find((x) => t >= x.from) ?? SPRITES[0];
-  const swapIn = m.from > 0 ? interpolate(t - m.from, [0, 0.2, 0.36], [0.15, 1.15, 1], clamp) : 1;
+  const swapIn = m.from > 0 ? interpolate(t - m.from, [0, 0.35], [0, 1], { ...clamp, easing: Easing.out(Easing.back(1.6)) }) : 1;
   const next = SPRITES.find((x) => x.from > t);
-  const swapOut = next ? interpolate(next.from - t, [0, 0.16], [0.15, 1], clamp) : 1;
-  const enter = interpolate(t, [T.dive1[0] + 0.25, T.dive1[0] + 0.65], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2)) });
-  const scale = Math.min(swapIn, swapOut) * enter;
-  // smoothed heading on screen
-  let sx = 0;
-  let sy = 0;
-  for (let k = -2; k <= 2; k++) {
-    const q = vehiclePos(t + k * 0.12);
-    sx += Math.cos(q.a);
-    sy += Math.sin(q.a);
-  }
-  const heading = (Math.atan2(sy, sx) * 180) / Math.PI + 90 + cam.roll;
+  const swapOut = next ? interpolate(next.from - t, [0, 0.25], [0, 1], { ...clamp, easing: Easing.in(Easing.cubic) }) : 1;
+  const enter = interpolate(t, [T.dive1[0] + 0.25, T.dive1[0] + 0.75], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
+  const grow = Math.min(swapIn, swapOut) * enter;
+  const heading = q.head + 90 + cam.roll;
   const h = m.len;
   const w = (m.len * m.w) / m.h;
-  const halo = (t * 1.1) % 1;
+  const ship = m.name.includes("ship");
+  const depth = (ship ? 34 : 46) * grow;
+  const layers = 14;
   return (
-    <div style={{ position: "absolute", left: p.x, top: p.y }}>
-      <div style={{ position: "absolute", left: -130, top: -130, width: 260, height: 260, borderRadius: "50%", background: "rgba(242,106,31,.14)", border: "3px solid rgba(242,106,31,.5)", scale: String(0.7 + halo * 0.5), opacity: 1 - halo }} />
-      <div style={{ position: "absolute", left: -95, top: -95, width: 190, height: 190, borderRadius: "50%", background: "rgba(255,255,255,.55)", border: "4px solid #fff", boxShadow: "0 10px 26px rgba(30,40,50,.28)", scale: String(enter) }} />
-      <Img
-        src={A(m.name)}
-        style={{
-          position: "absolute",
-          left: -w / 2,
-          top: -h / 2,
-          width: w,
-          height: h,
-          rotate: `${heading}deg`,
-          scale: String(scale),
-          filter: `drop-shadow(8px 14px 10px rgba(20,30,40,.4))${scale < 0.9 ? ` blur(${(1 - scale) * 6}px)` : ""}`,
-        }}
-      />
+    <div style={{ position: "absolute", left: p.x, top: p.y, transformStyle: "preserve-3d" }}>
+      <div style={{ position: "absolute", left: 0, top: 0, transformStyle: "preserve-3d", transform: `rotateZ(${heading}deg) scale(${0.6 + 0.4 * grow})` }}>
+        {/* soft contact shadow on the map */}
+        <div style={{ position: "absolute", left: -w * 0.75, top: -h * 0.6, width: w * 1.5, height: h * 1.2, borderRadius: ship ? "50%" : 30, background: "radial-gradient(closest-side, rgba(20,30,40,.38), rgba(20,30,40,0))", transform: "translate3d(14px, 18px, 0)", opacity: grow }} />
+        {Array.from({ length: layers }, (_, i) => {
+          const z = (depth * i) / (layers - 1);
+          const top = i === layers - 1;
+          const shade = 0.42 + 0.4 * (i / (layers - 1));
+          return (
+            <Img
+              key={i}
+              src={A(m.name)}
+              style={{
+                position: "absolute",
+                left: -w / 2,
+                top: -h / 2,
+                width: w,
+                height: h,
+                transform: `translateZ(${z}px)`,
+                filter: top ? undefined : `brightness(${shade}) saturate(${0.8 + 0.2 * shade})`,
+                opacity: grow,
+              }}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -941,7 +999,6 @@ export const E03JakartaSorong: React.FC = () => {
   const cam = camera(t);
   const mapOn = interpolate(t, [T.slam - 0.4, T.slam], [0, 1], clamp) * interpolate(t, [T.pinToG[0], T.logo + 0.2], [1, 0], clamp);
   const topVeil = Math.max(interpolate(t, [0, 0.6, 12.2, 12.6], [0, 1, 1, 0], clamp), interpolate(t, [T.out2[1] - 0.4, T.out2[1], T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp));
-  const hits = [T.slam, T.dive1[1] - 0.05, T.out1[0] + 0.3, T.dive2[1] - 0.05, T.door + 0.35, T.out2[0] + 0.1].map(sec);
   const turnTicks = MAP.roads.jakarta.steps.filter((s) => s.name && s.at > 0.02 && s.at < 0.8).map((s) => interpolate(s.at, [0, 1], T.jkt));
   const sfx: SfxCue[] = [
     { at: sec(0.6), name: "whoosh", volume: 0.4 },
@@ -974,7 +1031,7 @@ export const E03JakartaSorong: React.FC = () => {
   return (
     <AbsoluteFill style={{ background: "radial-gradient(80% 60% at 50% 50%, #F4F6F3, #E2E8EC)" }}>
       <Globe t={t} />
-      <Shake hits={hits} amount={12}>
+      <AbsoluteFill>
         <AbsoluteFill
           style={{
             opacity: mapOn,
@@ -984,7 +1041,7 @@ export const E03JakartaSorong: React.FC = () => {
             maskImage: `linear-gradient(180deg, transparent ${cam.tilt * 0.3}%, #000 ${cam.tilt * 0.62 + 2}%)`,
           }}
         >
-          <AbsoluteFill style={{ transformOrigin: `540px ${cam.fy}px`, transform: `rotateX(${cam.tilt}deg)` }}>
+          <AbsoluteFill style={{ transformOrigin: `540px ${cam.fy}px`, transform: `rotateX(${cam.tilt}deg)`, transformStyle: "preserve-3d" }}>
             <MapCanvas t={t} cam={cam} />
             <Vehicle t={t} cam={cam} />
           </AbsoluteFill>
@@ -995,7 +1052,7 @@ export const E03JakartaSorong: React.FC = () => {
         </AbsoluteFill>
         <DoorPin t={t} cam={cam} />
         <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(246,246,242,.92) 0%, rgba(246,246,242,.7) 26%, rgba(246,246,242,0) 40%)", opacity: topVeil }} />
-      </Shake>
+      </AbsoluteFill>
       <Attribution t={t} />
       <CompassButton t={t} cam={cam} />
       <NavBanner t={t} />
