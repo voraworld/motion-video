@@ -22,7 +22,7 @@ import { SfxCue, SoundLayer } from "../shared/SoundLayer";
  *   stuck  the doors stay shut: the screen cracks, calendar pages tear off, the clock races
  *   gate 5 the doors swing open onto the truck leaving the port
  *
- * One orange disc carries the story: moon → porthole gate counter → SPPB stamp → truck headlights → the G of the logo.
+ * One orange disc carries the story: moon → porthole gate counter → customs release stamp → truck headlights → the G of the logo.
  * Gate changes: dolly dive · fly through the porthole · green/red split · whip zoom · doors swing open · headlight whiteout.
  *
  * R (Remotion): every room, the disc morphs, transitions, depth gauge, headlines, gate 1 + gate 4 chips, captions,
@@ -48,8 +48,11 @@ const wordAt = (beatIndex: number, word: string) => {
 const T = {
   land0: 0.4,
   stacked: wordAt(1, "stacked"),
-  sppb: wordAt(4, "SPPB"),
-  delivery: wordAt(4, "delivery"),
+  // Word starts measured on the generated VO (whisper word timestamps).
+  sppb: 28 + 1.79, // "release (approval)"
+  delivery: 28 + 3.97,
+  paid: 10 + 2.68,
+  declared: 10 + 3.93,
   stuck: 34,
   headlights: 44.6,
   flare: 47.65,
@@ -427,8 +430,8 @@ const project = (x: number, y: number, z: number, yaw: number, pitch: number) =>
   return { x: HOLO_C.x + x1 * f, y: HOLO_C.y + y2 * f, z: z2 };
 };
 const TOKENS: { at: number; icon: PhosphorName; phase: number }[] = [
-  { at: 12.48, icon: "coins", phase: 0.4 },
-  { at: 15.32, icon: "file-text", phase: 0.4 + Math.PI },
+  { at: T.paid, icon: "coins", phase: 0.4 },
+  { at: T.declared, icon: "file-text", phase: 0.4 + Math.PI },
 ];
 
 const HoloToken: React.FC<{ t: number; tok: (typeof TOKENS)[number] }> = ({ t, tok }) => {
@@ -1113,8 +1116,8 @@ const Stamp: React.FC<{ t: number; frame: number }> = ({ t, frame }) => {
         <circle cx={125} cy={125} r={116} fill="none" stroke="#1E50D8" strokeWidth={10} />
         <circle cx={125} cy={125} r={100} fill="none" stroke="#1E50D8" strokeWidth={3} />
         <circle cx={125} cy={125} r={70} fill="none" stroke="#1E50D8" strokeWidth={3} />
-        <text x={125} y={150} textAnchor="middle" fontFamily={FONT_CONDENSED} fontSize={78} fill="#1E50D8" letterSpacing={2}>
-          SPPB
+        <text x={125} y={143} textAnchor="middle" fontFamily={FONT_CONDENSED} fontSize={54} fill="#1E50D8" letterSpacing={1}>
+          RELEASED
         </text>
         {Array.from({ length: 24 }, (_, i) => {
           const a = (i / 24) * Math.PI * 2;
@@ -1244,9 +1247,9 @@ const DepthGauge: React.FC<{ t: number; frame: number }> = ({ t, frame }) => {
 // ── Headlines ───────────────────────────────────────────────────────────────────────────────────────────
 const HEADS: { from: number; to: number; parts: { text: string; color?: string }[] }[] = [
   { from: 4.4, to: 9.3, parts: [{ text: "UNLOADED" }] },
-  { from: 10.5, to: 18.4, parts: [{ text: "PAY " }, { text: "+", color: BRAND.orange }, { text: " FILE PIB" }] },
+  { from: 10.5, to: 18.4, parts: [{ text: "PAY " }, { text: "+", color: BRAND.orange }, { text: " DECLARE" }] },
   { from: 19.4, to: 27.5, parts: [{ text: "GREEN", color: "#3ee08a" }, { text: " OR " }, { text: "RED", color: "#ff5a48" }] },
-  { from: 28.5, to: T.stuck, parts: [{ text: "SPPB " }, { text: "+", color: BRAND.orange }, { text: " DO" }] },
+  { from: 28.5, to: T.stuck, parts: [{ text: "RELEASE " }, { text: "+", color: BRAND.orange }, { text: " DO" }] },
   { from: 39.9, to: 47.4, parts: [{ text: "DOOR TO DOOR" }] },
 ];
 const Headline: React.FC<{ t: number }> = ({ t }) => {
@@ -1300,8 +1303,8 @@ export const E02GateByGate: React.FC = () => {
     { at: sec(T.stacked), name: "boom", volume: 0.55 },
     { at: sec(PORT_FLY.from), name: "whoosh", volume: 0.55 },
     { at: sec(PORT_FLY.peak), name: "glitch", volume: 0.25 },
-    { at: sec(12.48), name: "tick", volume: 0.4 },
-    { at: sec(15.32), name: "tick", volume: 0.4 },
+    { at: sec(T.paid), name: "tick", volume: 0.4 },
+    { at: sec(T.declared), name: "tick", volume: 0.4 },
     { at: sec(SPLIT.from), name: "whoosh", volume: 0.55 },
     { at: sec(SPLIT.to), name: "boom", volume: 0.4 },
     { at: sec(GREEN_AT), name: "tick", volume: 0.4 },
@@ -1349,7 +1352,7 @@ export const E02GateByGate: React.FC = () => {
       <Porthole t={t} frame={frame} />
       <Iris t={t} />
       <Chip t={t} at={T.stacked} out={9.25} top={1448} icon="stack" tag="STACKED" text="Port's temporary storage" />
-      <Chip t={t} at={T.sppb} out={33.6} top={1448} icon="seal-check" tag="CUSTOMS" text="SPPB · your release" />
+      <Chip t={t} at={T.sppb} out={33.6} top={1448} icon="seal-check" tag="CUSTOMS" text="Release approval (SPPB)" />
       <Chip t={t} at={T.delivery} out={33.6} top={1584} icon="file-text" tag="SHIPPING LINE" text="Delivery order (DO)" />
 
       <HfOverlay clip="e02-hook" from={0} durationInFrames={sec(4)} fallback={null} />

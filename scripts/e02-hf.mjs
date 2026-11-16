@@ -13,8 +13,8 @@ const CLIPS = {
     dur: 9, // beat 10–19 s
     left: 300, width: 700, top: 1448, gap: 136,
     chips: [
-      { at: 2.48, icon: "coins", tag: "PAID", text: "Import duties & taxes", tone: "orange" },
-      { at: 5.32, icon: "file-text", tag: "FILED", text: "PIB · import declaration", tone: "orange" },
+      { at: 2.68, icon: "coins", tag: "PAID", text: "Import duties & taxes", tone: "orange" },
+      { at: 3.93, icon: "file-text", tag: "FILED", text: "Import declaration (PIB)", tone: "orange" },
     ],
     out: 8.55,
   },

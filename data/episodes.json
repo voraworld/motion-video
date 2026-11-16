@@ -226,8 +226,8 @@
     19,
     "edu",
     "R+H",
-    "Gate two: import duties and taxes are paid, and the import declaration, the PIB, is filed with customs.",
-    "GATE 2 · PAY + FILE PIB"
+    "Gate two: import duties and taxes are paid, and the import declaration is filed with customs.",
+    "GATE 2 · PAY + DECLARE"
    ],
    [
     19,
@@ -242,8 +242,8 @@
     34,
     "edu",
     "R",
-    "Gate four: customs issues the SPPB, your release. Then the shipping line's delivery order.",
-    "GATE 4 · SPPB + DO"
+    "Gate four: customs issues the release approval. Then the shipping line's delivery order.",
+    "GATE 4 · RELEASE + DO"
    ],
    [
     34,
@@ -270,7 +270,7 @@
     "OPEN THE GATES"
    ]
   ],
-  "learn": "The real order of an import release: unload, pay and file PIB, lane assignment (green or red), SPPB, delivery order.",
+  "learn": "The real order of an import release: unload, pay duties and file the import declaration (PIB), lane assignment (green or red), customs release approval (SPPB), delivery order.",
   "promo": "Customs & Import Solutions handles every gate, door to door.",
   "music": {
    "bpm": 118,
