@@ -131,36 +131,41 @@
       {
         "start": 0,
         "file": "audio/vo/e03/b00.wav",
-        "duration": 3.733
+        "duration": 3.008
       },
       {
         "start": 4,
         "file": "audio/vo/e03/b01.wav",
+        "duration": 4.651
+      },
+      {
+        "start": 9,
+        "file": "audio/vo/e03/b02.wav",
+        "duration": 1.579
+      },
+      {
+        "start": 12,
+        "file": "audio/vo/e03/b03.wav",
         "duration": 6.869
       },
       {
-        "start": 14,
-        "file": "audio/vo/e03/b02.wav",
+        "start": 21,
+        "file": "audio/vo/e03/b04.wav",
         "duration": 7.125
       },
       {
-        "start": 24,
-        "file": "audio/vo/e03/b03.wav",
+        "start": 30,
+        "file": "audio/vo/e03/b05.wav",
         "duration": 3.925
       },
       {
-        "start": 30,
-        "file": "audio/vo/e03/b04.wav",
-        "duration": 5.867
-      },
-      {
-        "start": 36,
-        "file": "audio/vo/e03/b05.wav",
+        "start": 35,
+        "file": "audio/vo/e03/b06.wav",
         "duration": 7.445
       },
       {
         "start": 44,
-        "file": "audio/vo/e03/b06.wav",
+        "file": "audio/vo/e03/b07.wav",
         "duration": 3.307
       }
     ]
@@ -183,10 +188,12 @@
     "e02-logo": "hf/e02-logo.webm",
     "e02-pib": "hf/e02-pib.webm",
     "e02-stuck": "hf/e02-stuck.webm",
+    "e03-example": "hf/e03-example.webm",
     "e03-fcl": "hf/e03-fcl.webm",
     "e03-ftl": "hf/e03-ftl.webm",
     "e03-hook": "hf/e03-hook.webm",
     "e03-logo": "hf/e03-logo.webm",
+    "e03-modes": "hf/e03-modes.webm",
     "e03-odol": "hf/e03-odol.webm",
     "e03-ugc": "hf/e03-ugc.webm"
   },

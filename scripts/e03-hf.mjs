@@ -117,14 +117,65 @@ const pairClip = (id, dur, a, b) => {
 
 const CLIPS = {};
 
-CLIPS["e03-hook"] = `${head("e03-hook", `      #l1 { position:absolute; left:80px; top:214px; width:900px; font-size:168px; line-height:1; white-space:nowrap; }
-      #l2 { position:absolute; left:80px; top:390px; width:900px; height:170px; white-space:nowrap; }
-      #sorong { position:absolute; left:250px; top:0; font-size:168px; line-height:1; color:var(--orange); }
-      #arrow { position:absolute; left:0; top:40px; }`)}
+// Hook: THOUSANDS / OF ISLANDS slams in on the VO words.
+CLIPS["e03-hook"] = `${head("e03-hook", `      .l { position:absolute; left:80px; width:900px; font-size:140px; line-height:1; white-space:nowrap; }
+      #l1 { top:214px; } #l2 { top:360px; color:#c8471a; }`)}
   <body>
     <div id="root" data-composition-id="e03-hook" data-start="0" data-duration="4" data-width="1080" data-height="1920">
-      <div id="l1" class="serif clip" data-start="0" data-duration="4" data-track-index="0">${"JAKARTA".split("").map((c) => `<span class="w">${c}</span>`).join("")}</div>
-      <div id="l2" class="clip" data-start="0" data-duration="4" data-track-index="1" data-layout-allow-overlap>
+      <div id="l1" class="l serif clip" data-start="0" data-duration="4" data-track-index="0">${"THOUSANDS".split("").map((c) => `<span class="w">${c}</span>`).join("")}</div>
+      <div id="l2" class="l serif clip" data-start="0" data-duration="4" data-track-index="1"><span class="w">OF</span> <span class="w">ISLANDS</span></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#l1 .w", { y: -90, opacity: 0, scale: 1.7, filter: "blur(10px)" }, { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.22, ease: "expo.out", stagger: 0.03 }, 0.1);
+      tl.fromTo("#l2 .w", { y: 120, opacity: 0, rotationX: -80 }, { y: 0, opacity: 1, rotationX: 0, duration: 0.4, ease: "back.out(2)", stagger: 0.12 }, 0.62);
+      tl.to(["#l1", "#l2"], { y: -60, opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in", stagger: 0.05 }, 3.6);
+      window.__timelines["e03-hook"] = tl;
+    </script>
+  </body>
+</html>
+`;
+
+// The general pattern: TRUCK → SHIP → TRUCK, each word lands on the VO.
+const arrow = (id) => `<svg class="arr" id="${id}" width="130" height="80" viewBox="0 0 130 80"><path d="M8 40 H104" stroke="${ORANGE}" stroke-width="14" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/><path d="M84 16 L112 40 L84 64" fill="none" stroke="${ORANGE}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0"/></svg>`;
+CLIPS["e03-modes"] = `${head("e03-modes", `      .m { position:absolute; left:80px; height:130px; display:flex; align-items:center; gap:22px; font-size:118px; line-height:1; white-space:nowrap; }
+      #m1 { top:214px; } #m2 { top:344px; color:#2f6e97; } #m3 { top:474px; }`)}
+  <body>
+    <div id="root" data-composition-id="e03-modes" data-start="0" data-duration="5" data-width="1080" data-height="1920">
+      <div id="m1" class="m serif clip" data-start="0" data-duration="5" data-track-index="0"><span class="w">TRUCK</span>${arrow("a1")}</div>
+      <div id="m2" class="m serif clip" data-start="0" data-duration="5" data-track-index="1"><span class="w">SHIP</span>${arrow("a2")}</div>
+      <div id="m3" class="m serif clip" data-start="0" data-duration="5" data-track-index="2"><span class="w">TRUCK</span></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      const land = (sel, at) => tl.fromTo(sel, { x: -80, opacity: 0, filter: "blur(10px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power3.out" }, at);
+      const draw = (id, at) => {
+        tl.to("#" + id + " path:first-child", { attr: { "stroke-dashoffset": 0 }, duration: 0.3, ease: "power2.out" }, at);
+        tl.to("#" + id + " path:last-child", { opacity: 1, duration: 0.06 }, at + 0.24);
+      };
+      land("#m1 .w", 2.6); draw("a1", 2.85);
+      land("#m2 .w", 3.12); draw("a2", 3.4);
+      land("#m3 .w", 4.05);
+      tl.to([".m"], { opacity: 0, y: -40, filter: "blur(8px)", duration: 0.25, ease: "power2.in", stagger: 0.04 }, 4.72);
+      window.__timelines["e03-modes"] = tl;
+    </script>
+  </body>
+</html>
+`;
+
+// The example: EXAMPLE tag, JAKARTA → SORONG.
+CLIPS["e03-example"] = `${head("e03-example", `      #tag { position:absolute; left:84px; top:214px; height:58px; padding:0 20px; display:flex; align-items:center; border-radius:30px; background:var(--orange); color:#fff; font-size:30px; letter-spacing:.18em; }
+      #l1 { position:absolute; left:80px; top:290px; font-size:150px; line-height:1; white-space:nowrap; }
+      #l2 { position:absolute; left:80px; top:450px; width:900px; height:160px; white-space:nowrap; }
+      #sorong { position:absolute; left:250px; top:0; font-size:150px; line-height:1; color:#c8471a; }
+      #arrow { position:absolute; left:0; top:36px; }`)}
+  <body>
+    <div id="root" data-composition-id="e03-example" data-start="0" data-duration="3" data-width="1080" data-height="1920">
+      <div id="tag" class="mono clip" data-start="0" data-duration="3" data-track-index="0">EXAMPLE</div>
+      <div id="l1" class="serif clip" data-start="0" data-duration="3" data-track-index="1">${"JAKARTA".split("").map((c) => `<span class="w">${c}</span>`).join("")}</div>
+      <div id="l2" class="clip" data-start="0" data-duration="3" data-track-index="2" data-layout-allow-overlap>
         <svg id="arrow" width="230" height="110" viewBox="0 0 230 110"><path id="arrowPath" d="M8 55 C 70 20, 140 90, 205 55" fill="none" stroke="${ORANGE}" stroke-width="14" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/><path id="arrowHead" d="M180 28 L216 55 L180 82" fill="none" stroke="${ORANGE}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0"/></svg>
         <div id="sorong" class="serif">${"SORONG".split("").map((c) => `<span class="w">${c}</span>`).join("")}</div>
       </div>
@@ -132,14 +183,13 @@ CLIPS["e03-hook"] = `${head("e03-hook", `      #l1 { position:absolute; left:80p
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      // JAKARTA stamps in letter by letter on the boom (the map lands on Jakarta at 0.5 s).
-      tl.fromTo("#l1 .w", { y: -60, opacity: 0, scale: 1.8, filter: "blur(10px)" }, { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.22, ease: "expo.out", stagger: 0.035 }, 0.48);
-      // The route arrow tears across, SORONG follows.
-      tl.to("#arrowPath", { strokeDashoffset: 0, duration: 0.42, ease: "power3.inOut" }, 0.86);
-      tl.to("#arrowHead", { opacity: 1, duration: 0.08 }, 1.22);
-      tl.fromTo("#sorong .w", { x: -80, opacity: 0, filter: "blur(12px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.26, ease: "power3.out", stagger: 0.04 }, 1.05);
-      tl.to(["#l1", "#l2"], { y: -60, opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in", stagger: 0.05 }, 3.55);
-      window.__timelines["e03-hook"] = tl;
+      tl.fromTo("#tag", { scaleX: 0, opacity: 0, transformOrigin: "0% 50%" }, { scaleX: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, 0.02);
+      tl.fromTo("#l1 .w", { y: -60, opacity: 0, scale: 1.7, filter: "blur(10px)" }, { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.22, ease: "expo.out", stagger: 0.035 }, 0.3);
+      tl.to("#arrowPath", { strokeDashoffset: 0, duration: 0.36, ease: "power3.inOut" }, 0.7);
+      tl.to("#arrowHead", { opacity: 1, duration: 0.08 }, 1.0);
+      tl.fromTo("#sorong .w", { x: -80, opacity: 0, filter: "blur(12px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.26, ease: "power3.out", stagger: 0.04 }, 0.98);
+      tl.to(["#tag", "#l1", "#l2"], { y: -60, opacity: 0, filter: "blur(10px)", duration: 0.28, ease: "power2.in", stagger: 0.04 }, 2.66);
+      window.__timelines["e03-example"] = tl;
     </script>
   </body>
 </html>
@@ -157,70 +207,6 @@ CLIPS["e03-fcl"] = pairClip(
   { acr: "FCL", meaning: "WHOLE BOX", at: 1.62 },
   { acr: "LCL", meaning: "SHARED", at: 4.22 },
 );
-
-// Zero ODOL: the overloaded truck (GPT photo cutout), a weighbridge gauge and a no-entry stamp.
-CLIPS["e03-odol"] = `${head("e03-odol", `      #title { position:absolute; left:80px; top:214px; font-size:156px; line-height:1; color:var(--red); white-space:nowrap; }
-      #date { position:absolute; left:84px; top:392px; height:78px; padding:0 22px; display:flex; align-items:center; gap:16px; border:3px solid var(--red); border-radius:8px; background:var(--paper); font-size:46px; color:var(--red); white-space:nowrap; }
-      #truck { position:absolute; left:70px; top:540px; width:900px; height:623px; }
-      #truck img { width:100%; height:100%; display:block; filter:drop-shadow(0 30px 30px rgba(43,28,21,.35)); }
-      #dims { position:absolute; left:40px; top:520px; width:960px; height:700px; opacity:0; }
-      #gauge { position:absolute; left:290px; top:1210px; width:500px; height:280px; }
-      #stamp { position:absolute; left:380px; top:560px; width:340px; height:340px; color:var(--red); opacity:0; }`)}
-  <body>
-    <div id="root" data-composition-id="e03-odol" data-start="0" data-duration="6" data-width="1080" data-height="1920">
-      <div id="title" class="serif clip" data-start="0" data-duration="6" data-track-index="0"><span class="w">ZERO</span> <span class="w">ODOL</span></div>
-      <div id="date" class="mono clip" data-start="0" data-duration="6" data-track-index="1"><span>·</span><span class="w">1 JAN 2027</span></div>
-      <div id="truck" class="clip" data-start="0" data-duration="6" data-track-index="2"><img src="assets/overloaded-truck.png" alt="Overloaded truck" /></div>
-      <div id="dims" class="clip" data-start="0" data-duration="6" data-track-index="3" data-layout-ignore>
-        <svg viewBox="0 0 960 700" width="960" height="700">
-          <g stroke="${RED}" stroke-width="6" fill="${RED}">
-            <line x1="22" y1="40" x2="22" y2="560"/><path d="M4 70 L22 34 L40 70 Z"/><path d="M4 530 L22 566 L40 530 Z"/>
-            <line x1="60" y1="672" x2="920" y2="672"/><path d="M90 654 L54 672 L90 690 Z"/><path d="M890 654 L926 672 L890 690 Z"/>
-          </g>
-        </svg>
-      </div>
-      <div id="gauge" class="clip" data-start="0" data-duration="6" data-track-index="4">
-        <svg viewBox="0 0 500 280" width="500" height="280">
-          <path d="M40 250 A210 210 0 0 1 460 250" fill="none" stroke="#e9dcc2" stroke-width="40"/>
-          <path d="M40 250 A210 210 0 0 1 340 64" fill="none" stroke="${INK}" stroke-width="40" opacity=".25"/>
-          <path d="M340 64 A210 210 0 0 1 460 250" fill="none" stroke="${RED}" stroke-width="40"/>
-          ${Array.from({ length: 11 }, (_, i) => {
-            const a = Math.PI - (i / 10) * Math.PI;
-            return `<line x1="${250 + Math.cos(a) * 160}" y1="${250 - Math.sin(a) * 160}" x2="${250 + Math.cos(a) * 182}" y2="${250 - Math.sin(a) * 182}" stroke="${INK}" stroke-width="4"/>`;
-          }).join("")}
-          <g id="needle"><line x1="250" y1="250" x2="250" y2="70" stroke="${INK}" stroke-width="10" stroke-linecap="round"/></g>
-          <circle cx="250" cy="250" r="22" fill="${INK}"/>
-        </svg>
-        <div style="position:absolute;left:206px;top:196px;color:${INK}">${icon("scales", 88, INK)}</div>
-      </div>
-      <div id="stamp" class="clip" data-start="0" data-duration="6" data-track-index="5">${icon("prohibit", 340, RED)}</div>
-    </div>
-    <script>
-      window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });
-      tl.fromTo("#date", { scaleX: 0, opacity: 0, transformOrigin: "0% 50%" }, { scaleX: 1, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.3);
-      tl.fromTo("#title .w", { y: -140, opacity: 0, scaleY: 1.3 }, { y: 0, opacity: 1, scaleY: 1, duration: 0.2, ease: "power3.in", stagger: 0.2 }, 1.95);
-      tl.to("#title .w", { scaleY: 0.86, duration: 0.05, stagger: 0.2, transformOrigin: "50% 100%" }, 2.15);
-      tl.to("#title .w", { scaleY: 1, duration: 0.35, ease: "elastic.out(1, 0.4)", stagger: 0.2 }, 2.2);
-      // The truck rolls in heavy: it sags as it stops.
-      tl.fromTo("#truck", { x: -900, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.1);
-      tl.to("#truck", { scaleY: 0.96, duration: 0.18, ease: "power2.out", transformOrigin: "50% 100%" }, 1.0);
-      tl.to("#truck", { scaleY: 1, duration: 0.5, ease: "elastic.out(1, 0.35)" }, 1.18);
-      tl.fromTo("#gauge", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.4);
-      tl.fromTo("#needle", { rotation: -85, svgOrigin: "250 250" }, { rotation: 62, svgOrigin: "250 250", duration: 2.2, ease: "power2.in" }, 0.7);
-      [3.0, 3.15, 3.3, 3.45].forEach((t, i) => tl.to("#needle", { rotation: i % 2 ? 66 : 74, svgOrigin: "250 250", duration: 0.15, ease: "sine.inOut" }, t));
-      tl.fromTo("#stamp", { scale: 2.2, opacity: 0, rotation: -25 }, { scale: 1, opacity: 0.92, rotation: -8, duration: 0.22, ease: "power4.in" }, 3.1);
-      // "Overloaded": the truck shudders; "oversized": the dimension arrows flash.
-      [0, 1, 2, 3, 4, 5].forEach((i) => tl.to("#truck", { x: i % 2 ? -8 : 8, duration: 0.05 }, 4.08 + i * 0.05));
-      tl.to("#truck", { x: 0, duration: 0.05 }, 4.4);
-      tl.fromTo("#dims", { opacity: 0 }, { opacity: 1, duration: 0.1, repeat: 5, yoyo: true }, 4.8);
-      tl.to("#dims", { opacity: 1, duration: 0.01 }, 5.4);
-      tl.to(["#title", "#date", "#truck", "#dims", "#gauge", "#stamp"], { opacity: 0, y: -30, filter: "blur(8px)", duration: 0.25, ease: "power2.in", stagger: 0.03 }, 5.72);
-      window.__timelines["e03-odol"] = tl;
-    </script>
-  </body>
-</html>
-`;
 
 const legs = [
   { at: 2.55, icon: "truck", text: "FTL", row: 0, col: 0 },

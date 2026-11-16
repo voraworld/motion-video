@@ -99,32 +99,33 @@ const airAt = (f: number) => {
 // ── Timeline (VO word starts from whisper timestamps on the generated VO) ────────────────────────────────
 const T = {
   slam: 0.5,
-  tear: [0.95, 1.95] as const,
-  dive1: [3.55, 4.6] as const,
-  jkt: [4.6, 13.6] as const,
-  ftl: 5.54,
-  ltl: 8.08,
-  out1: [13.6, 15.2] as const,
-  toShip: 14.0,
-  sea: [15.0, 23.4] as const,
-  fcl: 15.71,
-  lcl: 18.31,
-  dive2: [23.4, 24.5] as const,
-  toTruck: 24.0,
-  srg: [24.5, 26.3] as const,
-  door: 26.3,
-  handoff: [26.3, 27.29] as const,
-  stuck: 30,
-  noTolerance: 33.12,
-  out2: [36.0, 37.4] as const,
-  everyLeg: 37.48,
-  legFtl: 38.57,
-  legLtl: 39.11,
-  air: 39.68,
-  legFcl: 42.0,
-  legLcl: 42.72,
-  pinToG: [43.9, 44.7] as const,
-  logo: 44.5,
+  net: [0.6, 2.6] as const, // inter-island network draws in (hook)
+  modes: [6.65, 7.17, 8.15] as const, // "a truck, a ship, then another truck"
+  tear: [9.55, 10.75] as const, // the example route tears Jakarta → Sorong
+  dive1: [11.3, 12.4] as const,
+  jkt: [12.4, 20.6] as const,
+  ftl: 13.54,
+  ltl: 16.08,
+  out1: [20.6, 22.1] as const,
+  toShip: 20.9,
+  sea: [21.9, 29.4] as const,
+  fcl: 22.71,
+  lcl: 25.31,
+  dive2: [29.4, 30.4] as const,
+  toTruck: 29.95,
+  srg: [30.4, 31.75] as const,
+  door: 31.75,
+  handoff: [32.3, 33.29] as const,
+  stuck: 34.9, // end of the last-mile hold
+  out2: [35.0, 36.3] as const,
+  everyLeg: 36.48,
+  legFtl: 37.57,
+  legLtl: 38.11,
+  air: 38.68,
+  legFcl: 41.0,
+  legLcl: 41.72,
+  pinToG: [44.0, 44.5] as const,
+  logo: 44.0,
 };
 const ease = Easing.inOut(Easing.sin);
 const fJ = (t: number) => interpolate(t, T.jkt, [0, 1], { ...clamp, easing: ease });
@@ -151,7 +152,8 @@ const mixCam = (a: Cam, b: Cam, k: number): Cam => {
 };
 
 const S_PER_RAD = (MAP.pxPerDeg * 180) / Math.PI;
-const GLOBE_END_S = 9;
+const NET_S = 0.205; // whole archipelago
+const GLOBE_END_S = NET_S;
 const OVERVIEW = 0.335;
 const SEA_S = 0.62;
 const STREET_J = 330;
@@ -177,17 +179,17 @@ const unwrap = (deg: number, ref: number) => {
 };
 
 const camera = (t: number): Cam => {
-  const jkt: Cam = { c: JAKARTA, s: GLOBE_END_S, tilt: 0, roll: 0, fy: 1000 };
   const over: Cam = { c: OVER, s: OVERVIEW, tilt: 24, roll: 0, fy: 1120 };
+  const net: Cam = { c: NETC, s: NET_S, tilt: 0, roll: 0, fy: 1060 };
+  const net2: Cam = { c: NETC, s: NET_S * 1.08, tilt: 22, roll: 0, fy: 1100 };
   const navJ = (tt: number): Cam => ({ c: at(ROAD_J, fJ(tt)), s: STREET_J, tilt: NAV_TILT, roll: unwrap(headingRoll(ROAD_J, fJ(tt)), 0), fy: 1150 });
   const navS = (tt: number): Cam => ({ c: at(ROAD_S, fS(tt)), s: STREET_S, tilt: NAV_TILT, roll: unwrap(headingRoll(ROAD_S, fS(tt), 0.05), 0), fy: 1150 });
-  if (t < T.slam) return { ...jkt, s: globeR(t) / S_PER_RAD };
-  if (t < 0.85) return mixCam(jkt, { ...jkt, s: 8 }, Easing.out(Easing.back(2))(prog(t, T.slam, 0.85)));
-  if (t < 2.1) return mixCam({ ...jkt, s: 8 }, over, io(prog(t, 0.85, 2.1)));
-  if (t < T.dive1[0]) return mixCam(over, { ...over, s: OVERVIEW * 1.06 }, prog(t, 2.1, T.dive1[0]));
-  if (t < T.dive1[1]) return mixCam({ ...over, s: OVERVIEW * 1.06 }, navJ(T.jkt[0]), Easing.bezier(0.6, 0, 0.2, 1)(prog(t, ...T.dive1)));
+  if (t < T.slam) return { ...net, s: globeR(t) / S_PER_RAD };
+  if (t < 9.0) return mixCam(net, net2, io(prog(t, T.slam, 9.0)));
+  if (t < T.dive1[0]) return mixCam(net2, over, io(prog(t, 9.0, 10.2)));
+  if (t < T.dive1[1]) return mixCam(over, navJ(T.jkt[0]), Easing.bezier(0.6, 0, 0.2, 1)(prog(t, ...T.dive1)));
   if (t < T.out1[0]) {
-    const zoomOut = 1 - 0.32 * Math.sin(Math.PI * prog(t, 7.4, 11.4)) * (t > 7.4 && t < 11.4 ? 1 : 0);
+    const zoomOut = 1 - 0.32 * Math.sin(Math.PI * prog(t, 15.4, 19.0)) * (t > 15.4 && t < 19.0 ? 1 : 0);
     const c = navJ(t);
     return { ...c, s: c.s * zoomOut };
   }
@@ -209,11 +211,13 @@ const camera = (t: number): Cam => {
     const d = navS(T.srg[1]);
     return { ...d, roll: d.roll + 18 * io(prog(t, T.srg[1], T.stuck)), s: d.s * (1 + 0.15 * prog(t, T.stuck, T.out2[0])) };
   }
-  const ugc: Cam = { c: { x: OVER.x, y: OVER.y - 150 }, s: OVERVIEW, tilt: 30, roll: 0, fy: 1260 };
+  const ugc: Cam = { c: { x: NETC.x, y: NETC.y - 120 }, s: NET_S * 1.12, tilt: 28, roll: 0, fy: 1300 };
   const d = navS(T.srg[1]);
   const doorEnd: Cam = { ...d, roll: d.roll + 18, s: d.s * 1.15 };
   if (t < T.out2[1]) return mixCam(doorEnd, ugc, io(prog(t, ...T.out2)));
-  return { ...ugc, s: OVERVIEW * (1 + 0.06 * prog(t, T.out2[1], T.pinToG[0])), roll: -3 * prog(t, T.out2[1], T.pinToG[0]) };
+  const u: Cam = { ...ugc, s: ugc.s * (1 + 0.06 * prog(t, T.out2[1], T.pinToG[0])), roll: -3 * prog(t, T.out2[1], T.pinToG[0]) };
+  // end card: the map tilts away under the logo
+  return { ...u, tilt: lerp(u.tilt, 72, io(prog(t, T.pinToG[0], T.pinToG[0] + 0.8))), s: u.s * (1 - 0.3 * prog(t, T.pinToG[0], T.pinToG[0] + 0.8)) };
 };
 
 /** World → screen before the tilt (includes the camera roll). */
@@ -247,6 +251,45 @@ const LAND50: any = (() => {
   return { type: "MultiPolygon", coordinates: polys };
 })();
 const P0 = geoMercator().scale(S_PER_RAD).translate([0, 0])([MAP.lon0, MAP.lat0]) as [number, number];
+// Inter-island network for the general part (illustrative hub-and-spoke sea lanes between major ports).
+const toWorld = (lon: number, lat: number): Pt => {
+  const m = geoMercator().scale(S_PER_RAD).translate([0, 0])([lon, lat]) as [number, number];
+  return { x: m[0] - P0[0], y: m[1] - P0[1] };
+};
+const PORTS: Record<string, [number, number]> = {
+  jakarta: [106.88, -6.1], surabaya: [112.73, -7.2], makassar: [119.41, -5.13], balikpapan: [116.8, -1.27], pontianak: [109.33, -0.03],
+  belawan: [98.69, 3.79], batam: [104.0, 1.13], bitung: [125.19, 1.44], ambon: [128.18, -3.69], sorong: [131.25, -0.87], jayapura: [140.71, -2.53],
+  kupang: [123.58, -10.17], banjarmasin: [114.59, -3.32], palembang: [104.76, -2.98], ternate: [127.38, 0.79], merauke: [140.4, -8.5],
+};
+const LANES: [string, string][] = [
+  ["jakarta", "pontianak"], ["jakarta", "belawan"], ["jakarta", "batam"], ["jakarta", "banjarmasin"], ["palembang", "jakarta"],
+  ["surabaya", "makassar"], ["surabaya", "balikpapan"], ["surabaya", "kupang"], ["surabaya", "banjarmasin"], ["makassar", "ambon"],
+  ["makassar", "bitung"], ["makassar", "ternate"], ["surabaya", "jayapura"], ["ambon", "merauke"], ["bitung", "sorong"], ["jakarta", "surabaya"],
+];
+const LANE_PTS: Pt[][] = LANES.map(([a, b], i) => {
+  const A0 = toWorld(...PORTS[a]);
+  const B0 = toWorld(...PORTS[b]);
+  const mx = (A0.x + B0.x) / 2;
+  const my = (A0.y + B0.y) / 2;
+  const dx = B0.x - A0.x;
+  const dy = B0.y - A0.y;
+  const bend = (i % 2 ? 1 : -1) * 0.16;
+  const C = { x: mx - dy * bend, y: my + dx * bend };
+  return Array.from({ length: 40 }, (_, k) => {
+    const f = k / 39;
+    const u = 1 - f;
+    return { x: u * u * A0.x + 2 * u * f * C.x + f * f * B0.x, y: u * u * A0.y + 2 * u * f * C.y + f * f * B0.y };
+  });
+});
+const PORT_PTS = Object.values(PORTS).map(([lon, lat]) => toWorld(lon, lat));
+const NETC: Pt = (() => {
+  const xs = PORT_PTS.map((p) => p.x);
+  const ys = PORT_PTS.map((p) => p.y);
+  return { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: (Math.min(...ys) + Math.max(...ys)) / 2 };
+})();
+const netAlpha = (t: number) =>
+  Math.max(interpolate(t, [T.net[0], T.net[0] + 0.4, 9.3, 10.3], [0, 1, 1, 0.12], clamp) * (t < T.dive1[0] ? 1 : 0), interpolate(t, [T.out2[1] - 0.4, T.out2[1] + 0.3, T.pinToG[0], T.pinToG[0] + 0.5], [0, 1, 1, 0], clamp));
+
 const CW = 1840;
 const CH = 2660;
 const OX = 380;
@@ -284,6 +327,7 @@ const routeState = (t: number): RouteState => {
   const tear = interpolate(t, T.tear, [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
   const glow = interpolate(t, [T.everyLeg - 0.2, T.everyLeg + 0.6], [0, 1], clamp);
   const air = interpolate(t, [T.air, T.air + 1.6], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  if (t < T.tear[0]) return { behind: [], ahead: [], tear: 0, glow, air };
   if (t < T.jkt[0] || t >= T.out2[1]) return { behind: [], ahead: [FULL.pts], tear: t < T.jkt[0] ? tear : 1, glow, air };
   if (t < T.toShip + 0.4) {
     const [b, a] = split(ROAD_J, fJ(t));
@@ -372,6 +416,30 @@ const MapCanvas: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
     const wide = cam.s < 3;
     const cw = wide ? 12 : 26;
     const iw = wide ? 7 : 16;
+    // inter-island network (general part + UGC beat)
+    const na = netAlpha(t);
+    if (na > 0.01) {
+      LANE_PTS.forEach((pts, i) => {
+        const d0 = T.net[0] + i * 0.09;
+        const drawn = t < T.out2[0] ? interpolate(t, [d0, d0 + 0.7], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) }) : interpolate(t, [T.out2[1] - 0.3 + i * 0.04, T.out2[1] + 0.4 + i * 0.04], [0, 1], clamp);
+        if (drawn <= 0) return;
+        const n = Math.max(2, Math.round(pts.length * drawn));
+        line(pts.slice(0, n), DEEP, wide ? 9 : 14, na * 0.9);
+        line(pts.slice(0, n), ORANGE, wide ? 5 : 8, na);
+      });
+      for (const p of PORT_PTS) {
+        const [x, y] = W2S(p);
+        ctx.globalAlpha = na;
+        ctx.beginPath();
+        ctx.arc(x, y, 11, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = ORANGE;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
     if (rs.air > 0) {
       const airPts = Array.from({ length: 80 }, (_, i) => airAt((i / 79) * rs.air));
       line(airPts, INK, 5, 0.75, [16, 14]);
@@ -400,8 +468,8 @@ const Globe: React.FC<{ t: number }> = ({ t }) => {
   const r = globeR(t);
   const proj = geoOrthographic()
     .scale(r)
-    .translate([540, 1000])
-    .rotate([-lerp(78, 106.85, k), -lerp(16, -6.2, k)])
+    .translate([540, 1060])
+    .rotate([-lerp(84, 119.7, k), -lerp(14, -3.2, k)])
     .clipExtent([
       [-20, -20],
       [1100, 1940],
@@ -421,7 +489,7 @@ const Globe: React.FC<{ t: number }> = ({ t }) => {
       <path d={path({ type: "Sphere" }) ?? ""} fill="url(#e03-globe)" stroke="#7FA9C9" strokeWidth={3} />
       <path d={path(GRAT) ?? ""} fill="none" stroke="#FFFFFF" strokeOpacity={0.35} strokeWidth={1.2} />
       <path d={path(LAND110 as never) ?? ""} fill={LAND} stroke="#9EAAB5" strokeWidth={1.4} />
-      <circle cx={540} cy={1000} r={12 + 16 * k} fill={ORANGE} stroke="#fff" strokeWidth={5} opacity={k} />
+      
     </svg>
   );
 };
@@ -436,7 +504,7 @@ const Icon: React.FC<{ name: PhosphorName; size: number; color?: string }> = ({ 
 );
 
 /** Overview labels (upright, after the tilt). */
-const Labels: React.FC<{ cam: Cam }> = ({ cam }) => {
+const Labels: React.FC<{ cam: Cam; showCities: boolean }> = ({ cam, showCities }) => {
   const on = interpolate(Math.log(cam.s), [Math.log(0.8), Math.log(1.6)], [1, 0], clamp);
   if (on <= 0.01) return null;
   return (
@@ -454,7 +522,7 @@ const Labels: React.FC<{ cam: Cam }> = ({ cam }) => {
           ["Jakarta", JAKARTA, -1],
           ["Sorong", DOOR, 1],
         ] as const
-      ).map(([name, p0, side]) => {
+      ).filter(() => showCities).map(([name, p0, side]) => {
         const p = tilted(cam, toScreen(cam, p0));
         return (
           <div key={name} style={{ position: "absolute", left: p.x, top: p.y, opacity: on }}>
@@ -529,11 +597,11 @@ const DoorPin: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
   const p = tilted(cam, toScreen(cam, DOOR));
   const fly = interpolate(t, T.pinToG, [0, 1], { ...clamp, easing: io });
   const baseH = t > T.out2[0] ? interpolate(t, T.out2, [230, 120], clamp) : 230;
-  const h = lerp(baseH, 320, fly);
+  const h = lerp(baseH, 70, fly);
   const w = (h * 774) / 1170;
-  // the hole of the pin sits at ~31% height; it lands on the G at (436, 777)
-  const x = lerp(p.x, 436, fly);
-  const y = lerp(p.y, 777 + h * 0.69, fly);
+  // it shoots off to the lower left, where the logo's route line starts
+  const x = lerp(p.x, -60, fly);
+  const y = lerp(p.y, 1080, fly);
   const fade = interpolate(t, [T.pinToG[1] - 0.05, T.pinToG[1] + 0.25], [1, 0], clamp);
   return (
     <div style={{ position: "absolute", left: x, top: y, opacity: fade }}>
@@ -646,6 +714,7 @@ const NavBanner: React.FC<{ t: number }> = ({ t }) => {
 /** Bottom sheet (like a navigation app's trip card). */
 const sheetVis = (t: number) =>
   Math.max(
+    interpolate(t, [4.3, 4.8, 8.75, 9.1], [0, 1, 1, 0], clamp),
     interpolate(t, [T.ftl - 0.7, T.ftl - 0.2, T.out1[0] - 0.2, T.out1[0] + 0.2], [0, 1, 1, 0], clamp),
     interpolate(t, [T.fcl - 0.7, T.fcl - 0.2, T.dive2[0] - 0.2, T.dive2[0] + 0.2], [0, 1, 1, 0], clamp),
     interpolate(t, [T.srg[0], T.srg[0] + 0.4, T.stuck - 0.35, T.stuck], [0, 1, 1, 0], clamp),
@@ -724,6 +793,38 @@ const Loader: React.FC<{ t: number; kind: "truck" | "container" }> = ({ t, kind 
   );
 };
 
+/** General part: truck → ship → truck, each mode lights up on the VO word. */
+const ModesSheet: React.FC<{ t: number }> = ({ t }) => {
+  if (t < 4.2 || t > 9.2) return null;
+  const v = sheetVis(t);
+  const top = SHEET.top + (1 - v) * 460;
+  const items = [
+    { img: "nav-truck-top", at: T.modes[0], ring: ORANGE },
+    { img: "nav-ship-top", at: T.modes[1], ring: "#2F6E97" },
+    { img: "nav-truck-top", at: T.modes[2], ring: ORANGE },
+  ];
+  return (
+    <div style={{ position: "absolute", left: SHEET.left, top, width: SHEET.w, height: SHEET.h }}>
+      {[0, 1].map((i) => {
+        const draw = interpolate(t, [items[i].at, items[i + 1].at], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+        return (
+          <div key={i} style={{ position: "absolute", left: 230 + i * 300, top: 190, width: 240, height: 12, borderRadius: 6, background: "#E1E5EA" }}>
+            <div style={{ width: `${draw * 100}%`, height: "100%", borderRadius: 6, background: `linear-gradient(90deg, ${DEEP}, ${ORANGE})` }} />
+          </div>
+        );
+      })}
+      {items.map((it, i) => {
+        const on = interpolate(t, [it.at - 0.05, it.at + 0.25], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2.6)) });
+        return (
+          <div key={i} style={{ position: "absolute", left: 80 + i * 300, top: 66, width: 250, height: 250, borderRadius: "50%", background: "#F4F6F8", border: `8px solid ${on > 0.5 ? it.ring : "#D7DBE0"}`, boxShadow: on > 0.5 ? `0 14px 30px rgba(30,40,50,.22), 0 0 0 ${10 * on}px ${it.ring}22` : "none", display: "grid", placeItems: "center", overflow: "hidden", scale: String(0.82 + 0.18 * on), filter: on < 0.5 ? "grayscale(1) opacity(.45)" : undefined }}>
+            <Img src={A(it.img)} style={{ height: 220, rotate: "40deg" }} />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 /** Sorong sheet: LAST MILE, the handoff chain, the port town. */
 const LastMileSheet: React.FC<{ t: number }> = ({ t }) => {
   const v = sheetVis(t);
@@ -778,7 +879,7 @@ const CompassButton: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
 };
 
 const Attribution: React.FC<{ t: number }> = ({ t }) => {
-  const on = interpolate(t, [3.8, 4.4, T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp);
+  const on = interpolate(t, [0.6, 1.0, T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp);
   return (
     <div style={{ position: "absolute", left: 50, top: 334, fontFamily: FONT_MONO, fontSize: 15, color: "rgba(43,28,21,.55)", opacity: on }}>
       © OpenStreetMap contributors · OpenFreeMap · Natural Earth
@@ -802,16 +903,16 @@ export const E03JakartaSorong: React.FC = () => {
   const frame = useCurrentFrame();
   const t = frame / 30;
   const cam = camera(t);
-  const stuck = t >= T.stuck && t < T.out2[0];
-  const red = stuck ? interpolate(t, [T.stuck, T.stuck + 0.4, T.out2[0] - 0.3, T.out2[0]], [0, 1, 1, 0], clamp) : 0;
   const mapOn = interpolate(t, [0.38, 0.48], [0, 1], clamp) * interpolate(t, [T.pinToG[0], T.logo + 0.2], [1, 0], clamp);
-  const topVeil = Math.max(interpolate(t, [0, 0.6, 3.4, 3.8], [0, 1, 1, 0], clamp), interpolate(t, [T.out2[1] - 0.4, T.out2[1], T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp));
-  const hits = [T.slam, T.dive1[1] - 0.05, T.out1[0] + 0.3, T.dive2[1] - 0.05, T.door + 0.35, T.noTolerance, T.out2[0] + 0.1].map(sec);
+  const topVeil = Math.max(interpolate(t, [0, 0.6, 11.2, 11.6], [0, 1, 1, 0], clamp), interpolate(t, [T.out2[1] - 0.4, T.out2[1], T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp));
+  const hits = [T.slam, T.dive1[1] - 0.05, T.out1[0] + 0.3, T.dive2[1] - 0.05, T.door + 0.35, T.out2[0] + 0.1].map(sec);
   const turnTicks = MAP.roads.jakarta.steps.filter((s) => s.name && s.at > 0.02 && s.at < 0.8).map((s) => interpolate(s.at, [0, 1], T.jkt));
   const sfx: SfxCue[] = [
     { at: 0, name: "whoosh", volume: 0.7 },
     { at: sec(T.slam), name: "boom", volume: 0.9 },
     { at: sec(T.slam), name: "horn", volume: 0.7 },
+    { at: sec(T.net[0]), name: "whoosh", volume: 0.5 },
+    ...T.modes.map((m) => ({ at: sec(m), name: "stamp", volume: 0.35 })),
     { at: sec(T.tear[0]), name: "whoosh", volume: 0.55 },
     { at: sec(T.dive1[0]), name: "whoosh", volume: 0.5 },
     { at: sec(T.dive1[1] - 0.05), name: "boom", volume: 0.4 },
@@ -827,8 +928,6 @@ export const E03JakartaSorong: React.FC = () => {
     { at: sec(T.toTruck), name: "tick", volume: 0.4 },
     { at: sec(T.door + 0.35), name: "stamp", volume: 0.6 },
     { at: sec(T.handoff[1]), name: "tick", volume: 0.4 },
-    { at: sec(T.stuck), name: "glitch", volume: 0.6 },
-    { at: sec(T.noTolerance), name: "stamp", volume: 0.75 },
     { at: sec(T.out2[0] + 0.1), name: "whoosh", volume: 0.6 },
     ...[T.legFtl, T.legLtl, T.legFcl, T.legLcl].map((s) => ({ at: sec(s), name: "tick", volume: 0.35 })),
     { at: sec(T.air), name: "whoosh", volume: 0.45 },
@@ -855,13 +954,11 @@ export const E03JakartaSorong: React.FC = () => {
           </AbsoluteFill>
         </AbsoluteFill>
         <AbsoluteFill style={{ opacity: mapOn }}>
-          <Labels cam={cam} />
+          <Labels cam={cam} showCities={t > T.tear[0] - 0.1} />
           <PlanBadges t={t} cam={cam} />
         </AbsoluteFill>
         <DoorPin t={t} cam={cam} />
         <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(246,246,242,.92) 0%, rgba(246,246,242,.7) 26%, rgba(246,246,242,0) 40%)", opacity: topVeil }} />
-        <AbsoluteFill style={{ background: "#C0392B", mixBlendMode: "multiply", opacity: red * 0.4 }} />
-        <AbsoluteFill style={{ background: "rgba(248,246,242,.7)", opacity: red }} />
       </Shake>
       <Attribution t={t} />
       <CompassButton t={t} cam={cam} />
@@ -870,12 +967,14 @@ export const E03JakartaSorong: React.FC = () => {
       <Loader t={t} kind="truck" />
       <Loader t={t} kind="container" />
       <LastMileSheet t={t} />
+      <ModesSheet t={t} />
 
       <HfOverlay clip="e03-hook" from={0} durationInFrames={sec(4)} fallback={null} />
-      <HfOverlay clip="e03-ftl" from={sec(4)} durationInFrames={sec(10)} fallback={null} />
-      <HfOverlay clip="e03-fcl" from={sec(14)} durationInFrames={sec(10)} fallback={null} />
-      <HfOverlay clip="e03-odol" from={sec(30)} durationInFrames={sec(6)} fallback={null} />
-      <HfOverlay clip="e03-ugc" from={sec(36)} durationInFrames={sec(8)} fallback={null} />
+      <HfOverlay clip="e03-modes" from={sec(4)} durationInFrames={sec(5)} fallback={null} />
+      <HfOverlay clip="e03-example" from={sec(9)} durationInFrames={sec(3)} fallback={null} />
+      <HfOverlay clip="e03-ftl" from={sec(12)} durationInFrames={sec(9)} fallback={null} />
+      <HfOverlay clip="e03-fcl" from={sec(21)} durationInFrames={sec(9)} fallback={null} />
+      <HfOverlay clip="e03-ugc" from={sec(35)} durationInFrames={sec(9)} fallback={null} />
 
       <EndCard t={t} />
       <HfOverlay clip="e03-logo" from={sec(T.logo)} durationInFrames={sec(ep.dur - T.logo)} fallback={null} />

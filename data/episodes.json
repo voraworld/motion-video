@@ -359,9 +359,9 @@
   "svc": "Domestic Distribution",
   "tile": "t03",
   "tileLbl": "sea chart",
-  "hookOS": "JAKARTA → SORONG. 3 RIDES. 1 SHOT.",
+  "hookOS": "THOUSANDS OF ISLANDS",
   "hookFX": "Frame 0: map zooms from orbit straight down onto Jakarta with a whoosh-boom. A route line tears across the archipelago in one stroke. Ship horn blast layered on the beat.",
-  "concept": "One route line draws itself across the archipelago, and the vehicle changes shape each time the mode changes.",
+  "concept": "General to specific: the inter-island pattern (truck, ship, truck) across the whole archipelago first, then one example route, Jakarta to Sorong, followed street by street in a navigation-app view.",
   "design": "Paper navigation chart: thin contour lines, compass rose, coordinate ticks at the edges. The thick orange route line is the only strong color.",
   "motion": "Map camera zooms and pans along the line. The route draws with stroke-dashoffset.",
   "morph": [
@@ -378,43 +378,51 @@
     4,
     "hook",
     "R+H",
-    "Jakarta to Sorong. Three rides, one shipment, zero room for error.",
-    "JAKARTA → SORONG"
+    "Thousands of islands. One shipment. How does it cross?",
+    "THOUSANDS OF ISLANDS"
    ],
    [
     4,
-    14,
+    9,
+    "edu",
+    "R+H",
+    "Door to door, inter-island cargo often rides a truck, a ship, then another truck.",
+    "TRUCK → SHIP → TRUCK"
+   ],
+   [
+    9,
+    12,
+    "edu",
+    "R+H",
+    "Take Jakarta to Sorong.",
+    "EXAMPLE: JAKARTA → SORONG"
+   ],
+   [
+    12,
+    21,
     "edu",
     "R+H",
     "First mile, by truck. FTL means a full truck just for you. LTL means you share the truck and pay for your space.",
     "FTL = WHOLE TRUCK / LTL = SHARED"
    ],
    [
-    14,
-    24,
+    21,
+    30,
     "edu",
     "R+H",
     "Across the sea, by ship. FCL: a whole container is yours. LCL: your cargo shares a container with others.",
     "FCL = WHOLE BOX / LCL = SHARED"
    ],
    [
-    24,
     30,
+    35,
     "edu",
     "R",
     "Last mile: another truck to the door. Every mode switch is a handoff.",
     "LAST MILE"
    ],
    [
-    30,
-    36,
-    "stuck",
-    "H",
-    "And from January 2027, Zero ODOL means no tolerance for overloaded or oversized trucks.",
-    "ZERO ODOL · 1 JAN 2027"
-   ],
-   [
-    36,
+    35,
     44,
     "ugc",
     "R+H",
@@ -430,28 +438,15 @@
     "SHIP ACROSS ISLANDS"
    ]
   ],
-  "learn": "FTL vs LTL and FCL vs LCL, why mode switches need watching, and the Zero ODOL deadline.",
+  "learn": "How inter-island cargo usually moves door to door (truck, ship, truck), FTL vs LTL and FCL vs LCL, and why every mode switch is a handoff.",
   "promo": "Domestic Distribution coordinates every mode in one plan.",
   "music": {
    "bpm": 122,
    "style": "Island adventure, tropical-orchestral",
    "prompt": "Upbeat, cheerful and epic adventure track, 122 BPM, major key. Bright tropical house groove with Indonesian-inspired hand percussion and bamboo marimba, layered with sweeping orchestral strings and big drums. Ship-horn style brass swell at the start. Builds as the route crosses the sea, short pause at 0:30, triumphant chorus at 0:36. Instrumental, no vocals.",
-   "cues": "0:00 horn swell · 0:14 sea section lift · 0:30 pause · 0:36 chorus"
+   "cues": "0:00 horn swell · 0:12 groove · 0:21 sea section lift · 0:31 pause · 0:35 chorus"
   },
   "facts": [
-   [
-    "Zero ODOL (over dimension, over load) enforcement is set for 1 January 2027 by the Ministry of Transportation, after trial enforcement during 2026.",
-    [
-     [
-      "Kompas, 17 Jul 2026",
-      "https://money.kompas.com/read/2026/07/17/141111026/kemenhub-zero-odol-berlaku-mulai-2027-truk-overload-bakal-ditindak"
-     ],
-     [
-      "Bisnis, 14 Oct 2026",
-      "https://ekonomi.bisnis.com/read/20261014/98/2012295/zero-odol-mulai-1-januari-2027-truk-obesitas-tak-ada-toleransi"
-     ]
-    ]
-   ],
    [
     "The Jakarta–Sorong route and its transit points are an illustration. Replace with a route UGC actually runs before production.",
     []
@@ -486,7 +481,7 @@
     ]
    ]
   },
-  "caption": "Truck, ship, truck again. Here's how cargo crosses Indonesia, and the 2027 rule every shipper should know. Plan it: utamaglobalindocargo.com"
+  "caption": "Truck, ship, truck again. Here's how cargo crosses Indonesia's islands, with Jakarta to Sorong as the example. Plan it: utamaglobalindocargo.com"
  },
  {
   "id": "E04",

@@ -21,30 +21,21 @@
       .sheet::before { content: ""; position: absolute; inset: 8px; border: 1px solid rgba(43,28,21,.45); border-radius: 3px; pointer-events: none; }
       .tick { position: absolute; width: 14px; height: 14px; border-color: var(--orange); border-style: solid; }
       .w { display: inline-block; }
-      #l1 { position:absolute; left:80px; top:214px; width:900px; font-size:168px; line-height:1; white-space:nowrap; }
-      #l2 { position:absolute; left:80px; top:390px; width:900px; height:170px; white-space:nowrap; }
-      #sorong { position:absolute; left:250px; top:0; font-size:168px; line-height:1; color:var(--orange); }
-      #arrow { position:absolute; left:0; top:40px; }
+      .l { position:absolute; left:80px; width:900px; font-size:140px; line-height:1; white-space:nowrap; }
+      #l1 { top:214px; } #l2 { top:360px; color:#c8471a; }
     </style>
   </head>
   <body>
     <div id="root" data-composition-id="e03-hook" data-start="0" data-duration="4" data-width="1080" data-height="1920">
-      <div id="l1" class="serif clip" data-start="0" data-duration="4" data-track-index="0"><span class="w">J</span><span class="w">A</span><span class="w">K</span><span class="w">A</span><span class="w">R</span><span class="w">T</span><span class="w">A</span></div>
-      <div id="l2" class="clip" data-start="0" data-duration="4" data-track-index="1" data-layout-allow-overlap>
-        <svg id="arrow" width="230" height="110" viewBox="0 0 230 110"><path id="arrowPath" d="M8 55 C 70 20, 140 90, 205 55" fill="none" stroke="#f26a1f" stroke-width="14" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/><path id="arrowHead" d="M180 28 L216 55 L180 82" fill="none" stroke="#f26a1f" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0"/></svg>
-        <div id="sorong" class="serif"><span class="w">S</span><span class="w">O</span><span class="w">R</span><span class="w">O</span><span class="w">N</span><span class="w">G</span></div>
-      </div>
+      <div id="l1" class="l serif clip" data-start="0" data-duration="4" data-track-index="0"><span class="w">T</span><span class="w">H</span><span class="w">O</span><span class="w">U</span><span class="w">S</span><span class="w">A</span><span class="w">N</span><span class="w">D</span><span class="w">S</span></div>
+      <div id="l2" class="l serif clip" data-start="0" data-duration="4" data-track-index="1"><span class="w">OF</span> <span class="w">ISLANDS</span></div>
     </div>
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      // JAKARTA stamps in letter by letter on the boom (the map lands on Jakarta at 0.5 s).
-      tl.fromTo("#l1 .w", { y: -60, opacity: 0, scale: 1.8, filter: "blur(10px)" }, { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.22, ease: "expo.out", stagger: 0.035 }, 0.48);
-      // The route arrow tears across, SORONG follows.
-      tl.to("#arrowPath", { strokeDashoffset: 0, duration: 0.42, ease: "power3.inOut" }, 0.86);
-      tl.to("#arrowHead", { opacity: 1, duration: 0.08 }, 1.22);
-      tl.fromTo("#sorong .w", { x: -80, opacity: 0, filter: "blur(12px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.26, ease: "power3.out", stagger: 0.04 }, 1.05);
-      tl.to(["#l1", "#l2"], { y: -60, opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in", stagger: 0.05 }, 3.55);
+      tl.fromTo("#l1 .w", { y: -90, opacity: 0, scale: 1.7, filter: "blur(10px)" }, { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.22, ease: "expo.out", stagger: 0.03 }, 0.1);
+      tl.fromTo("#l2 .w", { y: 120, opacity: 0, rotationX: -80 }, { y: 0, opacity: 1, rotationX: 0, duration: 0.4, ease: "back.out(2)", stagger: 0.12 }, 0.62);
+      tl.to(["#l1", "#l2"], { y: -60, opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in", stagger: 0.05 }, 3.6);
       window.__timelines["e03-hook"] = tl;
     </script>
   </body>

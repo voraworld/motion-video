@@ -5,32 +5,24 @@
     <meta name="viewport" content="width=1080, height=1920" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <!--
-      E03 end card logo (from 44.5 s), transparent WebM → remotion/public/hf/e03-logo.webm. The destination pin lands on the G.
-      Choreography after the registry's logo-outro (pieces assemble with a ripple, expand-and-close, glow bloom,
-      text last), built from slices of the official UGC logo:
-        - the destination pin (Remotion) lands on the G; the G draws with a circular sweep from it,
-        - U slides in from the left and C from the right with blur (assembly), then the mark expands and settles,
-        - a soft orange glow blooms behind the mark,
-        - LO / GIS / TICS rise row by row, the tagline wipes in,
-        - the CTA lands last. At 1.6 s the untouched full logo replaces the slices (pixel-exact brand file).
-      Logo box: centre (540, 800), height 320 → scale 0.788 of the 948×406 file; G centre on screen (436, 777).
+      E03 end card (from 44.0 s), transparent WebM → remotion/public/hf/e03-logo.webm.
+      "The route becomes the logo": the logo lies flat on the map plane; an orange route line traces the U, the G
+      and the C of the official mark and the letters are revealed along it (SVG mask on the logo file, letter
+      centrelines traced from brand/logo-mark.png); then the logo stands up in 3D with a shockwave from the G,
+      LO / GIS / TICS flip in like navigation banners, the tagline wipes, and the untouched logo file takes over.
+      Logo box: centre (540, 800), height 320 → the 948×406 file at 0.788; the mark slice is 536×252 at (-7, -9).
     -->
     <style>
       @font-face { font-family: "DM Serif Display"; src: url("assets/DMSerifDisplay-400.woff2") format("woff2"); font-weight: 400; }
       @font-face { font-family: "Plus Jakarta Sans"; src: url("assets/PlusJakartaSans-var.woff2") format("woff2"); font-weight: 200 800; }
-      :root { --ink: #2b1c15; --ember: #d63a1f; --font-display: "DM Serif Display", serif; --font-body: "Plus Jakarta Sans", sans-serif; }
+      :root { --ink: #2b1c15; --orange: #f26a1f; --deep: #c8471a; }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
       #root { position: relative; width: 100%; height: 100%; }
-      #logo-box { position: absolute; left: 166px; top: 640px; width: 747px; height: 320px; }
-      #logo-glow { position: absolute; left: -120px; top: -160px; width: 760px; height: 640px; border-radius: 50%;
-        background: radial-gradient(closest-side, rgba(242,106,31,.55), rgba(245,166,35,.18) 55%, rgba(245,166,35,0)); opacity: 0; }
-      .slice { position: absolute; left: -7px; top: -9px; width: 536px; height: 252px; }
-      .slice img { width: 100%; height: 100%; display: block; }
-      #logo-u { clip-path: inset(0 340px 0 0); }
-      #logo-g { clip-path: inset(0 173px 0 197px); --sweep: 0; -webkit-mask-image: conic-gradient(from 0deg at 277px 126px, #000 calc(var(--sweep) * 1deg), transparent 0); mask-image: conic-gradient(from 0deg at 277px 126px, #000 calc(var(--sweep) * 1deg), transparent 0); }
-      #logo-c { clip-path: inset(0 0 0 362px); }
-      .row { position: absolute; left: 548px; width: 197px; overflow: hidden; }
+      #stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; perspective: 1100px; perspective-origin: 540px 900px; }
+      #logo-box { position: absolute; left: 166px; top: 640px; width: 747px; height: 320px; transform-origin: 50% 100%; }
+      #mark { position: absolute; left: -7px; top: -9px; width: 536px; height: 252px; overflow: visible; }
+      .row { position: absolute; left: 548px; width: 197px; overflow: hidden; transform-origin: 50% 0%; }
       .row img { width: 100%; height: 100%; display: block; }
       #logo-lo { top: 11px; height: 67px; }
       #logo-gis { top: 86px; height: 71px; }
@@ -38,50 +30,73 @@
       #logo-tag { position: absolute; left: 1px; top: 273px; width: 752px; height: 53px; clip-path: inset(0 100% 0 0); }
       #logo-tag img, #logo-full img { width: 100%; height: 100%; display: block; }
       #logo-full { position: absolute; inset: 0; opacity: 0; }
-      #cta { position: absolute; left: 80px; width: 880px; top: 1060px; text-align: center; font-family: var(--font-display); font-size: 104px; line-height: 1; color: var(--ink); }
-      #cta .w { display: inline-block; }
-      #cta-sub { position: absolute; left: 80px; width: 880px; top: 1310px; text-align: center; font-family: var(--font-body); font-weight: 700; font-size: 36px; color: var(--ember); }
+      #glow { position: absolute; left: -60px; top: -200px; width: 660px; height: 640px; border-radius: 50%; background: radial-gradient(closest-side, rgba(242,106,31,.5), rgba(245,166,35,.16) 55%, rgba(245,166,35,0)); opacity: 0; }
+      #ring { position: absolute; left: -187px; top: -340px; width: 900px; height: 900px; border-radius: 50%; border: 8px solid var(--orange); opacity: 0; }
+      #cta { position: absolute; left: 80px; width: 920px; top: 1060px; text-align: center; font-family: "DM Serif Display", serif; font-size: 104px; line-height: 1; color: var(--ink); }
+      #cta .w { display: inline-block; transform-origin: 50% 100%; }
+      #cta-sub { position: absolute; left: 80px; width: 920px; top: 1310px; text-align: center; font-family: "Plus Jakarta Sans", sans-serif; font-weight: 700; font-size: 38px; color: var(--deep); }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="e03-logo" data-start="0" data-duration="5.5" data-width="1080" data-height="1920">
-      <div id="logo-box" class="clip" data-start="0" data-duration="5.5" data-track-index="0" data-layout-allow-overlap data-layout-allow-overflow>
-        <div id="logo-glow"></div>
-        <div id="logo-u" class="slice"><img src="assets/logo-mark.png" alt="" /></div>
-        <div id="logo-g" class="slice"><img src="assets/logo-mark.png" alt="" /></div>
-        <div id="logo-c" class="slice"><img src="assets/logo-mark.png" alt="" /></div>
-        <div id="logo-lo" class="row"><img src="assets/logo-lo.png" alt="" /></div>
-        <div id="logo-gis" class="row"><img src="assets/logo-gis.png" alt="" /></div>
-        <div id="logo-tics" class="row"><img src="assets/logo-tics.png" alt="" /></div>
-        <div id="logo-tag"><img src="assets/logo-tagline.png" alt="" /></div>
-        <div id="logo-full"><img src="assets/logo.png" alt="UGC Logistics, We care what we deliver" /></div>
+    <div id="root" data-composition-id="e03-logo" data-start="0" data-duration="6" data-width="1080" data-height="1920">
+      <div id="stage" class="clip" data-start="0" data-duration="6" data-track-index="0" data-layout-allow-overlap data-layout-allow-overflow>
+        <div id="logo-box">
+          <div id="glow"></div>
+          <svg id="mark" viewBox="0 0 680 320">
+            <defs>
+              <mask id="reveal" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1100" height="720">
+                <path id="mask-path" d="M 36 -40 L 36 180 A 105 105 0 0 0 246 180 L 246 60 L 274 67 A 121 121 0 0 1 462 109 L 430 197 L 350 197 L 469 191 A 121 121 0 0 1 235 191 L 648 83 A 120 120 0 1 0 648 237" fill="none" stroke="#fff" stroke-width="96" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              </mask>
+            </defs>
+            <image href="assets/logo-mark.png" x="0" y="0" width="680" height="320" mask="url(#reveal)" />
+            <g id="route">
+              <path id="route-casing" d="M -420 520 C -200 520, 36 380, 36 180" fill="none" stroke="#c8471a" stroke-width="26" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path id="route-lead" d="M -420 520 C -200 520, 36 380, 36 180" fill="none" stroke="#f26a1f" stroke-width="15" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path id="route-trace-c" d="M 36 -40 L 36 180 A 105 105 0 0 0 246 180 L 246 60 L 274 67 A 121 121 0 0 1 462 109 L 430 197 L 350 197 L 469 191 A 121 121 0 0 1 235 191 L 648 83 A 120 120 0 1 0 648 237" fill="none" stroke="#c8471a" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+              <path id="route-trace" d="M 36 -40 L 36 180 A 105 105 0 0 0 246 180 L 246 60 L 274 67 A 121 121 0 0 1 462 109 L 430 197 L 350 197 L 469 191 A 121 121 0 0 1 235 191 L 648 83 A 120 120 0 1 0 648 237" fill="none" stroke="#fff3e6" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" />
+            </g>
+          </svg>
+          <div id="ring"></div>
+          <div id="logo-lo" class="row"><img src="assets/logo-lo.png" alt="" /></div>
+          <div id="logo-gis" class="row"><img src="assets/logo-gis.png" alt="" /></div>
+          <div id="logo-tics" class="row"><img src="assets/logo-tics.png" alt="" /></div>
+          <div id="logo-tag"><img src="assets/logo-tagline.png" alt="" /></div>
+          <div id="logo-full"><img src="assets/logo.png" alt="UGC Logistics, We care what we deliver" /></div>
+        </div>
       </div>
-      <div id="cta" class="clip" data-start="1.7" data-duration="3.8" data-track-index="1">
-        <span class="w">SHIP</span> <span class="w">ACROSS</span><br /><span class="w" style="color:#c8471a">ISLANDS</span>
-      </div>
-      <div id="cta-sub" class="clip" data-start="2.3" data-duration="3.2" data-track-index="2">Let's discuss your logistics needs.</div>
+      <div id="cta" class="clip" data-start="2.4" data-duration="3.6" data-track-index="1"><span class="w">SHIP</span> <span class="w">ACROSS</span><br /><span class="w" style="color: #c8471a">ISLANDS</span></div>
+      <div id="cta-sub" class="clip" data-start="3.1" data-duration="2.9" data-track-index="2">Let's discuss your logistics needs.</div>
     </div>
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      // 1. The G draws from the landing ring; U and C assemble from the sides with a ripple.
-      tl.fromTo("#logo-g", { "--sweep": 0 }, { "--sweep": 361, duration: 0.45, ease: "power2.inOut" }, 0.06);
-      tl.fromTo("#logo-u", { x: -560, opacity: 0, filter: "blur(14px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power4.out" }, 0.34);
-      tl.fromTo("#logo-c", { x: 560, opacity: 0, filter: "blur(14px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power4.out" }, 0.42);
-      // 2. Expand and close.
-      tl.to(["#logo-u", "#logo-g", "#logo-c"], { scale: 1.08, duration: 0.3, ease: "back.out(1.7)", stagger: 0.02, transformOrigin: "50% 50%" }, 0.85);
-      tl.to(["#logo-u", "#logo-g", "#logo-c"], { scale: 1, duration: 0.3, ease: "power2.inOut" }, 1.12);
-      // 3. Glow bloom.
-      tl.fromTo("#logo-glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1.15, duration: 0.4, ease: "power2.out" }, 0.85);
-      tl.to("#logo-glow", { opacity: 0, scale: 1.7, duration: 1.2, ease: "power2.out" }, 1.25);
-      // 4. LO / GIS / TICS rise, tagline wipes in.
-      ["#logo-lo img", "#logo-gis img", "#logo-tics img"].forEach((sel, i) => tl.fromTo(sel, { yPercent: 105 }, { yPercent: 0, duration: 0.45, ease: "power3.out" }, 0.75 + i * 0.08));
-      tl.to("#logo-tag", { clipPath: "inset(0 0% 0 0)", duration: 0.55, ease: "power2.inOut" }, 1.05);
-      // 5. The exact brand file takes over.
-      tl.to("#logo-full", { opacity: 1, duration: 0.15, ease: "none" }, 1.6);
-      // 6. CTA words blur in, then the sub-line.
-      tl.fromTo("#cta .w", { opacity: 0, filter: "blur(8px)", y: 12 }, { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.22, ease: "power3.out", stagger: 0.08 }, 1.7);
-      tl.fromTo("#cta-sub", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 2.3);
+      // 0. The logo lies on the map plane.
+      tl.set("#logo-box", { rotationX: 64, scale: 0.92, y: 40 }, 0);
+      tl.set(["#logo-lo img", "#logo-gis img", "#logo-tics img"], { yPercent: 0 }, 0);
+      tl.set([".row"], { rotationX: -90, opacity: 0 }, 0);
+      // 1. The route arrives from the lower left and traces U → G → C; the letters appear along it.
+      tl.to(["#route-casing", "#route-lead"], { attr: { "stroke-dashoffset": 0 }, duration: 0.42, ease: "power2.in" }, 0.05);
+      tl.to(["#route-trace-c", "#route-trace"], { attr: { "stroke-dashoffset": 0 }, duration: 1.05, ease: "power1.inOut" }, 0.4);
+      tl.to("#mask-path", { attr: { "stroke-dashoffset": 0 }, duration: 1.05, ease: "power1.inOut" }, 0.48);
+      tl.to("#route", { opacity: 0, duration: 0.35, ease: "power2.out" }, 1.55);
+      // 2. The logo stands up out of the map, shockwave from the G.
+      tl.to("#logo-box", { rotationX: 0, scale: 1, y: 0, duration: 0.55, ease: "back.out(1.7)" }, 1.45);
+      tl.fromTo("#ring", { scale: 0.02, opacity: 1 }, { scale: 1, opacity: 0, duration: 0.9, ease: "power2.out" }, 1.85);
+      tl.fromTo("#glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1.15, duration: 0.4, ease: "power2.out" }, 1.85);
+      tl.to("#glow", { opacity: 0, scale: 1.7, duration: 1.1, ease: "power2.out" }, 2.25);
+      // 3. LO / GIS / TICS flip in like navigation banners, the tagline wipes in.
+      tl.to(".row", { rotationX: 0, opacity: 1, duration: 0.4, ease: "back.out(2)", stagger: 0.1 }, 1.7);
+      tl.to("#logo-tag", { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power2.inOut" }, 1.95);
+      // 4. The exact brand file takes over.
+      tl.to("#logo-full", { opacity: 1, duration: 0.15, ease: "none" }, 2.5);
+      // 5. CTA drops in with a bounce, then the sub-line.
+      document.querySelectorAll("#cta .w").forEach((w, i) => {
+        const at = 2.45 + i * 0.12;
+        tl.fromTo(w, { y: -260, opacity: 0, scaleY: 1.2 }, { y: 0, opacity: 1, scaleY: 1, duration: 0.22, ease: "power3.in" }, at);
+        tl.to(w, { scaleY: 0.85, scaleX: 1.08, duration: 0.05 }, at + 0.22);
+        tl.to(w, { scaleY: 1, scaleX: 1, duration: 0.4, ease: "elastic.out(1.1, 0.35)" }, at + 0.27);
+      });
+      tl.fromTo("#cta-sub", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 3.1);
       window.__timelines["e03-logo"] = tl;
     </script>
   </body>
