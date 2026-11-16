@@ -114,7 +114,7 @@ for (const [name, osrm] of Object.entries(cities)) {
         interactive: false,
         attributionControl: false,
         fadeDuration: 0,
-        pixelRatio: 1,
+        pixelRatio: 1.5, // sharper streets and labels at street level
         maxCanvasSize: [8192, 8192],
         preserveDrawingBuffer: true,
       });

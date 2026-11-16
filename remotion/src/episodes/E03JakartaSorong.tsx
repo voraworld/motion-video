@@ -185,8 +185,9 @@ const T = {
   air: 39.92,
   legFcl: 41.89,
   legLcl: 42.59,
-  pinToG: [44.4, 44.9] as const,
-  logo: 44.4,
+  pinToG: [44.0, 44.5] as const,
+  logo: 44.0,
+  tagline: 48.09, // "We care what we deliver."
 };
 const ease = Easing.inOut(Easing.sin);
 const fJ = (t: number) => interpolate(t, T.jkt, [0, 1], { ...clamp, easing: ease });
@@ -215,7 +216,7 @@ const mixCam = (a: Cam, b: Cam, k: number): Cam => {
 const S_PER_RAD = (MAP.pxPerDeg * 180) / Math.PI;
 const NET_S = 0.205; // whole archipelago
 const GLOBE_END_S = NET_S;
-const OVERVIEW = 0.335;
+const OVERVIEW = 0.3;
 const SEA_S = 0.62;
 const STREET_J = 330;
 const STREET_S = 420;
@@ -360,7 +361,28 @@ const usePlates = () => {
     for (const p of PLATES) {
       const img = new Image();
       img.onload = () => {
-        out[p.key] = img;
+        // feather the edges once (destination-out gradients), so the plate melts into the land around it
+        const c = document.createElement("canvas");
+        c.width = img.naturalWidth;
+        c.height = img.naturalHeight;
+        const g = c.getContext("2d");
+        if (g) {
+          g.drawImage(img, 0, 0);
+          g.globalCompositeOperation = "destination-out";
+          const fw = Math.round(Math.min(c.width, c.height) * 0.14);
+          const edge = (x0: number, y0: number, x1: number, y1: number, rx: number, ry: number, rw: number, rh: number) => {
+            const gr = g.createLinearGradient(x0, y0, x1, y1);
+            gr.addColorStop(0, "rgba(0,0,0,1)");
+            gr.addColorStop(1, "rgba(0,0,0,0)");
+            g.fillStyle = gr;
+            g.fillRect(rx, ry, rw, rh);
+          };
+          edge(0, 0, fw, 0, 0, 0, fw, c.height);
+          edge(c.width, 0, c.width - fw, 0, c.width - fw, 0, fw, c.height);
+          edge(0, 0, 0, fw, 0, 0, c.width, fw);
+          edge(0, c.height, 0, c.height - fw, 0, c.height - fw, c.width, fw);
+        }
+        out[p.key] = c as unknown as HTMLImageElement;
         left -= 1;
         if (left === 0) setImgs(out);
       };
@@ -434,7 +456,7 @@ const MapCanvas: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
       }
     }
     // city plates (real streets), fading in as the camera reaches street level
-    const plateOn = interpolate(Math.log(cam.s), [Math.log(5), Math.log(28)], [0, 1], clamp);
+    const plateOn = interpolate(Math.log(cam.s), [Math.log(1.6), Math.log(9)], [0, 1], clamp);
     if (plates && plateOn > 0) {
       for (const p of PLATES) {
         const [x0, y0] = W2S({ x: p.x0, y: p.y0 });
@@ -805,13 +827,33 @@ const NavBanner: React.FC<{ t: number }> = ({ t }) => {
   );
 };
 
+/** Trip progress along the bottom of the sheet: truck · ship · truck, with the handoffs as nodes. */
+const journeyAt = (t: number) => (t < T.toShip ? fJ(t) / 3 : t < T.toTruck ? 1 / 3 + fSea(t) / 3 : 2 / 3 + fS(t) / 3);
+const JourneyBar: React.FC<{ t: number }> = ({ t }) => {
+  if (t < T.jkt[0] - 1 || t > T.stuck) return null;
+  const f = journeyAt(t);
+  const W = 900;
+  return (
+    <div style={{ position: "absolute", left: 50, bottom: 26, width: W, height: 16 }}>
+      <div style={{ position: "absolute", left: 0, top: 6, width: W, height: 4, borderRadius: 2, background: "#E4E7EB" }} />
+      <div style={{ position: "absolute", left: 0, top: 6, width: W * f, height: 4, borderRadius: 2, background: `linear-gradient(90deg, ${DEEP}, ${ORANGE})` }} />
+      {[1 / 3, 2 / 3].map((n) => (
+        <div key={n} style={{ position: "absolute", left: W * n - 6, top: 2, width: 12, height: 12, borderRadius: "50%", background: f >= n ? ORANGE : "#fff", border: `2px solid ${f >= n ? ORANGE : "#C9CFD6"}` }} />
+      ))}
+      <div style={{ position: "absolute", left: W * f - 8, top: 0, width: 16, height: 16, borderRadius: "50%", background: "#fff", border: `4px solid ${ORANGE}`, boxShadow: "0 2px 8px rgba(242,106,31,.5)" }} />
+    </div>
+  );
+};
+
 /** Bottom sheet (like a navigation app's trip card). */
 const sheetVis = (t: number) =>
-  Math.max(
-    interpolate(t, [5.0, 5.5, 10.2, 10.55], [0, 1, 1, 0], clamp),
-    interpolate(t, [T.ftl - 0.7, T.ftl - 0.2, T.out1[0] - 0.2, T.out1[0] + 0.2], [0, 1, 1, 0], clamp),
-    interpolate(t, [T.fcl - 0.7, T.fcl - 0.2, T.dive2[0] - 0.2, T.dive2[0] + 0.2], [0, 1, 1, 0], clamp),
-    interpolate(t, [T.srg[0], T.srg[0] + 0.4, T.stuck - 0.35, T.stuck], [0, 1, 1, 0], clamp),
+  io(
+    Math.max(
+      interpolate(t, [5.0, 5.55, 10.15, 10.6], [0, 1, 1, 0], clamp),
+      interpolate(t, [T.ftl - 0.75, T.ftl - 0.2, T.out1[0] - 0.25, T.out1[0] + 0.2], [0, 1, 1, 0], clamp),
+      interpolate(t, [T.fcl - 0.75, T.fcl - 0.2, T.dive2[0] - 0.25, T.dive2[0] + 0.2], [0, 1, 1, 0], clamp),
+      interpolate(t, [T.srg[0], T.srg[0] + 0.55, T.stuck - 0.45, T.stuck], [0, 1, 1, 0], clamp),
+    ),
   );
 const SHEET = { left: 40, top: 1352, w: 1000, h: 392 };
 const Sheet: React.FC<{ t: number }> = ({ t }) => {
@@ -820,6 +862,7 @@ const Sheet: React.FC<{ t: number }> = ({ t }) => {
   return (
     <div style={{ position: "absolute", left: SHEET.left, top: SHEET.top + (1 - v) * 460, width: SHEET.w, height: SHEET.h, borderRadius: 40, background: "#FFFFFF", boxShadow: "0 -10px 40px rgba(30,40,50,.18)" }}>
       <div style={{ position: "absolute", left: SHEET.w / 2 - 44, top: 14, width: 88, height: 9, borderRadius: 5, background: "#D7DBE0" }} />
+      <JourneyBar t={t} />
     </div>
   );
 };
@@ -869,9 +912,9 @@ const Loader: React.FC<{ t: number; kind: "truck" | "container" }> = ({ t, kind 
               style={{
                 position: "absolute",
                 left: x - pw / 2,
-                top: y - ph * 0.82 - (1 - d) * 220,
+                top: y - ph * 0.82 - (1 - d) * 90,
                 width: pw,
-                opacity: shared && t < at2 ? out : Math.min(1, d * 3),
+                opacity: shared && t < at2 ? out : Math.min(1, d * 1.6),
                 transformOrigin: "50% 100%",
                 scale: `${2 - bounce} ${bounce}`,
                 filter: "drop-shadow(2px 6px 4px rgba(30,40,50,.3))",
@@ -975,8 +1018,8 @@ const CompassButton: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
 const Attribution: React.FC<{ t: number }> = ({ t }) => {
   const on = interpolate(t, [0.6, 1.0, T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp);
   return (
-    <div style={{ position: "absolute", left: 50, top: 334, fontFamily: FONT_BODY, fontSize: 15, color: "rgba(43,28,21,.55)", opacity: on }}>
-      © OpenStreetMap contributors · OpenFreeMap · Natural Earth
+    <div style={{ position: "absolute", right: 22, top: 1898, fontFamily: FONT_BODY, fontWeight: 500, fontSize: 11, letterSpacing: "0.02em", color: "rgba(43,28,21,.42)", opacity: on }}>
+      © OpenStreetMap contributors · OpenFreeMap
     </div>
   );
 };
@@ -1001,32 +1044,38 @@ export const E03JakartaSorong: React.FC = () => {
   const topVeil = Math.max(interpolate(t, [0, 0.6, 12.2, 12.6], [0, 1, 1, 0], clamp), interpolate(t, [T.out2[1] - 0.4, T.out2[1], T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp));
   const turnTicks = MAP.roads.jakarta.steps.filter((s) => s.name && s.at > 0.02 && s.at < 0.8).map((s) => interpolate(s.at, [0, 1], T.jkt));
   const sfx: SfxCue[] = [
-    { at: sec(0.6), name: "whoosh", volume: 0.4 },
-    { at: sec(T.slam - 0.1), name: "boom", volume: 0.5 },
-    { at: sec(0.1), name: "horn", volume: 0.45 },
-    { at: sec(T.net[0]), name: "whoosh", volume: 0.5 },
-    ...T.modes.map((m) => ({ at: sec(m), name: "stamp", volume: 0.35 })),
-    { at: sec(T.tear[0]), name: "whoosh", volume: 0.55 },
-    { at: sec(T.dive1[0]), name: "whoosh", volume: 0.5 },
-    { at: sec(T.dive1[1] - 0.05), name: "boom", volume: 0.4 },
-    ...turnTicks.map((s) => ({ at: sec(s), name: "tick", volume: 0.3 })),
-    { at: sec(T.ftl + 0.35), name: "stamp", volume: 0.3 },
-    { at: sec(T.ltl + 0.25), name: "stamp", volume: 0.3 },
-    { at: sec(T.toShip), name: "whoosh", volume: 0.4 },
-    { at: sec(T.out1[0] + 0.2), name: "whoosh", volume: 0.6 },
-    { at: sec(T.sea[0] + 0.2), name: "horn", volume: 0.35 },
-    { at: sec(T.fcl + 0.35), name: "stamp", volume: 0.3 },
-    { at: sec(T.lcl + 0.25), name: "stamp", volume: 0.3 },
-    { at: sec(T.dive2[0]), name: "whoosh", volume: 0.55 },
-    { at: sec(T.toTruck), name: "tick", volume: 0.4 },
-    { at: sec(T.door + 0.35), name: "stamp", volume: 0.6 },
-    { at: sec(T.handoff[1]), name: "tick", volume: 0.4 },
-    { at: sec(T.out2[0] + 0.1), name: "whoosh", volume: 0.6 },
-    ...[T.legFtl, T.legLtl, T.legFcl, T.legLcl].map((s) => ({ at: sec(s), name: "tick", volume: 0.35 })),
-    { at: sec(T.air), name: "whoosh", volume: 0.45 },
-    { at: sec(T.pinToG[0]), name: "whoosh", volume: 0.5 },
-    { at: sec(T.logo + 0.15), name: "sonic-logo", volume: 0.8 },
+    { at: sec(0.1), name: "horn", volume: 0.35 },
+    { at: sec(0.6), name: "whoosh", volume: 0.25 },
+    { at: sec(T.slam - 0.1), name: "boom", volume: 0.3 },
+    ...T.modes.map((m) => ({ at: sec(m), name: "tick", volume: 0.25 })),
+    { at: sec(T.tear[0]), name: "whoosh", volume: 0.3 },
+    { at: sec(T.dive1[0]), name: "whoosh", volume: 0.3 },
+    ...turnTicks.map((s) => ({ at: sec(s), name: "tick", volume: 0.15 })),
+    { at: sec(T.ftl + 0.35), name: "tick", volume: 0.2 },
+    { at: sec(T.ltl + 0.25), name: "tick", volume: 0.2 },
+    { at: sec(T.out1[0] + 0.2), name: "whoosh", volume: 0.35 },
+    { at: sec(T.sea[0] + 0.2), name: "horn", volume: 0.22 },
+    { at: sec(T.fcl + 0.35), name: "tick", volume: 0.2 },
+    { at: sec(T.lcl + 0.25), name: "tick", volume: 0.2 },
+    { at: sec(T.dive2[0]), name: "whoosh", volume: 0.3 },
+    { at: sec(T.door + 0.35), name: "stamp", volume: 0.35 },
+    { at: sec(T.handoff[1]), name: "tick", volume: 0.25 },
+    { at: sec(T.out2[0] + 0.1), name: "whoosh", volume: 0.35 },
+    ...[T.legFtl, T.legLtl, T.legFcl, T.legLcl].map((s) => ({ at: sec(s), name: "tick", volume: 0.2 })),
+    { at: sec(T.air), name: "whoosh", volume: 0.25 },
+    { at: sec(T.pinToG[0]), name: "whoosh", volume: 0.3 },
+    { at: sec(T.tagline - 0.05), name: "sonic-logo", volume: 0.6 },
   ];
+
+
+  // Soft horizon: the far edge of the tilted map canvas (layer y = -420) is projected to the screen and faded out
+  // well below it, so the map never ends on a hard line.
+  const th = (cam.tilt * Math.PI) / 180;
+  const dyEdge = -420 - cam.fy;
+  const edgeY = cam.fy + (dyEdge * Math.cos(th) * PERSP) / (PERSP - dyEdge * Math.sin(th));
+  const mA = Math.max(cam.tilt * 0.3 * 19.2, edgeY + 16);
+  const mB = Math.max((cam.tilt * 0.62 + 2) * 19.2, edgeY + 320, mA + 40);
+  const horizonMask = `linear-gradient(180deg, transparent ${mA.toFixed(1)}px, #000 ${mB.toFixed(1)}px)`;
 
   return (
     <AbsoluteFill style={{ background: "radial-gradient(80% 60% at 50% 50%, #F4F6F3, #E2E8EC)" }}>
@@ -1035,10 +1084,11 @@ export const E03JakartaSorong: React.FC = () => {
         <AbsoluteFill
           style={{
             opacity: mapOn,
+            filter: "saturate(0.92) contrast(1.03)",
             perspective: PERSP,
             perspectiveOrigin: `540px ${cam.fy}px`,
-            WebkitMaskImage: `linear-gradient(180deg, transparent ${cam.tilt * 0.3}%, #000 ${cam.tilt * 0.62 + 2}%)`,
-            maskImage: `linear-gradient(180deg, transparent ${cam.tilt * 0.3}%, #000 ${cam.tilt * 0.62 + 2}%)`,
+            WebkitMaskImage: horizonMask,
+            maskImage: horizonMask,
           }}
         >
           <AbsoluteFill style={{ transformOrigin: `540px ${cam.fy}px`, transform: `rotateX(${cam.tilt}deg)`, transformStyle: "preserve-3d" }}>
@@ -1053,6 +1103,14 @@ export const E03JakartaSorong: React.FC = () => {
         <DoorPin t={t} cam={cam} />
         <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(246,246,242,.92) 0%, rgba(246,246,242,.7) 26%, rgba(246,246,242,0) 40%)", opacity: topVeil }} />
       </AbsoluteFill>
+      <AbsoluteFill style={{ background: "radial-gradient(120% 80% at 50% 50%, rgba(0,0,0,0) 55%, rgba(25,20,15,.16) 100%)", pointerEvents: "none" }} />
+      <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, opacity: 0.07, mixBlendMode: "overlay", pointerEvents: "none" }}>
+        <filter id="e03-grain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed={frame % 12} stitchTiles="stitch" />
+          <feColorMatrix type="saturate" values="0" />
+        </filter>
+        <rect width="1080" height="1920" filter="url(#e03-grain)" />
+      </svg>
       <Attribution t={t} />
       <CompassButton t={t} cam={cam} />
       <NavBanner t={t} />
@@ -1071,7 +1129,7 @@ export const E03JakartaSorong: React.FC = () => {
       <HfOverlay clip="e03-logo" from={sec(T.logo)} durationInFrames={sec(ep.dur - T.logo)} fallback={null} />
       <Captions beats={beats} accent={ORANGE} ep="e03" theme="light" />
       <BrandFrame theme="light" endCardFrom={sec(T.logo)} />
-      <SoundLayer ep="e03" sfx={sfx} />
+      <SoundLayer ep="e03" sfx={sfx} duck={{ under: 0.24, open: 0.48 }} />
     </AbsoluteFill>
   );
 };
