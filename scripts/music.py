@@ -13,7 +13,11 @@ crash, reverse cymbal and riser. Arrangement follows the episode's beats in data
   ugc beat      full lift: strings melody, arpeggio, crash
   last 2 s      button: final chord hit and ring-out
 
-Usage:  python3 scripts/music.py E01 [--key D] [--out remotion/public/audio/music/e01.wav]
+Style "tropical" (used when the episode's music style mentions island/tropical, or with --style tropical):
+  ship-horn brass swell at 0 s, bamboo marimba (tresillo 3-3-2), kendang-style hand drums and shaker
+  instead of the marching snare, strings lift from the second edu beat ("sea section").
+
+Usage:  python3 scripts/music.py E01 [--key D] [--style auto|tropical|march] [--out remotion/public/audio/music/e01.wav]
 Then the file is loudness-normalised with FFmpeg to about -16 LUFS (sits under the VO in Remotion).
 """
 import argparse
@@ -203,6 +207,53 @@ def pluck(midi, length=0.22):
     return fft_filter(s, hi=3800) * np.exp(-t * 16)
 
 
+def marimba(midi, length=0.5, vel=1.0):
+    """Bamboo marimba: woody fundamental, a 4x and a 10x partial that die fast, a mallet click."""
+    n = int(length * SR)
+    t = np.arange(n) / SR
+    f = hz(midi)
+    body = np.sin(2 * np.pi * f * t) * np.exp(-t * 7)
+    p4 = 0.35 * np.sin(2 * np.pi * f * 3.93 * t) * np.exp(-t * 22)
+    p10 = 0.12 * np.sin(2 * np.pi * f * 9.8 * t) * np.exp(-t * 45)
+    click = fft_filter(RNG.standard_normal(n), lo=2000, hi=7000) * np.exp(-t * 300) * 0.25
+    return (body + p4 + p10 + click) * np.minimum(1, t / 0.002) * vel
+
+
+def kendang(kind="dhung", vel=1.0):
+    """Hand drum: 'dhung' = low open stroke with a pitch bend, 'tak' = high slap."""
+    n = int((0.45 if kind == "dhung" else 0.12) * SR)
+    t = np.arange(n) / SR
+    if kind == "dhung":
+        ph = 2 * np.pi * (95 * t + (70 / 9) * (1 - np.exp(-9 * t)))
+        s = np.sin(ph) * np.exp(-t * 7) + fft_filter(RNG.standard_normal(n), hi=600) * np.exp(-t * 40) * 0.6
+    else:
+        s = np.sin(2 * np.pi * 420 * t) * np.exp(-t * 45) * 0.6 + fft_filter(RNG.standard_normal(n), lo=1500, hi=6000) * np.exp(-t * 60)
+    return s * vel
+
+
+def shaker(vel=1.0):
+    n = int(0.09 * SR)
+    t = np.arange(n) / SR
+    env = np.minimum(1, t / 0.02) * np.exp(-t * 40)
+    return fft_filter(RNG.standard_normal(n), lo=5000, hi=11000) * env * 0.5 * vel
+
+
+def horn_swell(midis, length=2.6):
+    """Ship-horn style brass swell: slow attack, low register, slight pitch scoop."""
+    n = int(length * SR)
+    t = np.arange(n) / SR
+    out = np.zeros(n)
+    for m in midis:
+        f0 = hz(m)
+        scoop = 1 - 0.03 * np.exp(-t * 5)
+        for det in (-0.003, 0.003):
+            ph = 2 * np.pi * np.cumsum(f0 * (1 + det) * scoop) / SR
+            for k in range(1, 10):
+                out += (1 / k) * np.sin(k * ph) * (1 - np.exp(-t * (1.5 + 0.4 * k)))
+    env = np.minimum(1, (t / (length * 0.45)) ** 1.5) * np.minimum(1, (length - t) / 0.6)
+    return fft_filter(out, hi=2600) * env / (len(midis) * 4)
+
+
 def reverb(stereo, seconds=2.0, wet=0.22):
     m = int(seconds * SR)
     t = np.arange(m) / SR
@@ -219,7 +270,7 @@ def reverb(stereo, seconds=2.0, wet=0.22):
 
 
 # ---------- composition ----------
-def compose(ep, key="D"):
+def compose(ep, key="D", style="auto"):
     dur = float(ep["dur"])
     bpm = float(re.findall(r"\d+", str(ep["music"]["bpm"]))[0])
     beat = 60 / bpm
@@ -237,7 +288,16 @@ def compose(ep, key="D"):
     prog = [(0, [0, 4, 7]), (7, [-5, -1, 2]), (9, [-3, 0, 4]), (5, [-7, -3, 0])]
     melody = [[16, 19, 21, 19], [14, 19, 18, 14], [16, 12, 14, 16], [12, 14, 16, 19]]  # scale steps above root
 
+    if style == "auto":
+        st = str(ep["music"].get("style", "")).lower()
+        style = "tropical" if ("tropical" in st or "island" in st) else "march"
+    tropical = style == "tropical"
+    edu_starts = [b[0] for b in beats if b[2] == "edu"]
+    strings_from = edu_starts[1] if tropical and len(edu_starts) > 1 else (handoffs[min(2, len(handoffs) - 1)] if handoffs else drop_end)
+
     mix = Mix(dur)
+    if tropical:
+        mix.add("lead", horn_swell([root - 12, root - 5, root], 2.8), 0.0, 0.9)
 
     def chord_at(time):
         i = int(time / bar) % 4
@@ -264,12 +324,29 @@ def compose(ep, key="D"):
             # kick: 1 and 3, plus pushes in the lift
             if pos16 in (0, 8) or (lift and pos16 in (6, 14)):
                 mix.add("drums", kick(1.0 if pos16 in (0, 8) else 0.7), t, 0.9)
-            # marching snare: accents on 2 and 4, ghost 16ths in between
-            if pos16 in (4, 12):
-                mix.add("drums", clap(), t, 0.55, pan=0.1)
-                mix.add("drums", snare(1.0), t, 0.5)
-            elif pos16 % 2 == 1 or (pos16 in (2, 10, 14)):
-                mix.add("drums", snare(0.22 + 0.1 * (pos16 % 3 == 0)), t, 0.45, pan=-0.15)
+            if tropical:
+                # tropical house: clap on 2 and 4, kendang pattern, shaker 16ths, marimba tresillo
+                if pos16 in (4, 12):
+                    mix.add("drums", clap(), t, 0.5, pan=0.1)
+                if pos16 in (3, 7, 11):
+                    mix.add("drums", kendang("dhung", 0.9), t, 0.5, pan=-0.25)
+                if pos16 in (6, 14, 15):
+                    mix.add("drums", kendang("tak", 0.8), t, 0.45, pan=0.3)
+                mix.add("drums", shaker(1.0 if pos16 % 2 else 0.55), t, 0.32, pan=0.45)
+                if pos16 in (0, 3, 6, 8, 11, 14):
+                    rt, iv = chord_at(t)
+                    tones = [root + 12 + rt + x for x in iv] + [root + 24 + rt + iv[0]]
+                    m = tones[(pos16 // 3 + step // 16) % len(tones)]
+                    mix.add("lead", marimba(m, 0.45), t, 0.32, pan=-0.2)
+                    if lift:
+                        mix.add("lead", marimba(m + 12, 0.35, 0.8), t, 0.22, pan=0.25)
+            else:
+                # marching snare: accents on 2 and 4, ghost 16ths in between
+                if pos16 in (4, 12):
+                    mix.add("drums", clap(), t, 0.55, pan=0.1)
+                    mix.add("drums", snare(1.0), t, 0.5)
+                elif pos16 % 2 == 1 or (pos16 in (2, 10, 14)):
+                    mix.add("drums", snare(0.22 + 0.1 * (pos16 % 3 == 0)), t, 0.45, pan=-0.15)
             # hats on off-beats
             if pos16 % 4 == 2:
                 mix.add("drums", hat(open_=lift and pos16 == 14), t, 0.45, pan=0.35)
@@ -294,7 +371,7 @@ def compose(ep, key="D"):
             mix.add("pad", pad([root + rt + x for x in iv], length, cutoff=700), t, 0.35)
         else:
             mix.add("pad", pad([root + rt + x for x in iv], length, cutoff=1500), t, 0.3)
-            if t >= drop_end or (handoffs and t >= handoffs[min(2, len(handoffs) - 1)]):
+            if t >= drop_end or t >= strings_from:
                 mix.add("lead", strings([root + 12 + rt + x for x in iv], length), t, 0.32)
                 mel = melody[int(t / bar) % 4]
                 for k, deg in enumerate(mel):
@@ -362,6 +439,7 @@ def main():
     ap.add_argument("--key", default="D")
     ap.add_argument("--out")
     ap.add_argument("--lufs", type=float, default=-16.0)
+    ap.add_argument("--style", default="auto", choices=["auto", "tropical", "march"])
     a = ap.parse_args()
     eps = json.load(open(os.path.join(ROOT, "data", "episodes.json")))
     ep = next((e for e in eps if e["id"] == a.id), None)
@@ -369,7 +447,7 @@ def main():
         sys.exit(f"Unknown episode {a.id}")
     out = a.out or os.path.join(ROOT, "remotion", "public", "audio", "music", a.id.lower() + ".wav")
     raw = out + ".raw.wav"
-    write_wav(raw, compose(ep, a.key))
+    write_wav(raw, compose(ep, a.key, a.style))
     subprocess.run(
         ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", raw,
          "-af", f"loudnorm=I={a.lufs}:TP=-1.5:LRA=11", "-ar", str(SR), out],

@@ -21,12 +21,16 @@
     "remotion": "4.0.543"
   },
   "devDependencies": {
+    "@fontsource/dm-serif-display": "^5.2.5",
     "@remotion/eslint-config-flat": "4.0.543",
     "@types/react": "19.3.0",
     "@types/web": "0.0.166",
+    "d3-geo": "^3.1.1",
     "eslint": "10.12.0",
     "prettier": "3.8.1",
-    "typescript": "5.9.3"
+    "topojson-client": "^3.1.0",
+    "typescript": "5.9.3",
+    "world-atlas": "^2.0.2"
   },
   "scripts": {
     "dev": "node ../scripts/manifest.mjs && remotion studio",
