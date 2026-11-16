@@ -7,3 +7,4 @@ hyperframes/renders/
 .env
 remotion/public/hf/.*hf-transaction*/
 remotion/public/hf/work-*/
+__pycache__/
