@@ -23,7 +23,19 @@
     "e03": {
       "chart-paper-background": "assets/e03/chart-paper-background.png",
       "compass-rose": "assets/e03/compass-rose.png",
+      "destination-pin": "assets/e03/destination-pin.png",
       "inter-island-cargo-ship": "assets/e03/inter-island-cargo-ship.png",
+      "nav-plane-top": "assets/e03/nav-plane-top.png",
+      "nav-ship-top": "assets/e03/nav-ship-top.png",
+      "nav-truck-top": "assets/e03/nav-truck-top.png",
+      "open-container-iso": "assets/e03/open-container-iso.png",
+      "open-trailer-iso": "assets/e03/open-trailer-iso.png",
+      "overloaded-truck": "assets/e03/overloaded-truck.png",
+      "pallet-cartons": "assets/e03/pallet-cartons.png",
+      "pallet-drums": "assets/e03/pallet-drums.png",
+      "pallet-others": "assets/e03/pallet-others.png",
+      "pallet-sacks": "assets/e03/pallet-sacks.png",
+      "pallet-yours": "assets/e03/pallet-yours.png",
       "port-town-vignette": "assets/e03/port-town-vignette.png"
     }
   },
