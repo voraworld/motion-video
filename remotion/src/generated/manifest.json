@@ -19,6 +19,12 @@
       "gate-arm": "assets/e02/gate-arm.png",
       "porthole": "assets/e02/porthole.png",
       "road-fork": "assets/e02/road-fork.png"
+    },
+    "e03": {
+      "chart-paper-background": "assets/e03/chart-paper-background.png",
+      "compass-rose": "assets/e03/compass-rose.png",
+      "inter-island-cargo-ship": "assets/e03/inter-island-cargo-ship.png",
+      "port-town-vignette": "assets/e03/port-town-vignette.png"
     }
   },
   "vo": {},
