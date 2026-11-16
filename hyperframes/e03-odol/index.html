@@ -23,37 +23,27 @@
       .w { display: inline-block; }
       #title { position:absolute; left:80px; top:214px; font-size:156px; line-height:1; color:var(--red); white-space:nowrap; }
       #date { position:absolute; left:84px; top:392px; height:78px; padding:0 22px; display:flex; align-items:center; gap:16px; border:3px solid var(--red); border-radius:8px; background:var(--paper); font-size:46px; color:var(--red); white-space:nowrap; }
-      #diagram { position:absolute; left:80px; top:560px; width:880px; height:620px; }
+      #truck { position:absolute; left:70px; top:540px; width:900px; height:623px; }
+      #truck img { width:100%; height:100%; display:block; filter:drop-shadow(0 30px 30px rgba(43,28,21,.35)); }
+      #dims { position:absolute; left:40px; top:520px; width:960px; height:700px; opacity:0; }
       #gauge { position:absolute; left:290px; top:1210px; width:500px; height:280px; }
-      #stamp { position:absolute; left:360px; top:600px; width:360px; height:360px; color:var(--red); opacity:0; }
+      #stamp { position:absolute; left:380px; top:560px; width:340px; height:340px; color:var(--red); opacity:0; }
     </style>
   </head>
   <body>
     <div id="root" data-composition-id="e03-odol" data-start="0" data-duration="6" data-width="1080" data-height="1920">
       <div id="title" class="serif clip" data-start="0" data-duration="6" data-track-index="0"><span class="w">ZERO</span> <span class="w">ODOL</span></div>
       <div id="date" class="mono clip" data-start="0" data-duration="6" data-track-index="1"><span>·</span><span class="w">1 JAN 2027</span></div>
-      <div id="diagram" class="clip" data-start="0" data-duration="6" data-track-index="2" data-layout-allow-overlap>
-        <svg viewBox="0 0 880 620" width="880" height="620"><defs>
-  <pattern id="hatchA" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#efe3cc"/><line x1="0" y1="0" x2="0" y2="10" stroke="#2b1c15" stroke-width="2.5" opacity=".55"/></pattern>
-  <pattern id="hatchB" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#e9dcc2"/><circle cx="6" cy="6" r="2.2" fill="#2b1c15" opacity=".5"/></pattern>
-  <pattern id="hatchC" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="10" height="10" fill="#f1e6d1"/><line x1="0" y1="0" x2="0" y2="10" stroke="#2b1c15" stroke-width="1.6" opacity=".45"/><line x1="5" y1="0" x2="5" y2="10" stroke="#2b1c15" stroke-width="1.6" opacity=".45"/></pattern>
-  <linearGradient id="og" x1="0" x2="1"><stop offset="0" stop-color="#c0392b"/><stop offset=".5" stop-color="#f26a1f"/><stop offset="1" stop-color="#f5a623"/></linearGradient>
-</defs>
-          <line id="limit" x1="20" y1="300" x2="860" y2="300" stroke="#c0392b" stroke-width="5" stroke-dasharray="22 14"/>
-          <g id="stack"><rect class="ob" x="150" y="300" width="140" height="110" rx="6" fill="#fffaf0" stroke="#2b1c15" stroke-width="4"/><rect class="ob" x="300" y="300" width="140" height="110" rx="6" fill="#fffaf0" stroke="#2b1c15" stroke-width="4"/><rect class="ob" x="450" y="300" width="140" height="110" rx="6" fill="#fffaf0" stroke="#2b1c15" stroke-width="4"/><rect class="ob" x="170" y="182" width="140" height="110" rx="6" fill="url(#og)" stroke="#2b1c15" stroke-width="4"/><rect class="ob" x="320" y="182" width="140" height="110" rx="6" fill="url(#og)" stroke="#2b1c15" stroke-width="4"/><rect class="ob" x="470" y="182" width="140" height="110" rx="6" fill="url(#og)" stroke="#2b1c15" stroke-width="4"/><rect class="ob" x="150" y="64" width="140" height="110" rx="6" fill="url(#og)" stroke="#2b1c15" stroke-width="4"/><rect class="ob" x="300" y="64" width="140" height="110" rx="6" fill="url(#og)" stroke="#2b1c15" stroke-width="4"/><rect class="ob" x="450" y="64" width="140" height="110" rx="6" fill="url(#og)" stroke="#2b1c15" stroke-width="4"/></g>
-          <g fill="#fffaf0" stroke="#2b1c15" stroke-width="5" stroke-linejoin="round">
-            <rect x="120" y="410" width="520" height="28"/>
-            <path d="M640 330 h120 l80 70 v68 h-200 z"/>
-            <path d="M664 346 h80 l50 46 h-130 z" fill="#e9eef3"/>
-          </g>
-          <circle cx="200" cy="480" r="36" fill="#2b1c15"/><circle cx="200" cy="480" r="14" fill="#fffaf0"/><circle cx="300" cy="480" r="36" fill="#2b1c15"/><circle cx="300" cy="480" r="14" fill="#fffaf0"/><circle cx="520" cy="480" r="36" fill="#2b1c15"/><circle cx="520" cy="480" r="14" fill="#fffaf0"/><circle cx="760" cy="480" r="36" fill="#2b1c15"/><circle cx="760" cy="480" r="14" fill="#fffaf0"/>
-          <g id="dims" opacity="0" stroke="#c0392b" stroke-width="5" fill="#c0392b">
-            <line x1="60" y1="70" x2="60" y2="440"/><path d="M44 96 L60 66 L76 96 Z"/><path d="M44 414 L60 444 L76 414 Z"/>
-            <line x1="120" y1="560" x2="860" y2="560"/><path d="M146 544 L116 560 L146 576 Z"/><path d="M834 544 L864 560 L834 576 Z"/>
+      <div id="truck" class="clip" data-start="0" data-duration="6" data-track-index="2"><img src="assets/overloaded-truck.png" alt="Overloaded truck" /></div>
+      <div id="dims" class="clip" data-start="0" data-duration="6" data-track-index="3" data-layout-ignore>
+        <svg viewBox="0 0 960 700" width="960" height="700">
+          <g stroke="#c0392b" stroke-width="6" fill="#c0392b">
+            <line x1="22" y1="40" x2="22" y2="560"/><path d="M4 70 L22 34 L40 70 Z"/><path d="M4 530 L22 566 L40 530 Z"/>
+            <line x1="60" y1="672" x2="920" y2="672"/><path d="M90 654 L54 672 L90 690 Z"/><path d="M890 654 L926 672 L890 690 Z"/>
           </g>
         </svg>
       </div>
-      <div id="gauge" class="clip" data-start="0" data-duration="6" data-track-index="3">
+      <div id="gauge" class="clip" data-start="0" data-duration="6" data-track-index="4">
         <svg viewBox="0 0 500 280" width="500" height="280">
           <path d="M40 250 A210 210 0 0 1 460 250" fill="none" stroke="#e9dcc2" stroke-width="40"/>
           <path d="M40 250 A210 210 0 0 1 340 64" fill="none" stroke="#2b1c15" stroke-width="40" opacity=".25"/>
@@ -64,31 +54,29 @@
         </svg>
         <div style="position:absolute;left:206px;top:196px;color:#2b1c15"><svg viewBox="0 0 256 256" width="88" height="88" fill="#2b1c15" aria-hidden="true"><path d="M239.43,133l-32-80A8,8,0,0,0,200,48a8.27,8.27,0,0,0-1.73.21L136,62V40a8,8,0,0,0-16,0V65.58L54.27,80.21A8,8,0,0,0,48.57,85l-32,80a7.92,7.92,0,0,0-.57,3c0,23.31,24.54,32,40,32s40-8.69,40-32a7.92,7.92,0,0,0-.57-3L66.92,93.77,120,82V208H104a8,8,0,0,0,0,16h48a8,8,0,0,0,0-16H136V78.42L187,67.1,160.57,133a7.92,7.92,0,0,0-.57,3c0,23.31,24.54,32,40,32s40-8.69,40-32A7.92,7.92,0,0,0,239.43,133Zm-160,35H32.62L56,109.54Zm97.24-32L200,77.54,223.38,136Z"/></svg></div>
       </div>
-      <div id="stamp" class="clip" data-start="0" data-duration="6" data-track-index="4"><svg viewBox="0 0 256 256" width="360" height="360" fill="#c0392b" aria-hidden="true"><path d="M200,128a71.69,71.69,0,0,1-15.78,44.91L83.09,71.78A71.95,71.95,0,0,1,200,128ZM56,128a71.95,71.95,0,0,0,116.91,56.22L71.78,83.09A71.69,71.69,0,0,0,56,128Zm180,0A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-20,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg></div>
+      <div id="stamp" class="clip" data-start="0" data-duration="6" data-track-index="5"><svg viewBox="0 0 256 256" width="340" height="340" fill="#c0392b" aria-hidden="true"><path d="M200,128a71.69,71.69,0,0,1-15.78,44.91L83.09,71.78A71.95,71.95,0,0,1,200,128ZM56,128a71.95,71.95,0,0,0,116.91,56.22L71.78,83.09A71.69,71.69,0,0,0,56,128Zm180,0A108,108,0,1,1,128,20,108.12,108.12,0,0,1,236,128Zm-20,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg></div>
     </div>
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      // "January 2027" first, then ZERO ODOL slams.
       tl.fromTo("#date", { scaleX: 0, opacity: 0, transformOrigin: "0% 50%" }, { scaleX: 1, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.3);
       tl.fromTo("#title .w", { y: -140, opacity: 0, scaleY: 1.3 }, { y: 0, opacity: 1, scaleY: 1, duration: 0.2, ease: "power3.in", stagger: 0.2 }, 1.95);
-      tl.to("#title .w", { scaleY: 0.86, duration: 0.05, stagger: 0.2 }, 2.15);
+      tl.to("#title .w", { scaleY: 0.86, duration: 0.05, stagger: 0.2, transformOrigin: "50% 100%" }, 2.15);
       tl.to("#title .w", { scaleY: 1, duration: 0.35, ease: "elastic.out(1, 0.4)", stagger: 0.2 }, 2.2);
-      // The truck appears, the load keeps stacking past the limit line.
-      tl.fromTo("#diagram", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.05);
-      tl.fromTo("#diagram .ob", { y: -260, opacity: 0 }, { y: 0, opacity: 1, duration: 0.26, ease: "bounce.out", stagger: 0.22 }, 0.35);
-      tl.fromTo("#limit", { opacity: 0.35 }, { opacity: 1, duration: 0.12, repeat: 7, yoyo: true }, 1.5);
-      tl.fromTo("#gauge", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.2);
-      tl.fromTo("#needle", { rotation: -85, svgOrigin: "250 250" }, { rotation: 62, svgOrigin: "250 250", duration: 2.4, ease: "power2.in" }, 0.5);
+      // The truck rolls in heavy: it sags as it stops.
+      tl.fromTo("#truck", { x: -900, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.1);
+      tl.to("#truck", { scaleY: 0.96, duration: 0.18, ease: "power2.out", transformOrigin: "50% 100%" }, 1.0);
+      tl.to("#truck", { scaleY: 1, duration: 0.5, ease: "elastic.out(1, 0.35)" }, 1.18);
+      tl.fromTo("#gauge", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.4);
+      tl.fromTo("#needle", { rotation: -85, svgOrigin: "250 250" }, { rotation: 62, svgOrigin: "250 250", duration: 2.2, ease: "power2.in" }, 0.7);
       [3.0, 3.15, 3.3, 3.45].forEach((t, i) => tl.to("#needle", { rotation: i % 2 ? 66 : 74, svgOrigin: "250 250", duration: 0.15, ease: "sine.inOut" }, t));
-      // "No tolerance": the no-entry stamp hits.
       tl.fromTo("#stamp", { scale: 2.2, opacity: 0, rotation: -25 }, { scale: 1, opacity: 0.92, rotation: -8, duration: 0.22, ease: "power4.in" }, 3.1);
-      // "Overloaded": the stack shakes; "oversized": the dimension arrows flash.
-      [0, 1, 2, 3, 4, 5].forEach((i) => tl.to("#stack", { x: i % 2 ? -10 : 10, duration: 0.05 }, 4.08 + i * 0.05));
-      tl.to("#stack", { x: 0, duration: 0.05 }, 4.4);
+      // "Overloaded": the truck shudders; "oversized": the dimension arrows flash.
+      [0, 1, 2, 3, 4, 5].forEach((i) => tl.to("#truck", { x: i % 2 ? -8 : 8, duration: 0.05 }, 4.08 + i * 0.05));
+      tl.to("#truck", { x: 0, duration: 0.05 }, 4.4);
       tl.fromTo("#dims", { opacity: 0 }, { opacity: 1, duration: 0.1, repeat: 5, yoyo: true }, 4.8);
       tl.to("#dims", { opacity: 1, duration: 0.01 }, 5.4);
-      tl.to(["#title", "#date", "#diagram", "#gauge", "#stamp"], { opacity: 0, y: -30, filter: "blur(8px)", duration: 0.25, ease: "power2.in", stagger: 0.03 }, 5.72);
+      tl.to(["#title", "#date", "#truck", "#dims", "#gauge", "#stamp"], { opacity: 0, y: -30, filter: "blur(8px)", duration: 0.25, ease: "power2.in", stagger: 0.03 }, 5.72);
       window.__timelines["e03-odol"] = tl;
     </script>
   </body>

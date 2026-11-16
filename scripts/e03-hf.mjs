@@ -82,39 +82,32 @@ const containerSvg = (id, fills) => `<svg viewBox="0 0 520 190" width="520" heig
 
 const ORANGE_FILL = "url(#og)";
 
-/** Editorial type: the first term lands big, then shrinks into a ledger line while the second term takes the stage. */
+/** Bottom-sheet type (navigation card): the first term lands, the second lands under it and the first dims. */
 const pairClip = (id, dur, a, b) => {
-  const row = (key, c) => `
-      <div id="${key}" class="row clip" data-start="0" data-duration="${dur}" data-track-index="${key === "ra" ? 0 : 1}" data-layout-allow-overlap>
+  const row = (key, c, top) => `
+      <div id="${key}" class="row clip" data-start="0" data-duration="${dur}" data-track-index="${key === "ra" ? 0 : 1}" style="top:${top}px" data-layout-allow-overlap>
         <span class="acr serif">${c.acr.split("").map((ch) => `<span class="w">${ch}</span>`).join("")}</span>
         <span class="eq serif">=</span>
         <span class="mean mono">${c.meaning}</span>
       </div>`;
   const enter = (key, at) => `
-      tl.fromTo("#${key} .acr .w", { y: -120, opacity: 0, filter: "blur(12px)", scaleY: 1.3 }, { y: 0, opacity: 1, filter: "blur(0px)", scaleY: 1, duration: 0.24, ease: "power3.in", stagger: 0.06 }, ${at});
-      tl.to("#${key} .acr .w", { scaleY: 0.88, duration: 0.05, stagger: 0.06, transformOrigin: "50% 100%" }, ${at} + 0.24);
-      tl.to("#${key} .acr .w", { scaleY: 1, duration: 0.35, ease: "elastic.out(1, 0.45)", stagger: 0.06 }, ${at} + 0.29);
-      tl.fromTo("#${key} .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.25, ease: "power3.out", transformOrigin: "0% 50%" }, ${at} + 0.3);
-      tl.fromTo("#${key} .mean", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power2.out" }, ${at} + 0.42);
-      tl.fromTo("#${key} .rule", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power3.out" }, ${at} + 0.5);`;
-  return `${head(id, `      .row { position:absolute; left:80px; top:236px; width:880px; height:220px; display:flex; align-items:baseline; gap:22px; white-space:nowrap; transform-origin:0% 0%; }
-      .acr { font-size:216px; line-height:1; color:#c8471a; }
-      .eq { font-size:120px; line-height:1; color:var(--ink); opacity:.85; }
-      .mean { font-size:54px; line-height:1; color:var(--ink); letter-spacing:.06em; }
-      #ra .rule, #rb .rule { position:absolute; left:4px; bottom:-14px; width:420px; height:7px; border-radius:4px; background:linear-gradient(90deg,var(--orange),var(--amber)); transform-origin:0 50%; }`)}
+      tl.fromTo("#${key} .acr .w", { y: 70, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.32, ease: "back.out(2)", stagger: 0.05 }, ${at});
+      tl.fromTo("#${key} .eq", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.22, ease: "power3.out", transformOrigin: "0% 50%" }, ${at} + 0.22);
+      tl.fromTo("#${key} .mean", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "power2.out" }, ${at} + 0.32);`;
+  return `${head(id, `      .row { position:absolute; left:84px; width:500px; height:120px; display:flex; align-items:baseline; gap:14px; white-space:nowrap; }
+      .acr { font-size:108px; line-height:1; color:#c8471a; }
+      .eq { font-size:64px; line-height:1; color:var(--ink); opacity:.8; }
+      .mean { font-size:34px; line-height:1; color:var(--ink); letter-spacing:.05em; }`)}
   <body>
-    <div id="root" data-composition-id="${id}" data-start="0" data-duration="${dur}" data-width="1080" data-height="1920">${row("ra", a)}${row("rb", b)}
+    <div id="root" data-composition-id="${id}" data-start="0" data-duration="${dur}" data-width="1080" data-height="1920">${row("ra", a, 1396)}${row("rb", b, 1556)}
     </div>
     <script>
-      document.querySelectorAll(".row").forEach((r) => { const d = document.createElement("div"); d.className = "rule"; r.appendChild(d); });
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
       tl.set("#rb", { opacity: 0 }, 0);${enter("ra", a.at)}
-      // The first term becomes a ledger line at the top; the second lands big below it.
-      tl.to("#ra", { y: -30, scale: 0.5, duration: 0.5, ease: "power3.inOut" }, ${b.at} - 0.35);
-      tl.to("#ra .rule", { opacity: 0, duration: 0.2 }, ${b.at} - 0.35);
-      tl.set("#rb", { opacity: 1, y: 110 }, ${b.at} - 0.05);${enter("rb", b.at)}
-      tl.to(["#ra", "#rb"], { opacity: 0, y: "-=40", filter: "blur(10px)", duration: 0.3, ease: "power2.in", stagger: 0.05 }, ${dur - 0.5});
+      tl.set("#rb", { opacity: 1 }, ${b.at} - 0.01);${enter("rb", b.at)}
+      tl.to("#ra", { opacity: 0.42, duration: 0.3 }, ${b.at});
+      tl.to(["#ra", "#rb"], { opacity: 0, y: 30, filter: "blur(8px)", duration: 0.28, ease: "power2.in", stagger: 0.04 }, ${dur - 0.45});
       window.__timelines["${id}"] = tl;
     </script>
   </body>
@@ -165,38 +158,28 @@ CLIPS["e03-fcl"] = pairClip(
   { acr: "LCL", meaning: "SHARED", at: 4.22 },
 );
 
-// Zero ODOL: an overloaded truck, a limit line, a weighbridge gauge and a no-entry stamp.
-const boxes = Array.from({ length: 9 }, (_, i) => {
-  const col = i % 3;
-  const row = Math.floor(i / 3);
-  return `<rect class="ob" x="${150 + col * 150 + (row % 2) * 20}" y="${300 - row * 118}" width="140" height="110" rx="6" fill="${row > 0 ? "url(#og)" : "#fffaf0"}" stroke="${INK}" stroke-width="4"/>`;
-}).join("");
+// Zero ODOL: the overloaded truck (GPT photo cutout), a weighbridge gauge and a no-entry stamp.
 CLIPS["e03-odol"] = `${head("e03-odol", `      #title { position:absolute; left:80px; top:214px; font-size:156px; line-height:1; color:var(--red); white-space:nowrap; }
       #date { position:absolute; left:84px; top:392px; height:78px; padding:0 22px; display:flex; align-items:center; gap:16px; border:3px solid var(--red); border-radius:8px; background:var(--paper); font-size:46px; color:var(--red); white-space:nowrap; }
-      #diagram { position:absolute; left:80px; top:560px; width:880px; height:620px; }
+      #truck { position:absolute; left:70px; top:540px; width:900px; height:623px; }
+      #truck img { width:100%; height:100%; display:block; filter:drop-shadow(0 30px 30px rgba(43,28,21,.35)); }
+      #dims { position:absolute; left:40px; top:520px; width:960px; height:700px; opacity:0; }
       #gauge { position:absolute; left:290px; top:1210px; width:500px; height:280px; }
-      #stamp { position:absolute; left:360px; top:600px; width:360px; height:360px; color:var(--red); opacity:0; }`)}
+      #stamp { position:absolute; left:380px; top:560px; width:340px; height:340px; color:var(--red); opacity:0; }`)}
   <body>
     <div id="root" data-composition-id="e03-odol" data-start="0" data-duration="6" data-width="1080" data-height="1920">
       <div id="title" class="serif clip" data-start="0" data-duration="6" data-track-index="0"><span class="w">ZERO</span> <span class="w">ODOL</span></div>
       <div id="date" class="mono clip" data-start="0" data-duration="6" data-track-index="1"><span>·</span><span class="w">1 JAN 2027</span></div>
-      <div id="diagram" class="clip" data-start="0" data-duration="6" data-track-index="2" data-layout-allow-overlap>
-        <svg viewBox="0 0 880 620" width="880" height="620">${patterns}
-          <line id="limit" x1="20" y1="300" x2="860" y2="300" stroke="${RED}" stroke-width="5" stroke-dasharray="22 14"/>
-          <g id="stack">${boxes}</g>
-          <g fill="#fffaf0" stroke="${INK}" stroke-width="5" stroke-linejoin="round">
-            <rect x="120" y="410" width="520" height="28"/>
-            <path d="M640 330 h120 l80 70 v68 h-200 z"/>
-            <path d="M664 346 h80 l50 46 h-130 z" fill="#e9eef3"/>
-          </g>
-          ${[200, 300, 520, 760].map((x) => `<circle cx="${x}" cy="480" r="36" fill="${INK}"/><circle cx="${x}" cy="480" r="14" fill="#fffaf0"/>`).join("")}
-          <g id="dims" opacity="0" stroke="${RED}" stroke-width="5" fill="${RED}">
-            <line x1="60" y1="70" x2="60" y2="440"/><path d="M44 96 L60 66 L76 96 Z"/><path d="M44 414 L60 444 L76 414 Z"/>
-            <line x1="120" y1="560" x2="860" y2="560"/><path d="M146 544 L116 560 L146 576 Z"/><path d="M834 544 L864 560 L834 576 Z"/>
+      <div id="truck" class="clip" data-start="0" data-duration="6" data-track-index="2"><img src="assets/overloaded-truck.png" alt="Overloaded truck" /></div>
+      <div id="dims" class="clip" data-start="0" data-duration="6" data-track-index="3" data-layout-ignore>
+        <svg viewBox="0 0 960 700" width="960" height="700">
+          <g stroke="${RED}" stroke-width="6" fill="${RED}">
+            <line x1="22" y1="40" x2="22" y2="560"/><path d="M4 70 L22 34 L40 70 Z"/><path d="M4 530 L22 566 L40 530 Z"/>
+            <line x1="60" y1="672" x2="920" y2="672"/><path d="M90 654 L54 672 L90 690 Z"/><path d="M890 654 L926 672 L890 690 Z"/>
           </g>
         </svg>
       </div>
-      <div id="gauge" class="clip" data-start="0" data-duration="6" data-track-index="3">
+      <div id="gauge" class="clip" data-start="0" data-duration="6" data-track-index="4">
         <svg viewBox="0 0 500 280" width="500" height="280">
           <path d="M40 250 A210 210 0 0 1 460 250" fill="none" stroke="#e9dcc2" stroke-width="40"/>
           <path d="M40 250 A210 210 0 0 1 340 64" fill="none" stroke="${INK}" stroke-width="40" opacity=".25"/>
@@ -210,31 +193,29 @@ CLIPS["e03-odol"] = `${head("e03-odol", `      #title { position:absolute; left:
         </svg>
         <div style="position:absolute;left:206px;top:196px;color:${INK}">${icon("scales", 88, INK)}</div>
       </div>
-      <div id="stamp" class="clip" data-start="0" data-duration="6" data-track-index="4">${icon("prohibit", 360, RED)}</div>
+      <div id="stamp" class="clip" data-start="0" data-duration="6" data-track-index="5">${icon("prohibit", 340, RED)}</div>
     </div>
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      // "January 2027" first, then ZERO ODOL slams.
       tl.fromTo("#date", { scaleX: 0, opacity: 0, transformOrigin: "0% 50%" }, { scaleX: 1, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.3);
       tl.fromTo("#title .w", { y: -140, opacity: 0, scaleY: 1.3 }, { y: 0, opacity: 1, scaleY: 1, duration: 0.2, ease: "power3.in", stagger: 0.2 }, 1.95);
-      tl.to("#title .w", { scaleY: 0.86, duration: 0.05, stagger: 0.2 }, 2.15);
+      tl.to("#title .w", { scaleY: 0.86, duration: 0.05, stagger: 0.2, transformOrigin: "50% 100%" }, 2.15);
       tl.to("#title .w", { scaleY: 1, duration: 0.35, ease: "elastic.out(1, 0.4)", stagger: 0.2 }, 2.2);
-      // The truck appears, the load keeps stacking past the limit line.
-      tl.fromTo("#diagram", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.05);
-      tl.fromTo("#diagram .ob", { y: -260, opacity: 0 }, { y: 0, opacity: 1, duration: 0.26, ease: "bounce.out", stagger: 0.22 }, 0.35);
-      tl.fromTo("#limit", { opacity: 0.35 }, { opacity: 1, duration: 0.12, repeat: 7, yoyo: true }, 1.5);
-      tl.fromTo("#gauge", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.2);
-      tl.fromTo("#needle", { rotation: -85, svgOrigin: "250 250" }, { rotation: 62, svgOrigin: "250 250", duration: 2.4, ease: "power2.in" }, 0.5);
+      // The truck rolls in heavy: it sags as it stops.
+      tl.fromTo("#truck", { x: -900, opacity: 0 }, { x: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.1);
+      tl.to("#truck", { scaleY: 0.96, duration: 0.18, ease: "power2.out", transformOrigin: "50% 100%" }, 1.0);
+      tl.to("#truck", { scaleY: 1, duration: 0.5, ease: "elastic.out(1, 0.35)" }, 1.18);
+      tl.fromTo("#gauge", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, 0.4);
+      tl.fromTo("#needle", { rotation: -85, svgOrigin: "250 250" }, { rotation: 62, svgOrigin: "250 250", duration: 2.2, ease: "power2.in" }, 0.7);
       [3.0, 3.15, 3.3, 3.45].forEach((t, i) => tl.to("#needle", { rotation: i % 2 ? 66 : 74, svgOrigin: "250 250", duration: 0.15, ease: "sine.inOut" }, t));
-      // "No tolerance": the no-entry stamp hits.
       tl.fromTo("#stamp", { scale: 2.2, opacity: 0, rotation: -25 }, { scale: 1, opacity: 0.92, rotation: -8, duration: 0.22, ease: "power4.in" }, 3.1);
-      // "Overloaded": the stack shakes; "oversized": the dimension arrows flash.
-      [0, 1, 2, 3, 4, 5].forEach((i) => tl.to("#stack", { x: i % 2 ? -10 : 10, duration: 0.05 }, 4.08 + i * 0.05));
-      tl.to("#stack", { x: 0, duration: 0.05 }, 4.4);
+      // "Overloaded": the truck shudders; "oversized": the dimension arrows flash.
+      [0, 1, 2, 3, 4, 5].forEach((i) => tl.to("#truck", { x: i % 2 ? -8 : 8, duration: 0.05 }, 4.08 + i * 0.05));
+      tl.to("#truck", { x: 0, duration: 0.05 }, 4.4);
       tl.fromTo("#dims", { opacity: 0 }, { opacity: 1, duration: 0.1, repeat: 5, yoyo: true }, 4.8);
       tl.to("#dims", { opacity: 1, duration: 0.01 }, 5.4);
-      tl.to(["#title", "#date", "#diagram", "#gauge", "#stamp"], { opacity: 0, y: -30, filter: "blur(8px)", duration: 0.25, ease: "power2.in", stagger: 0.03 }, 5.72);
+      tl.to(["#title", "#date", "#truck", "#dims", "#gauge", "#stamp"], { opacity: 0, y: -30, filter: "blur(8px)", duration: 0.25, ease: "power2.in", stagger: 0.03 }, 5.72);
       window.__timelines["e03-odol"] = tl;
     </script>
   </body>

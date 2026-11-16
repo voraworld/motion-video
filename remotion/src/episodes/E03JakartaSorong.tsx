@@ -1,12 +1,12 @@
-import React from "react";
-import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
-import { geoBounds, geoContains, geoGraticule, geoGraticule10, geoMercator, geoOrthographic, geoPath } from "d3-geo";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { AbsoluteFill, continueRender, delayRender, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { geoBounds, geoContains, geoGraticule10, geoMercator, geoOrthographic, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
 import land110 from "world-atlas/land-110m.json";
 import land50 from "world-atlas/land-50m.json";
 import { asset, beatsOf, getEpisode, sec } from "../data";
 import { BrandFrame } from "../brand/BrandFrame";
-import { BRAND, FONT_MONO, FONT_SERIF } from "../brand/tokens";
+import { BRAND, FONT_BODY, FONT_MONO, FONT_SERIF } from "../brand/tokens";
 import { Captions } from "../shared/Captions";
 import { HfOverlay } from "../shared/HfOverlay";
 import { Shake } from "../shared/Impact";
@@ -15,24 +15,20 @@ import { SfxCue, SoundLayer } from "../shared/SoundLayer";
 import MAP from "../generated/e03-map.json";
 
 /**
- * E03 · Jakarta to Sorong (50 s) — paper navigation chart.
+ * E03 · Jakarta to Sorong (50 s) — a navigation-app journey.
  *
- * One route line crosses the real archipelago (Natural Earth coastlines, scripts/e03-map.mjs) and the vehicle
- * changes shape at every mode switch: truck → ship → truck → destination pin → UGC logo.
+ * Real streets: OpenStreetMap data (OpenFreeMap vector tiles) pre-rendered with MapLibre into two city plates
+ * (scripts/e03-plates.mjs); real truck routes from OSRM with their street names; Natural Earth coastlines for
+ * the sea leg. The camera is a navigation camera: tilted, turning with the vehicle, the route ahead orange and
+ * the route behind grey. The vehicle is a 3D top-view sprite that changes at every mode switch:
+ * truck → ship → truck → destination pin → UGC logo.
  *
- * Shots, each with its own move:
- *   hook   an ink globe spins and dives onto Jakarta (orthographic → chart), the route tears to Sorong
- *   FTL/LTL Jakarta streets in a tilted nav view; above it the trailer is X-rayed from the top (real container
- *          roof photo) — one shipper's pallets, then shared pallets
- *   FCL/LCL scale zoom out to the archipelago; real container doors swing open on a full wall, slam, and reopen
- *          on a shared wall; the ship sails along the bottom of the chart
- *   last mile dive into Sorong, the port town pops up from the chart, the destination pin drops, handoff chain
- *   stuck  Zero ODOL (HyperFrames) over a red-washed chart
- *   ugc    pull out to the whole plan, mode icons pin onto each leg, a plane flies the domestic-air arc
- *   end    the pin flies into the logo's G
+ * Shots: globe dives onto Jakarta, route tears to Sorong · Sunter → Tanjung Priok with turn banners, bottom sheet
+ * shows FTL/LTL with pallets loading an open truck · scale zoom out, the ship sails Java → Flores → Banda sea,
+ * bottom sheet FCL/LCL with an open container · dive into Sorong, last mile, pin drops, handoff chain ·
+ * Zero ODOL (HyperFrames) · whole plan with a plane on the domestic-air arc · pin flies into the logo's G.
  *
- * Rendering: the chart is one screen-sized SVG whose viewBox is the camera window (no giant CSS layers), so it
- * stays sharp from orbit to street level.
+ * Map data © OpenStreetMap contributors (ODbL) · OpenFreeMap / OpenMapTiles · Natural Earth.
  */
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -42,8 +38,10 @@ const A = (name: string, epId = "e03") => staticFile(asset(epId, name) ?? `asset
 const io = Easing.bezier(0.65, 0, 0.35, 1);
 const INK = BRAND.ink;
 const ORANGE = BRAND.orange;
-const PAPER = "#FBF3E4";
 const DEEP = "#C8471A";
+const WATER = "#A6D1F0";
+const LAND = "#EEEFEA";
+const GREY = "#BFC6CE";
 
 type Pt = { x: number; y: number };
 const pt = (p: number[]): Pt => ({ x: p[0], y: p[1] });
@@ -52,13 +50,12 @@ function prog(t: number, a: number, b: number) {
   return Math.min(1, Math.max(0, (t - a) / (b - a)));
 }
 
-// ── Route geometry ──────────────────────────────────────────────────────────────────────────────────────
-type Poly = { pts: Pt[]; cum: number[]; len: number; d: string };
-const poly = (raw: number[][]): Poly => {
-  const pts = raw.map(pt);
+// ── Routes ──────────────────────────────────────────────────────────────────────────────────────────────
+type Poly = { pts: Pt[]; cum: number[]; len: number };
+const poly = (pts: Pt[]): Poly => {
   const cum = [0];
   for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y));
-  return { pts, cum, len: cum[cum.length - 1], d: "M" + pts.map((p) => `${p.x.toFixed(3)} ${p.y.toFixed(3)}`).join("L") };
+  return { pts, cum, len: cum[cum.length - 1] };
 };
 const at = (pl: Poly, f: number): Pt & { a: number } => {
   const target = Math.max(0, Math.min(1, f)) * pl.len;
@@ -70,22 +67,33 @@ const at = (pl: Poly, f: number): Pt & { a: number } => {
   const b = pl.pts[i];
   return { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, a: Math.atan2(b.y - a.y, b.x - a.x) };
 };
-const JKT = poly(MAP.jktLeg);
-const SEA = poly(MAP.sea);
-const SRG = poly(MAP.srgLeg);
-const PLACES = { jakarta: pt(MAP.places.jakarta), priok: pt(MAP.places.priok), sorong: pt(MAP.places.sorong), door: pt(MAP.places.door) };
+/** Split a polyline at fraction f: [behind, ahead]. */
+const split = (pl: Poly, f: number): [Pt[], Pt[]] => {
+  const target = Math.max(0, Math.min(1, f)) * pl.len;
+  let i = 1;
+  while (i < pl.cum.length - 1 && pl.cum[i] < target) i++;
+  const p = at(pl, f);
+  return [[...pl.pts.slice(0, i), p], [p, ...pl.pts.slice(i)]];
+};
+const ROAD_J = poly(MAP.roads.jakarta.pts.map(pt));
+const ROAD_S = poly(MAP.roads.sorong.pts.map(pt));
+const SEA = poly([ROAD_J.pts[ROAD_J.pts.length - 1], ...MAP.sea.slice(1, -1).map(pt), ROAD_S.pts[0]]);
+const FULL = poly([...ROAD_J.pts, ...SEA.pts.slice(1), ...ROAD_S.pts.slice(1)]);
+const JAKARTA = ROAD_J.pts[0];
+const SORONG = ROAD_S.pts[0];
+const DOOR = ROAD_S.pts[ROAD_S.pts.length - 1];
 const seaYs = SEA.pts.map((p) => p.y);
-const OVER: Pt = { x: (PLACES.jakarta.x + PLACES.sorong.x) / 2, y: (Math.min(...seaYs) + Math.max(...seaYs)) / 2 };
+const OVER: Pt = { x: (JAKARTA.x + DOOR.x) / 2, y: (Math.min(...seaYs) + Math.max(...seaYs)) / 2 };
 const AIR_C = { x: OVER.x, y: OVER.y - 560 };
 const airAt = (f: number) => {
-  const a = PLACES.jakarta;
-  const b = PLACES.sorong;
+  const a = JAKARTA;
+  const b = DOOR;
   const u = 1 - f;
-  const x = u * u * a.x + 2 * u * f * AIR_C.x + f * f * b.x;
-  const y = u * u * a.y + 2 * u * f * AIR_C.y + f * f * b.y;
-  const dx = 2 * u * (AIR_C.x - a.x) + 2 * f * (b.x - AIR_C.x);
-  const dy = 2 * u * (AIR_C.y - a.y) + 2 * f * (b.y - AIR_C.y);
-  return { x, y, a: Math.atan2(dy, dx) };
+  return {
+    x: u * u * a.x + 2 * u * f * AIR_C.x + f * f * b.x,
+    y: u * u * a.y + 2 * u * f * AIR_C.y + f * f * b.y,
+    a: Math.atan2(2 * u * (AIR_C.y - a.y) + 2 * f * (b.y - AIR_C.y), 2 * u * (AIR_C.x - a.x) + 2 * f * (b.x - AIR_C.x)),
+  };
 };
 
 // ── Timeline (VO word starts from whisper timestamps on the generated VO) ────────────────────────────────
@@ -93,18 +101,18 @@ const T = {
   slam: 0.5,
   tear: [0.95, 1.95] as const,
   dive1: [3.55, 4.6] as const,
-  jkt: [4.6, 13.7] as const,
+  jkt: [4.6, 13.6] as const,
   ftl: 5.54,
   ltl: 8.08,
-  out1: [13.7, 15.2] as const,
+  out1: [13.6, 15.2] as const,
   toShip: 14.0,
   sea: [15.0, 23.4] as const,
   fcl: 15.71,
   lcl: 18.31,
-  dive2: [23.4, 24.6] as const,
-  toTruck: 24.05,
-  srg: [24.5, 25.7] as const,
-  door: 25.75,
+  dive2: [23.4, 24.5] as const,
+  toTruck: 24.0,
+  srg: [24.5, 26.3] as const,
+  door: 26.3,
   handoff: [26.3, 27.29] as const,
   stuck: 30,
   noTolerance: 33.12,
@@ -118,8 +126,12 @@ const T = {
   pinToG: [43.9, 44.7] as const,
   logo: 44.5,
 };
+const ease = Easing.inOut(Easing.sin);
+const fJ = (t: number) => interpolate(t, T.jkt, [0, 1], { ...clamp, easing: ease });
+const fSea = (t: number) => interpolate(t, T.sea, [0, 1], { ...clamp, easing: ease });
+const fS = (t: number) => interpolate(t, T.srg, [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
 
-// ── Chart camera ────────────────────────────────────────────────────────────────────────────────────────
+// ── Camera ──────────────────────────────────────────────────────────────────────────────────────────────
 type Cam = { c: Pt; s: number; tilt: number; roll: number; fy: number };
 const mixCam = (a: Cam, b: Cam, k: number): Cam => ({
   c: { x: lerp(a.c.x, b.c.x, k), y: lerp(a.c.y, b.c.y, k) },
@@ -128,76 +140,281 @@ const mixCam = (a: Cam, b: Cam, k: number): Cam => ({
   roll: lerp(a.roll, b.roll, k),
   fy: lerp(a.fy, b.fy, k),
 });
-const STREET = 72;
+const S_PER_RAD = (MAP.pxPerDeg * 180) / Math.PI;
+const GLOBE_END_S = 9;
 const OVERVIEW = 0.335;
 const SEA_S = 0.62;
-const GLOBE_END_S = 9; // chart scale at the slam
-const S_PER_RAD = (MAP.pxPerDeg * 180) / Math.PI; // world px per radian at chart scale 1
+const STREET_J = 330;
+const STREET_S = 420;
+const NAV_TILT = 46;
 const globeR = (t: number) => 300 * Math.pow((S_PER_RAD * GLOBE_END_S) / 300, Easing.in(Easing.cubic)(prog(t, 0, T.slam)));
-
-const truckJ = (t: number) => at(JKT, interpolate(t, T.jkt, [0, 1], { ...clamp, easing: Easing.inOut(Easing.sin) }));
-const ship = (t: number) => at(SEA, interpolate(t, T.sea, [0, 1], { ...clamp, easing: Easing.inOut(Easing.sin) }));
-const truckS = (t: number) => at(SRG, interpolate(t, T.srg, [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) }));
-/** Roll so the vehicle drives "up" the screen at street level (smoothed over ±0.75 s). */
-const headingRoll = (f: (t: number) => Pt & { a: number }, t: number) => {
+/** Navigation-style heading: the route ahead points up the screen (smoothed). */
+const headingRoll = (pl: Poly, f: number, span = 0.03) => {
   let sx = 0;
   let sy = 0;
   for (let k = -3; k <= 3; k++) {
-    const p = f(t + k * 0.25);
+    const p = at(pl, f + k * span);
     sx += Math.cos(p.a);
     sy += Math.sin(p.a);
   }
   return -(Math.atan2(sy, sx) * 180) / Math.PI - 90;
 };
+const unwrap = (deg: number, ref: number) => {
+  let d = deg;
+  while (d - ref > 180) d -= 360;
+  while (d - ref < -180) d += 360;
+  return d;
+};
 
 const camera = (t: number): Cam => {
-  const jkt: Cam = { c: PLACES.jakarta, s: GLOBE_END_S, tilt: 0, roll: 0, fy: 1000 };
+  const jkt: Cam = { c: JAKARTA, s: GLOBE_END_S, tilt: 0, roll: 0, fy: 1000 };
   const over: Cam = { c: OVER, s: OVERVIEW, tilt: 24, roll: 0, fy: 1120 };
-  const jStart: Cam = { c: truckJ(T.jkt[0]), s: STREET, tilt: 50, roll: headingRoll(truckJ, T.jkt[0]), fy: 1330 };
+  const navJ = (tt: number): Cam => ({ c: at(ROAD_J, fJ(tt)), s: STREET_J, tilt: NAV_TILT, roll: unwrap(headingRoll(ROAD_J, fJ(tt)), 0), fy: 1150 });
+  const navS = (tt: number): Cam => ({ c: at(ROAD_S, fS(tt)), s: STREET_S, tilt: NAV_TILT, roll: unwrap(headingRoll(ROAD_S, fS(tt), 0.05), 0), fy: 1150 });
   if (t < T.slam) return { ...jkt, s: globeR(t) / S_PER_RAD };
   if (t < 0.85) return mixCam(jkt, { ...jkt, s: 8 }, Easing.out(Easing.back(2))(prog(t, T.slam, 0.85)));
   if (t < 2.1) return mixCam({ ...jkt, s: 8 }, over, io(prog(t, 0.85, 2.1)));
   if (t < T.dive1[0]) return mixCam(over, { ...over, s: OVERVIEW * 1.06 }, prog(t, 2.1, T.dive1[0]));
-  if (t < T.dive1[1]) return mixCam({ ...over, s: OVERVIEW * 1.06 }, jStart, Easing.bezier(0.6, 0, 0.2, 1)(prog(t, ...T.dive1)));
+  if (t < T.dive1[1]) return mixCam({ ...over, s: OVERVIEW * 1.06 }, navJ(T.jkt[0]), Easing.bezier(0.6, 0, 0.2, 1)(prog(t, ...T.dive1)));
   if (t < T.out1[0]) {
-    const breathe = 1 - 0.3 * Math.sin(Math.PI * prog(t, 7.6, 10.8)) * (t > 7.6 && t < 10.8 ? 1 : 0);
-    return { c: truckJ(t), s: STREET * breathe, tilt: 50, roll: headingRoll(truckJ, t), fy: 1330 };
+    const zoomOut = 1 - 0.32 * Math.sin(Math.PI * prog(t, 7.4, 11.4)) * (t > 7.4 && t < 11.4 ? 1 : 0);
+    const c = navJ(t);
+    return { ...c, s: c.s * zoomOut };
   }
-  const sea0: Cam = { c: ship(T.sea[0]), s: SEA_S, tilt: 32, roll: 0, fy: 1250 };
+  const sea0: Cam = { c: at(SEA, 0), s: SEA_S, tilt: 30, roll: 0, fy: 1060 };
   if (t < T.out1[1]) {
-    const jEnd: Cam = { c: truckJ(T.out1[0]), s: STREET, tilt: 50, roll: headingRoll(truckJ, T.out1[0]), fy: 1330 };
     const k = prog(t, ...T.out1);
     const wide: Cam = { ...over, s: 0.24, tilt: 18 };
-    return k < 0.62 ? mixCam(jEnd, wide, io(k / 0.62)) : mixCam(wide, sea0, io((k - 0.62) / 0.38));
+    return k < 0.62 ? mixCam(navJ(T.out1[0]), wide, io(k / 0.62)) : mixCam(wide, sea0, io((k - 0.62) / 0.38));
   }
-  const sStart: Cam = { c: truckS(T.srg[0]), s: STREET, tilt: 50, roll: headingRoll(truckS, T.srg[0]), fy: 1440 };
-  if (t < T.dive2[0]) return { c: ship(t), s: SEA_S, tilt: 32, roll: 0, fy: 1250 };
+  if (t < T.dive2[0]) return { c: at(SEA, fSea(t)), s: SEA_S, tilt: 30, roll: 0, fy: 1060 };
   if (t < T.dive2[1]) {
     const k = prog(t, ...T.dive2);
-    const s0: Cam = { c: ship(T.dive2[0]), s: SEA_S, tilt: 32, roll: 0, fy: 1250 };
-    const wide: Cam = { c: { x: lerp(s0.c.x, PLACES.sorong.x, 0.6), y: lerp(s0.c.y, PLACES.sorong.y, 0.6) }, s: 0.4, tilt: 20, roll: 0, fy: 1200 };
-    return k < 0.3 ? mixCam(s0, wide, io(k / 0.3)) : mixCam(wide, sStart, Easing.bezier(0.6, 0, 0.2, 1)((k - 0.3) / 0.7));
+    const s0: Cam = { c: at(SEA, fSea(T.dive2[0])), s: SEA_S, tilt: 30, roll: 0, fy: 1060 };
+    const wide: Cam = { c: { x: lerp(s0.c.x, SORONG.x, 0.6), y: lerp(s0.c.y, SORONG.y, 0.6) }, s: 0.42, tilt: 20, roll: 0, fy: 1100 };
+    return k < 0.3 ? mixCam(s0, wide, io(k / 0.3)) : mixCam(wide, navS(T.srg[0]), Easing.bezier(0.6, 0, 0.2, 1)((k - 0.3) / 0.7));
   }
-  const doorCam: Cam = { c: truckS(T.srg[1]), s: STREET, tilt: 50, roll: headingRoll(truckS, T.srg[1]), fy: 1440 };
   if (t < T.out2[0]) {
-    if (t < T.srg[1]) return { c: truckS(t), s: STREET, tilt: 50, roll: headingRoll(truckS, t), fy: 1440 };
-    return { ...doorCam, roll: doorCam.roll + 16 * io(prog(t, T.srg[1], T.stuck)), s: STREET * (1 + 0.18 * prog(t, T.stuck, T.out2[0])) };
+    if (t < T.srg[1]) return navS(t);
+    const d = navS(T.srg[1]);
+    return { ...d, roll: d.roll + 18 * io(prog(t, T.srg[1], T.stuck)), s: d.s * (1 + 0.15 * prog(t, T.stuck, T.out2[0])) };
   }
   const ugc: Cam = { c: { x: OVER.x, y: OVER.y - 150 }, s: OVERVIEW, tilt: 30, roll: 0, fy: 1260 };
-  const doorEnd: Cam = { ...doorCam, roll: doorCam.roll + 16, s: STREET * 1.18 };
+  const d = navS(T.srg[1]);
+  const doorEnd: Cam = { ...d, roll: d.roll + 18, s: d.s * 1.15 };
   if (t < T.out2[1]) return mixCam(doorEnd, ugc, io(prog(t, ...T.out2)));
   return { ...ugc, s: OVERVIEW * (1 + 0.06 * prog(t, T.out2[1], T.pinToG[0])), roll: -3 * prog(t, T.out2[1], T.pinToG[0]) };
 };
 
-/** World → screen (before tilt), including the camera roll around the focus point. */
+/** World → screen before the tilt (includes the camera roll). */
 const toScreen = (cam: Cam, p: Pt) => {
   const dx = (p.x - cam.c.x) * cam.s;
   const dy = (p.y - cam.c.y) * cam.s;
   const r = (cam.roll * Math.PI) / 180;
   return { x: 540 + dx * Math.cos(r) - dy * Math.sin(r), y: cam.fy + dx * Math.sin(r) + dy * Math.cos(r) };
 };
+const PERSP = 1700;
+/** Screen point after the CSS tilt (rotateX about the focus line, perspective PERSP). */
+const tilted = (cam: Cam, p: { x: number; y: number }) => {
+  const th = (cam.tilt * Math.PI) / 180;
+  const dy = p.y - cam.fy;
+  const y1 = dy * Math.cos(th);
+  const z1 = -dy * Math.sin(th);
+  const k = PERSP / (PERSP - z1);
+  return { x: 540 + (p.x - 540) * k, y: cam.fy + y1 * k, k };
+};
 
-// ── Pieces ──────────────────────────────────────────────────────────────────────────────────────────────
+// ── The map canvas: water, land, city plates, route ─────────────────────────────────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const LAND50: any = (() => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const f: any = feature(land50 as any, (land50 as any).objects.land);
+  const geom = f.type === "FeatureCollection" ? f.features[0].geometry : f.geometry;
+  const polys = geom.coordinates.filter((poly: number[][][]) => {
+    const [[x0, y0], [x1, y1]] = geoBounds({ type: "Polygon", coordinates: poly } as never);
+    return x1 > 88 && x0 < 150 && y1 > -16 && y0 < 14;
+  });
+  return { type: "MultiPolygon", coordinates: polys };
+})();
+const P0 = geoMercator().scale(S_PER_RAD).translate([0, 0])([MAP.lon0, MAP.lat0]) as [number, number];
+const CW = 1840;
+const CH = 2660;
+const OX = 380;
+const OY = 420;
+const PLATES = [
+  { key: "jakarta", ...MAP.plates.jakarta },
+  { key: "sorong", ...MAP.plates.sorong },
+];
+
+const usePlates = () => {
+  const [imgs, setImgs] = useState<Record<string, HTMLImageElement> | null>(null);
+  const [handle] = useState(() => delayRender("Loading E03 map plates"));
+  useEffect(() => {
+    let left = PLATES.length;
+    const out: Record<string, HTMLImageElement> = {};
+    for (const p of PLATES) {
+      const img = new Image();
+      img.onload = () => {
+        out[p.key] = img;
+        left -= 1;
+        if (left === 0) {
+          setImgs(out);
+          continueRender(handle);
+        }
+      };
+      img.src = staticFile(p.file);
+    }
+  }, [handle]);
+  return imgs;
+};
+
+type RouteState = { behind: Pt[][]; ahead: Pt[][]; tear: number; glow: number; air: number };
+const routeState = (t: number): RouteState => {
+  const tear = interpolate(t, T.tear, [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const glow = interpolate(t, [T.everyLeg - 0.2, T.everyLeg + 0.6], [0, 1], clamp);
+  const air = interpolate(t, [T.air, T.air + 1.6], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  if (t < T.jkt[0] || t >= T.out2[1]) return { behind: [], ahead: [FULL.pts], tear: t < T.jkt[0] ? tear : 1, glow, air };
+  if (t < T.toShip + 0.4) {
+    const [b, a] = split(ROAD_J, fJ(t));
+    return { behind: [b], ahead: [a, SEA.pts, ROAD_S.pts], tear: 1, glow, air };
+  }
+  if (t < T.srg[0]) {
+    const [b, a] = split(SEA, fSea(t));
+    return { behind: [ROAD_J.pts, b], ahead: [a, ROAD_S.pts], tear: 1, glow, air };
+  }
+  const [b, a] = split(ROAD_S, fS(t));
+  return { behind: [ROAD_J.pts, SEA.pts, b], ahead: [a], tear: 1, glow, air };
+};
+
+const MapCanvas: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
+  const ref = useRef<HTMLCanvasElement>(null);
+  const plates = usePlates();
+  useLayoutEffect(() => {
+    const cv = ref.current;
+    if (!cv) return;
+    const ctx = cv.getContext("2d");
+    if (!ctx) return;
+    const fx = OX + 540;
+    const fy = OY + cam.fy;
+    const W2S = (p: Pt): [number, number] => [fx + (p.x - cam.c.x) * cam.s, fy + (p.y - cam.c.y) * cam.s];
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = WATER;
+    ctx.fillRect(0, 0, CW, CH);
+    ctx.translate(fx, fy);
+    ctx.rotate((cam.roll * Math.PI) / 180);
+    ctx.translate(-fx, -fy);
+    // land (Natural Earth), re-projected for this frame and clipped around the canvas
+    const proj = geoMercator()
+      .scale(S_PER_RAD * cam.s)
+      .translate([fx - (P0[0] + cam.c.x) * cam.s, fy - (P0[1] + cam.c.y) * cam.s])
+      .clipExtent([
+        [-1400, -1400],
+        [CW + 1400, CH + 1400],
+      ]);
+    const path = geoPath(proj, ctx);
+    ctx.beginPath();
+    path(LAND50);
+    let landDrawn = true;
+    ctx.fillStyle = LAND;
+    ctx.fill();
+    if (cam.s < 60) {
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#B9C3CC";
+      ctx.stroke();
+    }
+    const centre = proj.invert?.([fx, fy]);
+    if (centre && cam.s > 60 && !geoContains(LAND50, centre)) landDrawn = false;
+    void landDrawn;
+    // city plates (real streets), fading in as the camera reaches street level
+    const plateOn = interpolate(Math.log(cam.s), [Math.log(18), Math.log(70)], [0, 1], clamp);
+    if (plates && plateOn > 0) {
+      for (const p of PLATES) {
+        const [x0, y0] = W2S({ x: p.x0, y: p.y0 });
+        const [x1, y1] = W2S({ x: p.x1, y: p.y1 });
+        if (x1 < -2000 || x0 > CW + 2000 || y1 < -2000 || y0 > CH + 2000) continue;
+        ctx.globalAlpha = plateOn;
+        ctx.drawImage(plates[p.key], x0, y0, x1 - x0, y1 - y0);
+        ctx.globalAlpha = 1;
+      }
+    }
+    // route
+    const rs = routeState(t);
+    const line = (pts: Pt[], color: string, width: number, alpha = 1, dash?: number[]) => {
+      if (pts.length < 2) return;
+      ctx.beginPath();
+      pts.forEach((p, i) => {
+        const [x, y] = W2S(p);
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.setLineDash(dash ?? []);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+    };
+    const wide = cam.s < 3;
+    const cw = wide ? 12 : 26;
+    const iw = wide ? 7 : 16;
+    if (rs.air > 0) {
+      const airPts = Array.from({ length: 80 }, (_, i) => airAt((i / 79) * rs.air));
+      line(airPts, INK, 5, 0.75, [16, 14]);
+    }
+    for (const b of rs.behind) {
+      line(b, "#8E98A3", cw);
+      line(b, GREY, iw);
+    }
+    for (const a of rs.ahead) {
+      const pts = rs.tear < 1 && a === FULL.pts ? split(FULL, rs.tear)[0] : a;
+      line(pts, DEEP, cw);
+      line(pts, ORANGE, iw);
+      if (rs.glow > 0) line(pts, "#FFF7EF", wide ? 3 : 5, rs.glow, [12, 18]);
+    }
+  });
+  return <canvas ref={ref} width={CW} height={CH} style={{ position: "absolute", left: -OX, top: -OY, width: CW, height: CH }} />;
+};
+
+// ── Globe (hook) ────────────────────────────────────────────────────────────────────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const LAND110 = feature(land110 as any, (land110 as any).objects.land);
+const GRAT = geoGraticule10();
+const Globe: React.FC<{ t: number }> = ({ t }) => {
+  if (t > T.slam + 0.02) return null;
+  const k = Easing.out(Easing.cubic)(prog(t, 0, 0.42));
+  const r = globeR(t);
+  const proj = geoOrthographic()
+    .scale(r)
+    .translate([540, 1000])
+    .rotate([-lerp(78, 106.85, k), -lerp(16, -6.2, k)])
+    .clipExtent([
+      [-20, -20],
+      [1100, 1940],
+    ]);
+  const path = geoPath(proj);
+  const fade = interpolate(t, [0.38, 0.48], [1, 0], clamp);
+  return (
+    <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, opacity: fade }}>
+      <defs>
+        <radialGradient id="e03-globe" cx="40%" cy="36%" r="70%">
+          <stop offset="0" stopColor="#CFE7F8" />
+          <stop offset="0.7" stopColor={WATER} />
+          <stop offset="1" stopColor="#7FB6DD" />
+        </radialGradient>
+      </defs>
+      <circle cx={540} cy={1000} r={r + 40} fill="rgba(166,209,240,.25)" />
+      <path d={path({ type: "Sphere" }) ?? ""} fill="url(#e03-globe)" stroke="#7FA9C9" strokeWidth={3} />
+      <path d={path(GRAT) ?? ""} fill="none" stroke="#FFFFFF" strokeOpacity={0.35} strokeWidth={1.2} />
+      <path d={path(LAND110 as never) ?? ""} fill={LAND} stroke="#9EAAB5" strokeWidth={1.4} />
+      <circle cx={540} cy={1000} r={12 + 16 * k} fill={ORANGE} stroke="#fff" strokeWidth={5} opacity={k} />
+    </svg>
+  );
+};
+
+// ── Map furniture ───────────────────────────────────────────────────────────────────────────────────────
 const Icon: React.FC<{ name: PhosphorName; size: number; color?: string }> = ({ name, size, color = "#fff" }) => (
   <svg viewBox="0 0 256 256" width={size} height={size} fill={color} aria-hidden>
     {PHOSPHOR[name].map((d, i) => (
@@ -206,214 +423,31 @@ const Icon: React.FC<{ name: PhosphorName; size: number; color?: string }> = ({ 
   </svg>
 );
 
-/** Region land (Natural Earth 1:50m), pre-filtered to the archipelago so the per-frame projection stays fast. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const LAND50: any = (() => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const f: any = feature(land50 as any, (land50 as any).objects.land);
-  const geom = f.type === "FeatureCollection" ? f.features[0].geometry : f.geometry ?? f;
-  const polys = (geom.type === "MultiPolygon" ? geom.coordinates : [geom.coordinates]).filter((poly: number[][][]) => {
-    const [[x0, y0], [x1, y1]] = geoBounds({ type: "Polygon", coordinates: poly } as never);
-    return x1 > 88 && x0 < 150 && y1 > -16 && y0 < 14;
-  });
-  return { type: "MultiPolygon", coordinates: polys };
-})();
-const MERC0 = geoMercator().scale(S_PER_RAD).translate([0, 0]);
-const P0 = MERC0([MAP.lon0, MAP.lat0]) as [number, number];
-// Kept tight: a 3D-tilted layer much larger than the screen is dropped by the compositor.
-const CLIP: [[number, number], [number, number]] = [
-  [-380, -420],
-  [1460, 2240],
-];
-/** Screen position of a world point before roll (the roll is applied by the SVG group). */
-const sx = (cam: Cam, x: number) => 540 + (x - cam.c.x) * cam.s;
-const sy = (cam: Cam, y: number) => cam.fy + (y - cam.c.y) * cam.s;
-const LIM = 6000; // keep far-away vertices inside the rasteriser's safe range
-const cl = (v: number) => Math.max(-LIM, Math.min(LIM, v)).toFixed(1);
-const polyD = (cam: Cam, pts: Pt[]) => "M" + pts.map((p) => `${cl(sx(cam, p.x))} ${cl(sy(cam, p.y))}`).join("L");
-
-/** The chart: a screen-space SVG re-projected every frame (sharp and safe from orbit to street level). */
-const Chart: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
-  const streetsOn = interpolate(Math.log(cam.s), [Math.log(9), Math.log(26)], [0, 1], clamp);
-  const routeTear = interpolate(t, T.tear, [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
-  const planned = interpolate(t, [T.dive1[0], T.dive1[0] + 0.6], [1, 0.45], clamp);
-  const pj = interpolate(t, T.jkt, [0, 1], { ...clamp, easing: Easing.inOut(Easing.sin) });
-  const ps = interpolate(t, T.sea, [0, 1], { ...clamp, easing: Easing.inOut(Easing.sin) });
-  const pr = interpolate(t, T.srg, [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
-  const glowAll = interpolate(t, [T.everyLeg - 0.2, T.everyLeg + 0.6], [0, 1], clamp);
-  const air = interpolate(t, [T.air, T.air + 1.6], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
-  const proj = geoMercator()
-    .scale(S_PER_RAD * cam.s)
-    .translate([540 - (P0[0] + cam.c.x) * cam.s, cam.fy - (P0[1] + cam.c.y) * cam.s])
-    .clipExtent(CLIP);
-  const gp = geoPath(proj);
-  let land = gp(LAND50) ?? "";
-  // When the whole view is inside one island (street level), the rectangle clip can come back empty:
-  // fill the view with land if the camera centre is on land.
-  let landClip = true;
-  if (land.length < 8) {
-    const centre = proj.invert?.([540, cam.fy]);
-    if (centre && geoContains(LAND50, centre)) {
-      land = `M${CLIP[0][0]} ${CLIP[0][1]}H${CLIP[1][0]}V${CLIP[1][1]}H${CLIP[0][0]}Z`;
-      landClip = false;
-    }
-  }
-  const grat = cam.s < 20 ? gp(GRAT_CHART) ?? "" : "";
-  const near = (c: Pt) => Math.abs(c.x - cam.c.x) * cam.s < 4000 && Math.abs(c.y - cam.c.y) * cam.s < 4000;
-  const city = (c: (typeof MAP.cities)["jakarta"]) => {
-    if (streetsOn <= 0 || !near({ x: c.cx, y: c.cy })) return null;
-    const m = c.minor;
-    let minor = "";
-    for (let i = 0; i < m.length; i += 4) minor += `M${cl(sx(cam, m[i]))} ${cl(sy(cam, m[i + 1]))}L${cl(sx(cam, m[i + 2]))} ${cl(sy(cam, m[i + 3]))}`;
-    const major = c.major.map((pl) => polyD(cam, pl.map(pt))).join("");
-    return (
-      <g opacity={streetsOn} clipPath={landClip ? "url(#e03-land)" : undefined}>
-        <path d={minor} fill="none" stroke={INK} strokeOpacity={0.3} strokeWidth={1.8} />
-        <path d={major} fill="none" stroke={INK} strokeOpacity={0.6} strokeWidth={10} strokeLinecap="round" />
-        <path d={major} fill="none" stroke="#FFF8EA" strokeWidth={6} strokeLinecap="round" />
-      </g>
-    );
-  };
-  const full = polyD(cam, [...JKT.pts, ...SEA.pts, ...SRG.pts]);
-  const airPts = Array.from({ length: 60 }, (_, i) => airAt(i / 59));
-  const airD = polyD(cam, airPts);
-  return (
-    <svg width={1080} height={1920} style={{ position: "absolute", left: 0, top: 0, overflow: "visible" }}>
-      <defs>
-        <clipPath id="e03-land">
-          <path d={land} />
-        </clipPath>
-      </defs>
-      <g transform={`rotate(${cam.roll} 540 ${cam.fy})`}>
-        {grat ? <path d={grat} fill="none" stroke={INK} strokeOpacity={0.16} strokeWidth={1.2} /> : null}
-        <path d={land} fill="none" stroke={INK} strokeOpacity={0.05} strokeWidth={34} />
-        <path d={land} fill="none" stroke={INK} strokeOpacity={0.07} strokeWidth={16} />
-        <path d={land} fill="rgba(214,168,104,.5)" stroke={INK} strokeOpacity={0.8} strokeWidth={2} />
-        {city(MAP.cities.jakarta)}
-        {city(MAP.cities.sorong)}
-        {air > 0 ? (
-          <>
-            <path d={airD} fill="none" stroke={INK} strokeOpacity={0.8} strokeWidth={4} strokeDasharray="14 12" />
-            <path d={airD} fill="none" stroke={PAPER} strokeWidth={10} pathLength={1} strokeDasharray="1 1" strokeDashoffset={-air} />
-          </>
-        ) : null}
-        <path d={full} fill="none" stroke={ORANGE} strokeOpacity={0.22 * planned + 0.2 * glowAll} strokeWidth={34} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - routeTear} />
-        <path d={full} fill="none" stroke={DEEP} strokeOpacity={planned * 0.9 + glowAll * 0.4} strokeWidth={14} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - routeTear} />
-        <path d={full} fill="none" stroke={ORANGE} strokeOpacity={planned + glowAll} strokeWidth={9} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - routeTear} />
-        {(
-          [
-            [JKT, pj],
-            [SEA, ps],
-            [SRG, pr],
-          ] as const
-        ).map(([pl, p], i) => {
-          const d = polyD(cam, pl.pts);
-          return (
-            <g key={i}>
-              <path d={d} fill="none" stroke={DEEP} strokeWidth={16} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - p} />
-              <path d={d} fill="none" stroke={ORANGE} strokeWidth={10} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - p} />
-            </g>
-          );
-        })}
-        {glowAll > 0 ? <path d={full} fill="none" stroke="#FFF7EF" strokeOpacity={glowAll} strokeWidth={3.5} strokeDasharray="10 16" strokeDashoffset={-t * 60} /> : null}
-      </g>
-    </svg>
-  );
-};
-
-/** Ink globe for the hook: Indonesia rotates to the front while the camera falls onto Jakarta. */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const LAND110 = feature(land110 as any, (land110 as any).objects.land);
-const GRAT = geoGraticule10();
-const GRAT_CHART = geoGraticule().extent([
-  [90, -14],
-  [146, 10],
-]).step([2, 2])();
-const Globe: React.FC<{ t: number }> = ({ t }) => {
-  if (t > T.slam + 0.02) return null;
-  const k = Easing.out(Easing.cubic)(prog(t, 0, 0.42));
-  const lon = lerp(78, 106.85, k);
-  const lat = lerp(16, -6.2, k);
-  const r = globeR(t);
-  const proj = geoOrthographic().scale(r).translate([540, 1000]).rotate([-lon, -lat]).clipExtent([
-    [-20, -20],
-    [1100, 1940],
-  ]);
-  const path = geoPath(proj);
-  const fade = interpolate(t, [0.38, 0.48], [1, 0], clamp);
-  return (
-    <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, opacity: fade }}>
-      <defs>
-        <radialGradient id="e03-globe" cx="42%" cy="38%" r="65%">
-          <stop offset="0" stopColor="#FFF9EC" />
-          <stop offset="0.7" stopColor="#F2E2C2" />
-          <stop offset="1" stopColor="#D8BF93" />
-        </radialGradient>
-      </defs>
-      <circle cx={540} cy={1000} r={r + 30} fill="none" stroke={ORANGE} strokeOpacity={0.25} strokeWidth={18} />
-      <path d={path({ type: "Sphere" }) ?? ""} fill="url(#e03-globe)" stroke={INK} strokeWidth={4} />
-      <path d={path(GRAT) ?? ""} fill="none" stroke={INK} strokeOpacity={0.18} strokeWidth={1.2} />
-      <path d={path(LAND110 as never) ?? ""} fill="rgba(214,168,104,.6)" stroke={INK} strokeWidth={1.6} />
-      <circle cx={540} cy={1000} r={10 + 16 * k} fill={ORANGE} stroke="#fff" strokeWidth={4} opacity={k} />
-    </svg>
-  );
-};
-
-/** Place names and ports, screen-space, following the camera. */
-const ChartLabels: React.FC<{ cam: Cam }> = ({ cam }) => {
+/** Overview labels (upright, after the tilt). */
+const Labels: React.FC<{ cam: Cam }> = ({ cam }) => {
   const on = interpolate(Math.log(cam.s), [Math.log(0.8), Math.log(1.6)], [1, 0], clamp);
   if (on <= 0.01) return null;
   return (
     <>
       {MAP.labels.map((l, i) => {
-        const p = toScreen(cam, pt(l.at));
+        const p = tilted(cam, toScreen(cam, pt(l.at)));
         return (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              left: p.x,
-              top: p.y,
-              translate: "-50% -50%",
-              fontFamily: FONT_SERIF,
-              fontStyle: l.sea ? "italic" : "normal",
-              fontSize: l.sea ? 24 : 30,
-              letterSpacing: "0.3em",
-              color: INK,
-              opacity: (l.sea ? 0.45 : 0.62) * on,
-              whiteSpace: "nowrap",
-            }}
-          >
+          <div key={i} style={{ position: "absolute", left: p.x, top: p.y, translate: "-50% -50%", scale: String(p.k), fontFamily: FONT_BODY, fontWeight: l.sea ? 600 : 700, fontStyle: l.sea ? "italic" : "normal", fontSize: l.sea ? 22 : 26, letterSpacing: "0.24em", color: l.sea ? "#4E7EA3" : "#6B7480", opacity: on, whiteSpace: "nowrap" }}>
             {l.text}
           </div>
         );
       })}
       {(
         [
-          ["JAKARTA", PLACES.jakarta, -1],
-          ["SORONG", PLACES.sorong, 1],
+          ["Jakarta", JAKARTA, -1],
+          ["Sorong", DOOR, 1],
         ] as const
       ).map(([name, p0, side]) => {
-        const p = toScreen(cam, p0);
+        const p = tilted(cam, toScreen(cam, p0));
         return (
           <div key={name} style={{ position: "absolute", left: p.x, top: p.y, opacity: on }}>
-            <div style={{ position: "absolute", left: -13, top: -13, width: 26, height: 26, borderRadius: "50%", background: PAPER, border: `6px solid ${INK}` }} />
-            <div
-              style={{
-                position: "absolute",
-                top: side < 0 ? 22 : -62,
-                left: side < 0 ? -50 : -150,
-                fontFamily: FONT_MONO,
-                fontWeight: 800,
-                fontSize: 28,
-                letterSpacing: "0.14em",
-                color: PAPER,
-                background: INK,
-                padding: "4px 12px",
-                borderRadius: 4,
-                whiteSpace: "nowrap",
-              }}
-            >
+            <div style={{ position: "absolute", left: -14, top: -14, width: 28, height: 28, borderRadius: "50%", background: "#fff", border: `7px solid ${ORANGE}`, boxShadow: "0 4px 10px rgba(0,0,0,.25)" }} />
+            <div style={{ position: "absolute", top: side < 0 ? 24 : -66, left: side < 0 ? -40 : -130, padding: "6px 16px", borderRadius: 22, background: "#fff", boxShadow: "0 6px 16px rgba(30,40,50,.18)", fontFamily: FONT_BODY, fontWeight: 800, fontSize: 28, color: INK, whiteSpace: "nowrap" }}>
               {name}
             </div>
           </div>
@@ -423,404 +457,320 @@ const ChartLabels: React.FC<{ cam: Cam }> = ({ cam }) => {
   );
 };
 
-/** The vehicle: one orange disc whose icon condenses and pops into the next mode. */
-const MODES: { from: number; icon: PhosphorName }[] = [
-  { from: -1, icon: "truck" },
-  { from: T.toShip, icon: "boat" },
-  { from: T.toTruck, icon: "truck" },
-  { from: T.door, icon: "map-pin" },
+/** The vehicle: a 3D top-view sprite lying on the tilted map, swapping at every mode change. */
+const SPRITES: { from: number; name: string; len: number; w: number; h: number }[] = [
+  { from: -1, name: "nav-truck-top", len: 210, w: 713, h: 1475 },
+  { from: T.toShip, name: "nav-ship-top", len: 250, w: 433, h: 1501 },
+  { from: T.toTruck, name: "nav-truck-top", len: 210, w: 713, h: 1475 },
 ];
+const vehiclePos = (t: number) => (t < T.toShip ? at(ROAD_J, fJ(t)) : t < T.toTruck ? at(SEA, fSea(t)) : at(ROAD_S, fS(t)));
 const Vehicle: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
-  if (t < T.dive1[0] + 0.3 || t >= T.door) return null;
-  const pos = t < T.toShip ? truckJ(t) : t < T.toTruck ? (t < T.sea[0] ? at(SEA, 0) : ship(t)) : truckS(t);
+  if (t < T.dive1[0] + 0.25 || t >= T.door) return null;
+  const pos = vehiclePos(t);
   const p = toScreen(cam, pos);
-  const m = [...MODES].reverse().find((x) => t >= x.from) ?? MODES[0];
-  const swapIn = m.from > 0 ? interpolate(t - m.from, [0, 0.18, 0.32], [0.2, 1.18, 1], clamp) : 1;
-  const next = MODES.find((x) => x.from > t);
-  const swapOut = next ? interpolate(next.from - t, [0, 0.15], [0.2, 1], clamp) : 1;
-  const scale = Math.min(swapIn, swapOut) * interpolate(t, [T.dive1[0] + 0.3, T.dive1[0] + 0.7], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2)) });
-  const blur = (1 - Math.min(1, scale)) * 8;
-  const halo = (t * 1.2) % 1;
+  const m = [...SPRITES].reverse().find((x) => t >= x.from) ?? SPRITES[0];
+  const swapIn = m.from > 0 ? interpolate(t - m.from, [0, 0.2, 0.36], [0.15, 1.15, 1], clamp) : 1;
+  const next = SPRITES.find((x) => x.from > t);
+  const swapOut = next ? interpolate(next.from - t, [0, 0.16], [0.15, 1], clamp) : 1;
+  const enter = interpolate(t, [T.dive1[0] + 0.25, T.dive1[0] + 0.65], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2)) });
+  const scale = Math.min(swapIn, swapOut) * enter;
+  // smoothed heading on screen
+  let sx = 0;
+  let sy = 0;
+  for (let k = -2; k <= 2; k++) {
+    const q = vehiclePos(t + k * 0.12);
+    sx += Math.cos(q.a);
+    sy += Math.sin(q.a);
+  }
+  const heading = (Math.atan2(sy, sx) * 180) / Math.PI + 90 + cam.roll;
+  const h = m.len;
+  const w = (m.len * m.w) / m.h;
+  const halo = (t * 1.1) % 1;
   return (
     <div style={{ position: "absolute", left: p.x, top: p.y }}>
-      <div style={{ position: "absolute", left: -100, top: -100, width: 200, height: 200, borderRadius: "50%", border: `4px solid ${ORANGE}`, opacity: 1 - halo, scale: String(0.6 + halo * 0.7) }} />
-      <div
+      <div style={{ position: "absolute", left: -130, top: -130, width: 260, height: 260, borderRadius: "50%", background: "rgba(242,106,31,.14)", border: "3px solid rgba(242,106,31,.5)", scale: String(0.7 + halo * 0.5), opacity: 1 - halo }} />
+      <div style={{ position: "absolute", left: -95, top: -95, width: 190, height: 190, borderRadius: "50%", background: "rgba(255,255,255,.55)", border: "4px solid #fff", boxShadow: "0 10px 26px rgba(30,40,50,.28)", scale: String(enter) }} />
+      <Img
+        src={A(m.name)}
         style={{
           position: "absolute",
-          left: -62,
-          top: -62,
-          width: 124,
-          height: 124,
-          borderRadius: "50%",
-          display: "grid",
-          placeItems: "center",
-          background: `radial-gradient(circle at 35% 30%, ${BRAND.amber}, ${ORANGE} 55%, ${BRAND.ember})`,
-          border: "7px solid #fff",
-          boxShadow: "0 16px 30px rgba(43,28,21,.4)",
+          left: -w / 2,
+          top: -h / 2,
+          width: w,
+          height: h,
+          rotate: `${heading}deg`,
           scale: String(scale),
-          rotate: `${(1 - Math.min(1, swapIn)) * 160}deg`,
-          filter: blur > 0.3 ? `blur(${blur}px)` : undefined,
+          filter: `drop-shadow(8px 14px 10px rgba(20,30,40,.4))${scale < 0.9 ? ` blur(${(1 - scale) * 6}px)` : ""}`,
         }}
-      >
-        <Icon name={m.icon} size={68} />
-      </div>
+      />
     </div>
   );
 };
 
-/** Destination pin at the door; in the end it flies into the logo's G. */
+/** Destination pin (3D asset, upright) at the door; at the end it flies into the logo's G. */
 const DoorPin: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
-  if (t < T.door || t > T.pinToG[1] + 0.3) return null;
-  const drop = interpolate(t, [T.door, T.door + 0.35], [-300, 0], { ...clamp, easing: Easing.bezier(0.5, 0, 0.75, 0) });
+  if (t < T.door - 0.05 || t > T.pinToG[1] + 0.3) return null;
+  const drop = interpolate(t, [T.door, T.door + 0.35], [-340, 0], { ...clamp, easing: Easing.bezier(0.5, 0, 0.75, 0) });
   const d = t - T.door - 0.35;
-  const squash = d > 0 && d < 0.6 ? 1 - 0.18 * Math.exp(-10 * d) * Math.cos(d * 30) : 1;
+  const squash = d > 0 && d < 0.6 ? 1 - 0.16 * Math.exp(-10 * d) * Math.cos(d * 30) : 1;
   const ring = d > 0 ? prog(t, T.door + 0.35, T.door + 1.2) : 0;
-  const p = toScreen(cam, t > T.out2[0] ? PLACES.sorong : PLACES.door);
+  const p = tilted(cam, toScreen(cam, DOOR));
   const fly = interpolate(t, T.pinToG, [0, 1], { ...clamp, easing: io });
+  const baseH = t > T.out2[0] ? interpolate(t, T.out2, [230, 120], clamp) : 230;
+  const h = lerp(baseH, 320, fly);
+  const w = (h * 774) / 1170;
+  // the hole of the pin sits at ~31% height; it lands on the G at (436, 777)
   const x = lerp(p.x, 436, fly);
-  const y = lerp(p.y, 777, fly);
-  const size = lerp(t > T.out2[0] ? interpolate(t, T.out2, [170, 96], clamp) : 170, 248, fly);
+  const y = lerp(p.y, 777 + h * 0.69, fly);
   const fade = interpolate(t, [T.pinToG[1] - 0.05, T.pinToG[1] + 0.25], [1, 0], clamp);
   return (
     <div style={{ position: "absolute", left: x, top: y, opacity: fade }}>
-      {ring > 0 && ring < 1 ? <div style={{ position: "absolute", left: -160 * ring, top: -50 * ring, width: 320 * ring, height: 100 * ring, borderRadius: "50%", border: `6px solid ${ORANGE}`, opacity: 1 - ring }} /> : null}
-      <div style={{ position: "absolute", left: -size / 2, top: -size + drop, width: size, height: size, transformOrigin: "50% 100%", scale: `${2 - squash} ${squash}`, filter: "drop-shadow(0 14px 14px rgba(43,28,21,.4))" }}>
-        <div style={{ position: "absolute", inset: 0, opacity: 1 - fly }}>
-          <Icon name="map-pin" size={size} color={ORANGE} />
-        </div>
-        <div style={{ position: "absolute", left: size * 0.12, top: size * 0.12, width: size * 0.76, height: size * 0.76, borderRadius: "50%", background: `conic-gradient(${BRAND.red}, ${ORANGE}, ${BRAND.amber}, ${BRAND.red})`, opacity: fly }} />
-      </div>
+      {ring > 0 && ring < 1 ? <div style={{ position: "absolute", left: -170 * ring, top: -45 * ring, width: 340 * ring, height: 90 * ring, borderRadius: "50%", border: `6px solid ${ORANGE}`, opacity: 1 - ring }} /> : null}
+      <div style={{ position: "absolute", left: -60, top: -14, width: 120, height: 28, borderRadius: "50%", background: "radial-gradient(closest-side, rgba(20,30,40,.35), rgba(20,30,40,0))", opacity: 1 - fly }} />
+      <Img src={A("destination-pin")} style={{ position: "absolute", left: -w / 2, top: -h + drop, width: w, height: h, transformOrigin: "50% 100%", scale: `${2 - squash} ${squash}`, filter: "drop-shadow(0 16px 16px rgba(30,40,50,.35))" }} />
     </div>
   );
 };
 
-/** UGC beat: mode icons pin onto each leg; a plane flies the domestic-air arc. */
-const PlanIcons: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
+/** UGC beat: badges with the 3D vehicles on each leg, a plane flies the domestic-air arc. */
+const PlanBadges: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
   if (t < T.out2[1] - 0.2 || t > T.pinToG[0] + 0.3) return null;
   const fade = interpolate(t, [T.pinToG[0] - 0.2, T.pinToG[0] + 0.2], [1, 0], clamp);
   const pop = (s: number) => interpolate(t, [s, s + 0.3], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2.4)) });
   const air = interpolate(t, [T.air, T.air + 1.6], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
-  const j = toScreen(cam, PLACES.jakarta);
-  const items: { p: Pt; icon: PhosphorName; s: number }[] = [
-    { p: { x: j.x - 70, y: j.y - 70 }, icon: "truck", s: pop(T.legFtl) },
-    { p: { x: j.x + 50, y: j.y - 110 }, icon: "truck", s: pop(T.legLtl) },
-    { p: toScreen(cam, at(SEA, 0.4)), icon: "boat", s: pop(T.legFcl) },
-    { p: toScreen(cam, at(SEA, 0.72)), icon: "boat", s: pop(T.legLcl) },
+  const j = tilted(cam, toScreen(cam, JAKARTA));
+  const s1 = tilted(cam, toScreen(cam, at(SEA, 0.38)));
+  const s2 = tilted(cam, toScreen(cam, at(SEA, 0.7)));
+  const items = [
+    { x: j.x - 60, y: j.y - 120, img: "nav-truck-top", s: pop(T.legFtl) },
+    { x: j.x + 70, y: j.y - 150, img: "nav-truck-top", s: pop(T.legLtl) },
+    { x: s1.x, y: s1.y - 110, img: "nav-ship-top", s: pop(T.legFcl) },
+    { x: s2.x, y: s2.y - 110, img: "nav-ship-top", s: pop(T.legLcl) },
   ];
   const plane = airAt(air);
-  const pp = toScreen(cam, plane);
+  const pp = tilted(cam, toScreen(cam, plane));
   return (
     <div style={{ opacity: fade }}>
       {items.map((it, i) => (
-        <div key={i} style={{ position: "absolute", left: it.p.x - 46, top: it.p.y - 100, width: 92, height: 92, borderRadius: "50%", display: "grid", placeItems: "center", background: INK, border: `5px solid ${PAPER}`, scale: String(it.s), boxShadow: "0 10px 18px rgba(43,28,21,.35)" }}>
-          <Icon name={it.icon} size={52} />
+        <div key={i} style={{ position: "absolute", left: it.x - 56, top: it.y - 56, width: 112, height: 112, borderRadius: "50%", background: "#fff", boxShadow: "0 10px 22px rgba(30,40,50,.28)", border: `5px solid ${ORANGE}`, display: "grid", placeItems: "center", scale: String(it.s), overflow: "hidden" }}>
+          <Img src={A(it.img)} style={{ height: 96, rotate: "45deg" }} />
         </div>
       ))}
       {air > 0 && air < 1 ? (
-        <div style={{ position: "absolute", left: pp.x - 48, top: pp.y - 48, width: 96, height: 96, borderRadius: "50%", display: "grid", placeItems: "center", background: ORANGE, border: "5px solid #fff", rotate: `${(plane.a * 180) / Math.PI + 45}deg`, boxShadow: "0 10px 18px rgba(43,28,21,.35)" }}>
-          <Icon name="airplane-tilt" size={56} />
-        </div>
+        <Img src={A("nav-plane-top")} style={{ position: "absolute", left: pp.x - 90, top: pp.y - 88, width: 180, rotate: `${(plane.a * 180) / Math.PI + 90}deg`, filter: "drop-shadow(10px 18px 12px rgba(30,40,50,.35))" }} />
       ) : null}
     </div>
   );
 };
 
-/** Coordinate ticks along the top edge and the left edge. */
-const Ticks: React.FC<{ cam: Cam; t: number }> = ({ cam, t }) => {
-  const fade = interpolate(t, [T.pinToG[0], T.pinToG[1]], [1, 0], clamp) * interpolate(t, [0.3, 0.6], [0, 1], clamp);
-  const pxDeg = MAP.pxPerDeg * cam.s;
-  const steps = [10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01];
-  const step = steps.find((s) => s * pxDeg < 260 && s * pxDeg >= 70) ?? 0.01;
-  const lon0 = MAP.lon0 + (cam.c.x - 540 / cam.s) / MAP.pxPerDeg;
-  const ticks: React.ReactNode[] = [];
-  const first = Math.ceil(lon0 / step) * step;
-  for (let lon = first, i = 0; i < 20; lon += step, i++) {
-    const x = (lon - lon0) * pxDeg;
-    if (x > 1040) break;
-    ticks.push(
-      <React.Fragment key={`x${i}`}>
-        <div style={{ position: "absolute", left: x, top: 30, width: 2, height: 16, background: INK, opacity: 0.55 }} />
-        {x > 70 && x < 940 && Math.abs(x - 540) > 230 ? (
-          <div style={{ position: "absolute", left: x + 6, top: 27, fontFamily: FONT_MONO, fontSize: 15, color: INK, opacity: 0.55 }}>{`${lon.toFixed(step < 0.1 ? 2 : step < 1 ? 1 : 0)}°E`}</div>
-        ) : null}
-      </React.Fragment>,
-    );
-  }
-  for (let k = 0; k < 40; k++) {
-    const y = 180 + k * 46;
-    if (y > 1800) break;
-    ticks.push(<div key={`y${k}`} style={{ position: "absolute", left: 30, top: y, width: k % 4 ? 8 : 16, height: 2, background: INK, opacity: 0.45 }} />);
-  }
-  return <div style={{ position: "absolute", inset: 0, opacity: fade, pointerEvents: "none" }}>{ticks}</div>;
+// ── Navigation UI ───────────────────────────────────────────────────────────────────────────────────────
+type Banner = { icon: PhosphorName; small: string; big: string };
+const turnIcon = (modifier: string): PhosphorName => (modifier.includes("left") ? "arrow-bend-up-left" : modifier.includes("right") ? "arrow-bend-up-right" : "arrow-up");
+const roadBanner = (key: "jakarta" | "sorong", f: number, dest: string): Banner => {
+  const steps = MAP.roads[key].steps.filter((s) => s.name);
+  const next = steps.find((s) => s.at > f + 0.005);
+  if (!next) return { icon: "flag-checkered", small: "arriving", big: dest };
+  return { icon: turnIcon(next.modifier), small: "toward", big: next.name };
 };
-
-// ── FTL / LTL: the trailer X-rayed from above ───────────────────────────────────────────────────────────
-const SHIPPERS = ["#34425E", "#CDB892", "#8C9A72", "#A7684A"];
-const LTL_MINE = [2, 3, 9, 10];
-const Pallet: React.FC<{ x: number; y: number; w: number; h: number; color: string; mine: boolean; s: number; flip: number }> = ({ x, y, w, h, color, mine, s, flip }) => (
-  <div style={{ position: "absolute", left: x, top: y, width: w, height: h, scale: `${s * Math.abs(Math.cos(flip * Math.PI))} ${s}`, opacity: Math.min(1, s * 1.5) }}>
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        borderRadius: 6,
-        background: mine ? `linear-gradient(135deg, ${BRAND.amber}, ${ORANGE} 55%, ${BRAND.ember})` : `linear-gradient(135deg, ${color}, ${color})`,
-        boxShadow: "inset 0 -6px 0 rgba(0,0,0,.18), inset 0 4px 0 rgba(255,255,255,.18), 0 6px 10px rgba(0,0,0,.3)",
-      }}
-    />
-    <div style={{ position: "absolute", left: "46%", top: 0, bottom: 0, width: "8%", background: "rgba(255,255,255,.22)" }} />
-    <div style={{ position: "absolute", top: "44%", left: 0, right: 0, height: "10%", background: "rgba(255,255,255,.18)" }} />
-  </div>
-);
-const TruckXray: React.FC<{ t: number }> = ({ t }) => {
-  const enter = interpolate(t, [T.ftl - 0.6, T.ftl - 0.05], [-1150, 0], { ...clamp, easing: Easing.out(Easing.cubic) });
-  const leave = interpolate(t, [13.25, 13.7], [0, 1250], { ...clamp, easing: Easing.in(Easing.cubic) });
-  if (t < T.ftl - 0.6 || t > 13.7) return null;
-  const W = 740;
-  const H = 185;
-  const left = 70;
-  const top = 600;
-  const scan = interpolate(t, [T.ftl + 0.05, T.ftl + 0.75], [0, 1], { ...clamp, easing: Easing.inOut(Easing.quad) });
-  const ltl = t >= T.ltl - 0.1;
-  const flip = interpolate(t, [T.ltl - 0.1, T.ltl + 0.35], [0, 1], clamp);
-  const cols = 7;
-  const rows = 2;
-  const pw = (W - 30) / cols;
-  const ph = (H - 30) / rows;
-  const bob = Math.sin(t * 9) * 1.2;
+const SEAS: [number, string][] = [
+  [0, "Java Sea"],
+  [0.4, "Flores Sea"],
+  [0.62, "Banda Sea"],
+  [0.86, "Port of Sorong"],
+];
+const bannerAt = (t: number): Banner | null => {
+  if (t >= T.jkt[0] - 0.2 && t < T.out1[0] + 0.1) return roadBanner("jakarta", fJ(t), "Port of Tanjung Priok");
+  if (t >= T.sea[0] + 0.3 && t < T.dive2[0] + 0.2) {
+    const f = fSea(t);
+    const cur = [...SEAS].reverse().find(([a]) => f >= a) ?? SEAS[0];
+    return { icon: cur[0] >= 0.86 ? "flag-checkered" : "arrow-up", small: cur[0] >= 0.86 ? "arriving" : "across the", big: cur[1] };
+  }
+  if (t >= T.dive2[1] - 0.2 && t < T.stuck) return t >= T.door ? { icon: "flag-checkered", small: "arrived", big: "Sorong" } : roadBanner("sorong", fS(t), "Sorong");
+  return null;
+};
+const NavBanner: React.FC<{ t: number }> = ({ t }) => {
+  const b = bannerAt(t);
+  const vis = Math.max(
+    interpolate(t, [T.jkt[0] - 0.3, T.jkt[0] + 0.2, T.out1[0], T.out1[0] + 0.35], [0, 1, 1, 0], clamp),
+    interpolate(t, [T.sea[0] + 0.2, T.sea[0] + 0.6, T.dive2[0], T.dive2[0] + 0.3], [0, 1, 1, 0], clamp),
+    interpolate(t, [T.dive2[1] - 0.3, T.dive2[1] + 0.1, T.stuck - 0.3, T.stuck], [0, 1, 1, 0], clamp),
+  );
+  if (!b || vis <= 0) return null;
+  // flip when the content changes: find when this banner text started
+  let since = 0;
+  for (let k = 1; k <= 30; k++) {
+    const prev = bannerAt(t - k / 30);
+    if (!prev || prev.big !== b.big) break;
+    since = k / 30;
+  }
+  const flip = interpolate(since, [0, 0.25], [90, 0], { ...clamp, easing: Easing.out(Easing.back(1.6)) });
   return (
-    <div style={{ position: "absolute", left: left + enter + leave, top: top + bob, width: 960, height: 260 }}>
-      {/* dimension line (chart drafting) */}
-      <svg width={W + 20} height={40} style={{ position: "absolute", left: -10, top: -44 }}>
-        <line x1={10} y1={22} x2={W + 10} y2={22} stroke={INK} strokeWidth={2} opacity={0.6} />
-        <line x1={10} y1={10} x2={10} y2={34} stroke={INK} strokeWidth={2} opacity={0.6} />
-        <line x1={W + 10} y1={10} x2={W + 10} y2={34} stroke={INK} strokeWidth={2} opacity={0.6} />
-      </svg>
-      <div style={{ position: "absolute", left: 0, top: 0, width: W, height: H, borderRadius: 8, background: "#2A1F18", boxShadow: "0 26px 40px rgba(43,28,21,.35)" }} />
-      {Array.from({ length: cols * rows }, (_, i) => {
-        const c = i % cols;
-        const r = Math.floor(i / cols);
-        const drop = interpolate(t, [T.ftl + 0.25 + i * 0.04, T.ftl + 0.55 + i * 0.04], [0, 1], { ...clamp, easing: Easing.out(Easing.back(1.8)) });
-        const mine = !ltl || LTL_MINE.includes(i);
-        const color = SHIPPERS[(i * 7 + r) % SHIPPERS.length];
-        return <Pallet key={i} x={15 + c * pw + 3} y={15 + r * ph + 3} w={pw - 6} h={ph - 6} color={color} mine={mine} s={drop} flip={ltl ? (flip < 0.5 ? flip : flip) : 0} />;
-      })}
-      {/* the roof: opaque to the right of the scan line, ghosted to the left */}
-      <Img src={A("container-top", "e02")} style={{ position: "absolute", left: 0, top: 0, width: W, height: H, opacity: 0.14 }} />
-      <div style={{ position: "absolute", left: 0, top: 0, width: W, height: H, clipPath: `inset(0 0 0 ${scan * 100}%)` }}>
-        <Img src={A("container-top", "e02")} style={{ width: W, height: H, display: "block" }} />
-      </div>
-      {scan > 0 && scan < 1 ? <div style={{ position: "absolute", left: scan * W - 3, top: -14, width: 6, height: H + 28, background: ORANGE, boxShadow: `0 0 24px 8px ${ORANGE}` }} /> : null}
-      {/* tractor unit, top view */}
-      <div style={{ position: "absolute", left: W + 8, top: 6, width: 150, height: H - 12, borderRadius: "14px 46px 46px 14px", background: "linear-gradient(90deg, #E9E6E0, #FFFFFF 40%, #E2DED6)", boxShadow: "0 22px 34px rgba(43,28,21,.35)", border: "2px solid rgba(43,28,21,.25)" }}>
-        <div style={{ position: "absolute", right: 14, top: 18, bottom: 18, width: 36, borderRadius: "6px 30px 30px 6px", background: "linear-gradient(90deg, #3A4A5E, #22303F)" }} />
-        <div style={{ position: "absolute", left: 22, top: 20, width: 50, height: 10, borderRadius: 5, background: ORANGE }} />
-        <div style={{ position: "absolute", left: 22, bottom: 20, width: 50, height: 10, borderRadius: 5, background: ORANGE }} />
-        <div style={{ position: "absolute", right: 30, top: -14, width: 22, height: 16, borderRadius: 4, background: "#3A4A5E" }} />
-        <div style={{ position: "absolute", right: 30, bottom: -14, width: 22, height: 16, borderRadius: 4, background: "#3A4A5E" }} />
-      </div>
-      {/* your share is pinned in LTL */}
-      {ltl ? (
-        <div style={{ position: "absolute", left: 15 + 2.5 * pw + pw / 2 - 40, top: -78, scale: String(interpolate(t, [T.ltl + 0.3, T.ltl + 0.6], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2.4)) })) }}>
-          <Icon name="map-pin" size={80} color={ORANGE} />
+    <div style={{ position: "absolute", left: 40, top: 168, width: 1000, height: 156, perspective: 1000, opacity: vis, translate: `0 ${(1 - vis) * -40}px` }}>
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: 34,
+          background: `linear-gradient(135deg, ${DEEP}, ${ORANGE} 60%, #F58A2A)`,
+          boxShadow: "0 18px 40px rgba(200,71,26,.35), inset 0 1px 0 rgba(255,255,255,.3)",
+          display: "flex",
+          alignItems: "center",
+          gap: 30,
+          padding: "0 40px",
+          transformOrigin: "50% 0%",
+          transform: `rotateX(${flip}deg)`,
+        }}
+      >
+        <Icon name={b.icon} size={84} />
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 30, color: "rgba(255,255,255,.85)", lineHeight: 1.1 }}>{b.small}</div>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 800, fontSize: 54, color: "#fff", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 780 }}>{b.big}</div>
         </div>
-      ) : null}
+      </div>
     </div>
   );
 };
 
-// ── FCL / LCL: real container doors swing open on the cargo wall ───────────────────────────────────────
-const DoorsReveal: React.FC<{ t: number }> = ({ t }) => {
-  if (t < 15.0 || t > 23.4) return null;
-  const rise = interpolate(t, [15.0, 15.55], [1, 0], { ...clamp, easing: Easing.out(Easing.cubic) });
-  const sink = interpolate(t, [22.9, 23.35], [0, 1], { ...clamp, easing: Easing.in(Easing.cubic) });
-  // open on FCL, slam shut, reopen on LCL
-  const open = interpolate(t, [T.fcl + 0.05, T.fcl + 0.65, T.lcl - 0.55, T.lcl - 0.25, T.lcl + 0.05, T.lcl + 0.65], [0, 1, 1, 0, 0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
-  const shared = t >= T.lcl - 0.25;
-  const W = 380;
-  const H = (W * 1672) / 941;
-  const left = 540 - W / 2;
-  const top = 600;
-  const cols = 3;
-  const rows = 5;
-  const bw = (W - 50) / cols;
-  const bh = (H - 120) / rows;
-  const mine = [1, 4, 6, 7, 12];
+/** Bottom sheet (like a navigation app's trip card). */
+const sheetVis = (t: number) =>
+  Math.max(
+    interpolate(t, [T.ftl - 0.7, T.ftl - 0.2, T.out1[0] - 0.2, T.out1[0] + 0.2], [0, 1, 1, 0], clamp),
+    interpolate(t, [T.fcl - 0.7, T.fcl - 0.2, T.dive2[0] - 0.2, T.dive2[0] + 0.2], [0, 1, 1, 0], clamp),
+    interpolate(t, [T.srg[0], T.srg[0] + 0.4, T.stuck - 0.35, T.stuck], [0, 1, 1, 0], clamp),
+  );
+const SHEET = { left: 40, top: 1352, w: 1000, h: 392 };
+const Sheet: React.FC<{ t: number }> = ({ t }) => {
+  const v = sheetVis(t);
+  if (v <= 0) return null;
   return (
-    <div style={{ position: "absolute", left, top: top + rise * 900 + sink * 900, width: W, height: H, perspective: 1300 }}>
-      <div style={{ position: "absolute", inset: 0, borderRadius: 6, background: "linear-gradient(180deg, #1B130E, #2C2018)", boxShadow: "0 30px 50px rgba(43,28,21,.4)" }} />
-      <svg width={W} height={H} style={{ position: "absolute", inset: 0 }}>
-        <polygon points={`0,${H} ${W},${H} ${W - 60},${H - 70} 60,${H - 70}`} fill="#3A2A20" />
-        <line x1={0} y1={0} x2={60} y2={50} stroke="#4A382C" strokeWidth={3} />
-        <line x1={W} y1={0} x2={W - 60} y2={50} stroke="#4A382C" strokeWidth={3} />
-      </svg>
-      {Array.from({ length: cols * rows }, (_, i) => {
-        const c = i % cols;
-        const r = Math.floor(i / cols);
+    <div style={{ position: "absolute", left: SHEET.left, top: SHEET.top + (1 - v) * 460, width: SHEET.w, height: SHEET.h, borderRadius: 40, background: "#FFFFFF", boxShadow: "0 -10px 40px rgba(30,40,50,.18)" }}>
+      <div style={{ position: "absolute", left: SHEET.w / 2 - 44, top: 14, width: 88, height: 9, borderRadius: 5, background: "#D7DBE0" }} />
+    </div>
+  );
+};
+
+/** Pallets loading into an open truck / container (3D assets), on the right of the bottom sheet. */
+const PALLET_OTHERS = ["pallet-cartons", "pallet-drums", "pallet-sacks"];
+const Loader: React.FC<{ t: number; kind: "truck" | "container" }> = ({ t, kind }) => {
+  const v = sheetVis(t);
+  const truck = kind === "truck";
+  const a1 = truck ? T.ftl : T.fcl;
+  const a2 = truck ? T.ltl : T.lcl;
+  const win = truck ? [T.ftl - 0.7, T.out1[0] + 0.2] : [T.fcl - 0.7, T.dive2[0] + 0.2];
+  if (t < win[0] || t > win[1] || v <= 0) return null;
+  const img = truck ? { name: "open-trailer-iso", w: 1392, h: 986, a: [435, 668], b: [1268, 375] } : { name: "open-container-iso", w: 1400, h: 991, a: [270, 820], b: [1120, 430] };
+  const W = 470;
+  const k = W / img.w;
+  const H = img.h * k;
+  const left = SHEET.left + SHEET.w - W - 20;
+  const top = SHEET.top + (SHEET.h - H) / 2 + 8 + (1 - v) * 460;
+  const n = 6;
+  const shared = t >= a2 - 0.15;
+  const mine = [1, 4];
+  const slots = Array.from({ length: n }, (_, i) => {
+    const f = (i + 0.5) / n;
+    return { i, x: lerp(img.a[0], img.b[0], f) * k, y: lerp(img.a[1], img.b[1], f) * k };
+  }).sort((p, q) => p.y - q.y);
+  const pw = (truck ? 180 : 172) * k;
+  return (
+    <div style={{ position: "absolute", left, top, width: W, height: H }}>
+      <Img src={A(img.name)} style={{ position: "absolute", left: 0, top: 0, width: W, height: H, filter: "drop-shadow(0 14px 14px rgba(30,40,50,.25))" }} />
+      {slots.map(({ i, x, y }) => {
+        // first load (all yours), then the shared load swaps in
+        const at1 = a1 + 0.35 + i * 0.12;
+        const at2 = a2 + 0.25 + i * 0.12;
         const isMine = !shared || mine.includes(i);
-        const col = SHIPPERS[(i * 5 + r) % SHIPPERS.length];
+        const name = isMine ? "pallet-yours" : PALLET_OTHERS[i % 3];
+        const dropT = shared ? at2 : at1;
+        const d = interpolate(t, [dropT, dropT + 0.32], [0, 1], { ...clamp, easing: Easing.bezier(0.5, 0, 0.75, 0) });
+        const bounce = t > dropT + 0.32 && t < dropT + 0.7 ? 1 - 0.08 * Math.exp(-10 * (t - dropT - 0.32)) * Math.cos((t - dropT - 0.32) * 28) : 1;
+        const out = shared && t < at2 ? interpolate(t, [a2 - 0.15, a2 + 0.1], [1, 0], clamp) : 1;
+        if (d <= 0 && !(shared && t < at2)) return null;
+        const ph = pw * 1.15;
         return (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              left: 25 + c * bw + 3,
-              top: 40 + r * bh + 3,
-              width: bw - 6,
-              height: bh - 6,
-              borderRadius: 4,
-              background: isMine ? `linear-gradient(160deg, ${BRAND.amber}, ${ORANGE} 60%, ${BRAND.ember})` : col,
-              boxShadow: "inset 0 -5px 0 rgba(0,0,0,.2), inset 0 3px 0 rgba(255,255,255,.18)",
-            }}
-          >
-            <div style={{ position: "absolute", left: 0, right: 0, top: "42%", height: 8, background: "rgba(255,255,255,.22)" }} />
-          </div>
-        );
-      })}
-      {shared ? (
-        <div style={{ position: "absolute", left: 25 + 1 * bw + bw / 2 - 38, top: -20, scale: String(interpolate(t, [T.lcl + 0.4, T.lcl + 0.7], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2.4)) })) }}>
-          <Icon name="map-pin" size={76} color={ORANGE} />
-        </div>
-      ) : null}
-      {(
-        [
-          [0, -1],
-          [1, 1],
-        ] as const
-      ).map(([half, side]) => (
-        <div
-          key={half}
-          style={{
-            position: "absolute",
-            left: half ? W / 2 : 0,
-            top: 0,
-            width: W / 2,
-            height: H,
-            overflow: "hidden",
-            transformOrigin: half ? "100% 50%" : "0% 50%",
-            transform: `rotateY(${side * -112 * open}deg)`,
-            filter: `brightness(${1 - 0.45 * open})`,
-            boxShadow: "0 20px 30px rgba(0,0,0,.35)",
-          }}
-        >
-          <Img src={A("container-doors", "e02")} style={{ position: "absolute", left: half ? -W / 2 : 0, top: 0, width: W, height: H }} />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-/** The ship sails along the bottom edge of the chart on engraved waves. */
-const ShipSail: React.FC<{ t: number }> = ({ t }) => {
-  const show = interpolate(t, [T.sea[0] - 0.2, T.sea[0] + 0.4, T.sea[1] - 0.3, T.sea[1] + 0.1], [0, 1, 1, 0], { ...clamp, easing: io });
-  if (show <= 0) return null;
-  const x = interpolate(t, [T.sea[0] - 0.2, T.sea[1]], [-700, 420], clamp);
-  const bob = Math.sin(t * 2.2) * 5;
-  const rollDeg = Math.sin(t * 1.7) * 1.1;
-  const wave = (amp: number, len: number, speed: number, y: number, op: number, w: number) => {
-    const pts: string[] = [];
-    for (let i = 0; i <= 56; i++) {
-      const px = i * 20 - 10;
-      pts.push(`${px},${(y + Math.sin((px + t * speed) / len) * amp).toFixed(1)}`);
-    }
-    return <polyline points={pts.join(" ")} fill="none" stroke={INK} strokeOpacity={op} strokeWidth={w} strokeLinecap="round" />;
-  };
-  return (
-    <div style={{ position: "absolute", left: 0, top: 1360, width: 1080, height: 360, opacity: show }}>
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(251,243,228,0), rgba(251,243,228,.92) 38%, rgba(251,243,228,.95))" }} />
-      <svg width={1080} height={360} style={{ position: "absolute", inset: 0 }}>
-        {wave(6, 44, 70, 248, 0.32, 2)}
-        {wave(8, 60, -45, 268, 0.42, 2.5)}
-        {wave(5, 34, 95, 288, 0.3, 2)}
-        {wave(7, 52, -60, 308, 0.22, 2)}
-      </svg>
-      <div style={{ position: "absolute", left: x, top: 52 + bob, width: 640, rotate: `${rollDeg}deg`, transformOrigin: "50% 90%" }}>
-        <Img src={A("inter-island-cargo-ship")} style={{ width: 640, display: "block", filter: "drop-shadow(0 10px 8px rgba(43,28,21,.25))" }} />
-        <svg width={320} height={40} style={{ position: "absolute", left: -300, top: 172 }}>
-          {[0, 1, 2].map((i) => {
-            const o = (t * 140 + i * 110) % 320;
-            return <line key={i} x1={320 - o} x2={320 - o - 70} y1={18 + i * 6} y2={18 + i * 6} stroke={INK} strokeOpacity={0.35} strokeWidth={3} strokeLinecap="round" />;
-          })}
-        </svg>
-      </div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 230, height: 130, overflow: "hidden" }}>
-        <svg width={1080} height={130}>{wave(6, 40, 110, 22, 0.45, 2.5)}</svg>
-      </div>
-    </div>
-  );
-};
-
-/** Sorong: the port town pops up from the chart like a pop-up book. */
-const PortPopUp: React.FC<{ t: number }> = ({ t }) => {
-  if (t < 24.25 || t > 30) return null;
-  const up = interpolate(t, [24.25, 24.95], [90, 0], { ...clamp, easing: Easing.out(Easing.back(1.5)) });
-  const down = interpolate(t, [29.55, 29.95], [0, 92], { ...clamp, easing: Easing.in(Easing.cubic) });
-  const sway = Math.sin(t * 1.3) * 1.2;
-  return (
-    <div style={{ position: "absolute", left: 50, top: 470, width: 980, height: 520, perspective: 1300 }}>
-      <div style={{ position: "absolute", left: 40, right: 40, bottom: 0, height: 30, borderRadius: "50%", background: "radial-gradient(closest-side, rgba(43,28,21,.4), rgba(43,28,21,0))" }} />
-      <div style={{ position: "absolute", inset: 0, transformOrigin: "50% 100%", transform: `rotateX(${up + down}deg) rotateZ(${sway}deg)` }}>
-        <Img src={A("port-town-vignette")} style={{ position: "absolute", left: 0, bottom: 12, width: 980, filter: "drop-shadow(0 20px 22px rgba(43,28,21,.3))" }} />
-      </div>
-    </div>
-  );
-};
-
-const HandoffChain: React.FC<{ t: number }> = ({ t }) => {
-  if (t < T.handoff[0] - 0.1 || t > 29.95) return null;
-  const out = interpolate(t, [29.5, 29.9], [1, 0], clamp);
-  const icons: PhosphorName[] = ["truck", "boat", "truck"];
-  return (
-    <div style={{ position: "absolute", left: 200, top: 1030, width: 680, height: 130, opacity: out }}>
-      {[0, 1].map((i) => {
-        const flash = t > T.handoff[1] + i * 0.15 ? 0.5 + 0.5 * Math.sin((t - T.handoff[1]) * 14) : 0;
-        const draw = interpolate(t, [T.handoff[0] + 0.15 + i * 0.25, T.handoff[0] + 0.45 + i * 0.25], [0, 1], clamp);
-        return <div key={i} style={{ position: "absolute", left: 110 + i * 240, top: 60, width: 240 * draw, height: 10, borderRadius: 5, background: flash > 0.5 ? ORANGE : INK, boxShadow: flash > 0.5 ? `0 0 22px ${ORANGE}` : "none" }} />;
-      })}
-      {icons.map((ic, i) => {
-        const s = interpolate(t, [T.handoff[0] + i * 0.25, T.handoff[0] + i * 0.25 + 0.3], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2.4)) });
-        return (
-          <div key={i} style={{ position: "absolute", left: i * 240 + 40, top: 0, width: 130, height: 130, borderRadius: "50%", display: "grid", placeItems: "center", background: i === 1 ? INK : ORANGE, border: "6px solid #fff", boxShadow: "0 12px 22px rgba(43,28,21,.35)", scale: String(s) }}>
-            <Icon name={ic} size={72} />
-          </div>
+          <React.Fragment key={i}>
+            <Img
+              src={A(name)}
+              style={{
+                position: "absolute",
+                left: x - pw / 2,
+                top: y - ph * 0.82 - (1 - d) * 220,
+                width: pw,
+                opacity: shared && t < at2 ? out : Math.min(1, d * 3),
+                transformOrigin: "50% 100%",
+                scale: `${2 - bounce} ${bounce}`,
+                filter: "drop-shadow(2px 6px 4px rgba(30,40,50,.3))",
+              }}
+            />
+            {shared && isMine && t > at2 + 0.4 ? (
+              <Img src={A("destination-pin")} style={{ position: "absolute", left: x - 20, top: y - ph * 0.82 - 66 + Math.sin(t * 5 + i) * 4, width: 40 }} />
+            ) : null}
+          </React.Fragment>
         );
       })}
     </div>
   );
 };
 
-const LastMile: React.FC<{ t: number }> = ({ t }) => {
-  if (t < 24.3 || t > 30) return null;
-  const inK = interpolate(t, [24.3, 24.8], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
-  const out = interpolate(t, [29.5, 29.85], [0, 1], { ...clamp, easing: Easing.in(Easing.cubic) });
-  const line = interpolate(t, [24.6, 25.3], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
+/** Sorong sheet: LAST MILE, the handoff chain, the port town. */
+const LastMileSheet: React.FC<{ t: number }> = ({ t }) => {
+  const v = sheetVis(t);
+  if (t < T.srg[0] || t > T.stuck || v <= 0) return null;
+  const top = SHEET.top + (1 - v) * 460;
+  const inK = interpolate(t, [T.srg[0] + 0.2, T.srg[0] + 0.7], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
+  const chain: string[] = ["nav-truck-top", "nav-ship-top", "nav-truck-top"];
   return (
-    <div style={{ position: "absolute", left: 80, top: 214, width: 880, opacity: 1 - out }}>
-      <div style={{ overflow: "hidden", height: 196 }}>
-        <div style={{ fontFamily: FONT_SERIF, fontSize: 188, lineHeight: 1, color: INK, translate: `0 ${(1 - inK) * 100}%`, whiteSpace: "nowrap" }}>
+    <div style={{ position: "absolute", left: SHEET.left, top, width: SHEET.w, height: SHEET.h }}>
+      <div style={{ position: "absolute", left: 44, top: 46, overflow: "hidden", height: 120 }}>
+        <div style={{ fontFamily: FONT_SERIF, fontSize: 108, lineHeight: 1, color: INK, translate: `0 ${(1 - inK) * 110}%`, whiteSpace: "nowrap" }}>
           LAST <span style={{ color: DEEP }}>MILE</span>
         </div>
       </div>
-      <svg width={640} height={40}>
-        <path d="M6 20 C 160 0, 300 40, 620 18" fill="none" stroke={ORANGE} strokeWidth={10} strokeLinecap="round" pathLength={1} strokeDasharray="1 1" strokeDashoffset={1 - line} />
-      </svg>
+      {/* handoff chain */}
+      <div style={{ position: "absolute", left: 44, top: 210, width: 470, height: 130 }}>
+        {[0, 1].map((i) => {
+          const draw = interpolate(t, [T.handoff[0] + 0.15 + i * 0.25, T.handoff[0] + 0.45 + i * 0.25], [0, 1], clamp);
+          const flash = t > T.handoff[1] + i * 0.12 ? 0.5 + 0.5 * Math.sin((t - T.handoff[1]) * 14) : 0;
+          return <div key={i} style={{ position: "absolute", left: 100 + i * 170, top: 60, width: 170 * draw, height: 10, borderRadius: 5, background: flash > 0.5 ? ORANGE : "#C9CFD6", boxShadow: flash > 0.5 ? `0 0 18px ${ORANGE}` : "none" }} />;
+        })}
+        {chain.map((img, i) => {
+          const s = interpolate(t, [T.handoff[0] + i * 0.25, T.handoff[0] + i * 0.25 + 0.3], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2.4)) });
+          return (
+            <div key={i} style={{ position: "absolute", left: i * 170, top: 0, width: 130, height: 130, borderRadius: "50%", background: "#F4F6F8", border: `5px solid ${i === 1 ? "#2F6E97" : ORANGE}`, display: "grid", placeItems: "center", overflow: "hidden", scale: String(s), boxShadow: "0 8px 16px rgba(30,40,50,.18)" }}>
+              <Img src={A(img)} style={{ height: 112, rotate: "45deg" }} />
+            </div>
+          );
+        })}
+      </div>
+      {/* destination preview */}
+      <div style={{ position: "absolute", right: 30, top: 40, width: 400, height: 312, borderRadius: 26, overflow: "hidden", background: "linear-gradient(180deg, #DDEFFB, #F6F2E8)" }}>
+        <Img src={A("port-town-vignette")} style={{ position: "absolute", left: -20, top: 40, width: 440, scale: String(1 + 0.05 * prog(t, T.srg[0], T.stuck)) }} />
+      </div>
     </div>
   );
 };
 
-/** Compass rose: big and spinning behind the globe, then it docks onto the chart's printed compass. */
-const Compass: React.FC<{ t: number }> = ({ t }) => {
-  const dock = interpolate(t, [0.35, 1.1], [0, 1], { ...clamp, easing: io });
-  const fade = interpolate(t, [1.0, 1.3], [1, 0], clamp);
-  if (fade <= 0) return null;
-  const size = lerp(1500, 170, dock);
-  const x = lerp(540, 930, dock);
-  const y = lerp(1000, 161, dock);
+const CompassButton: React.FC<{ t: number; cam: Cam }> = ({ t, cam }) => {
+  const v = Math.max(sheetVis(t), interpolate(t, [T.jkt[0], T.jkt[0] + 0.4, T.stuck - 0.3, T.stuck], [0, 1, 1, 0], clamp) * (t < T.stuck ? 1 : 0));
+  if (v <= 0 || (t > T.out1[0] && t < T.sea[0])) return null;
   return (
-    <Img
-      src={A("compass-rose")}
-      style={{ position: "absolute", left: x - size / 2, top: y - (size * 997) / 955 / 2, width: size, rotate: `${(1 - dock) * 200 - t * 40}deg`, opacity: fade * (0.35 + 0.65 * dock), mixBlendMode: "multiply" }}
-    />
+    <div style={{ position: "absolute", left: 900, top: 1210, width: 104, height: 104, borderRadius: "50%", background: "#fff", boxShadow: "0 8px 22px rgba(30,40,50,.22)", display: "grid", placeItems: "center", opacity: v }}>
+      <div style={{ rotate: `${cam.roll}deg` }}>
+        <svg width={50} height={50} viewBox="0 0 50 50">
+          <path d="M25 3 L33 25 L17 25 Z" fill={BRAND.red} />
+          <path d="M25 47 L33 25 L17 25 Z" fill="#C9CFD6" />
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+const Attribution: React.FC<{ t: number }> = ({ t }) => {
+  const on = interpolate(t, [3.8, 4.4, T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp);
+  return (
+    <div style={{ position: "absolute", left: 50, top: 1322, fontFamily: FONT_MONO, fontSize: 15, color: "rgba(43,28,21,.55)", opacity: on * (1 - sheetVis(t)) }}>
+      © OpenStreetMap contributors · OpenFreeMap · Natural Earth
+    </div>
   );
 };
 
@@ -828,9 +778,9 @@ const EndCard: React.FC<{ t: number }> = ({ t }) => {
   const k = interpolate(t, [T.pinToG[0], T.logo + 0.3], [0, 1], clamp);
   if (k <= 0) return null;
   return (
-    <AbsoluteFill style={{ opacity: k }}>
-      <Img src={A("chart-paper-background")} style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 1920 }} />
-      <Img src={A("compass-rose")} style={{ position: "absolute", left: 540 - 520, top: 900 - 540, width: 1040, opacity: 0.1, rotate: `${(t - T.logo) * 8}deg`, mixBlendMode: "multiply" }} />
+    <AbsoluteFill style={{ opacity: k, background: LAND }}>
+      <Img src={staticFile(MAP.plates.jakarta.file)} style={{ position: "absolute", left: -600, top: -500, width: 2280, filter: "blur(3px) saturate(.6)", opacity: 0.5, scale: String(1 + 0.04 * (t - T.logo)) }} />
+      <AbsoluteFill style={{ background: "radial-gradient(70% 50% at 50% 45%, rgba(246,246,242,.96), rgba(246,246,242,.78))" }} />
     </AbsoluteFill>
   );
 };
@@ -842,13 +792,10 @@ export const E03JakartaSorong: React.FC = () => {
   const cam = camera(t);
   const stuck = t >= T.stuck && t < T.out2[0];
   const red = stuck ? interpolate(t, [T.stuck, T.stuck + 0.4, T.out2[0] - 0.3, T.out2[0]], [0, 1, 1, 0], clamp) : 0;
-  const chartOn = interpolate(t, [0.38, 0.48], [0, 1], clamp) * interpolate(t, [T.pinToG[0], T.logo + 0.2], [1, 0], clamp);
-  // Panels need calm paper behind them: a soft veil over the chart while they are on screen.
-  const veil = Math.max(
-    interpolate(t, [T.ftl - 0.6, T.ftl - 0.1, 13.3, 13.7], [0, 1, 1, 0], clamp),
-    interpolate(t, [15.0, 15.5, 22.9, 23.4], [0, 1, 1, 0], clamp),
-  );
-  const hits = [T.slam, T.dive1[1] - 0.05, T.out1[0] + 0.3, T.dive2[1] - 0.05, T.door + 0.35, T.lcl - 0.25, T.noTolerance, T.out2[0] + 0.1].map(sec);
+  const mapOn = interpolate(t, [0.38, 0.48], [0, 1], clamp) * interpolate(t, [T.pinToG[0], T.logo + 0.2], [1, 0], clamp);
+  const topVeil = Math.max(interpolate(t, [0, 0.6, 3.4, 3.8], [0, 1, 1, 0], clamp), interpolate(t, [T.out2[1] - 0.4, T.out2[1], T.pinToG[0], T.pinToG[1]], [0, 1, 1, 0], clamp));
+  const hits = [T.slam, T.dive1[1] - 0.05, T.out1[0] + 0.3, T.dive2[1] - 0.05, T.door + 0.35, T.noTolerance, T.out2[0] + 0.1].map(sec);
+  const turnTicks = MAP.roads.jakarta.steps.filter((s) => s.name && s.at > 0.02 && s.at < 0.8).map((s) => interpolate(s.at, [0, 1], T.jkt));
   const sfx: SfxCue[] = [
     { at: 0, name: "whoosh", volume: 0.7 },
     { at: sec(T.slam), name: "boom", volume: 0.9 },
@@ -856,18 +803,16 @@ export const E03JakartaSorong: React.FC = () => {
     { at: sec(T.tear[0]), name: "whoosh", volume: 0.55 },
     { at: sec(T.dive1[0]), name: "whoosh", volume: 0.5 },
     { at: sec(T.dive1[1] - 0.05), name: "boom", volume: 0.4 },
-    { at: sec(T.ftl - 0.55), name: "whoosh", volume: 0.4 },
-    { at: sec(T.ftl + 0.05), name: "glitch", volume: 0.2 },
-    { at: sec(T.ltl - 0.1), name: "tick", volume: 0.4 },
+    ...turnTicks.map((s) => ({ at: sec(s), name: "tick", volume: 0.3 })),
+    { at: sec(T.ftl + 0.35), name: "stamp", volume: 0.3 },
+    { at: sec(T.ltl + 0.25), name: "stamp", volume: 0.3 },
     { at: sec(T.toShip), name: "whoosh", volume: 0.4 },
     { at: sec(T.out1[0] + 0.2), name: "whoosh", volume: 0.6 },
     { at: sec(T.sea[0] + 0.2), name: "horn", volume: 0.35 },
-    { at: sec(T.fcl + 0.05), name: "crunch", volume: 0.4 },
-    { at: sec(T.lcl - 0.25), name: "crunch", volume: 0.55 },
-    { at: sec(T.lcl + 0.05), name: "crunch", volume: 0.4 },
+    { at: sec(T.fcl + 0.35), name: "stamp", volume: 0.3 },
+    { at: sec(T.lcl + 0.25), name: "stamp", volume: 0.3 },
     { at: sec(T.dive2[0]), name: "whoosh", volume: 0.55 },
     { at: sec(T.toTruck), name: "tick", volume: 0.4 },
-    { at: sec(24.3), name: "whoosh", volume: 0.35 },
     { at: sec(T.door + 0.35), name: "stamp", volume: 0.6 },
     { at: sec(T.handoff[1]), name: "tick", volume: 0.4 },
     { at: sec(T.stuck), name: "glitch", volume: 0.6 },
@@ -880,43 +825,39 @@ export const E03JakartaSorong: React.FC = () => {
   ];
 
   return (
-    <AbsoluteFill style={{ background: PAPER }}>
-      <Img src={A("chart-paper-background")} style={{ position: "absolute", left: 0, top: 0, width: 1080, height: 1920 }} />
-      <Compass t={t} />
+    <AbsoluteFill style={{ background: "radial-gradient(80% 60% at 50% 50%, #F4F6F3, #E2E8EC)" }}>
       <Globe t={t} />
-      <Shake hits={hits} amount={14}>
+      <Shake hits={hits} amount={12}>
         <AbsoluteFill
           style={{
-            opacity: chartOn,
-            perspective: 1700,
+            opacity: mapOn,
+            perspective: PERSP,
             perspectiveOrigin: `540px ${cam.fy}px`,
-            // horizon haze: the far edge of the tilted chart fades into the paper
-            WebkitMaskImage: `linear-gradient(180deg, transparent ${cam.tilt * 0.35}%, #000 ${cam.tilt * 0.72 + 2}%)`,
-            maskImage: `linear-gradient(180deg, transparent ${cam.tilt * 0.35}%, #000 ${cam.tilt * 0.72 + 2}%)`,
+            WebkitMaskImage: `linear-gradient(180deg, transparent ${cam.tilt * 0.3}%, #000 ${cam.tilt * 0.62 + 2}%)`,
+            maskImage: `linear-gradient(180deg, transparent ${cam.tilt * 0.3}%, #000 ${cam.tilt * 0.62 + 2}%)`,
           }}
         >
-          <AbsoluteFill style={{ transformOrigin: `540px ${cam.fy}px`, transform: `rotateX(${cam.tilt}deg)`, mixBlendMode: "multiply" }}>
-            <Chart t={t} cam={cam} />
-          </AbsoluteFill>
           <AbsoluteFill style={{ transformOrigin: `540px ${cam.fy}px`, transform: `rotateX(${cam.tilt}deg)` }}>
-            <ChartLabels cam={cam} />
-            <PlanIcons t={t} cam={cam} />
+            <MapCanvas t={t} cam={cam} />
             <Vehicle t={t} cam={cam} />
           </AbsoluteFill>
         </AbsoluteFill>
+        <AbsoluteFill style={{ opacity: mapOn }}>
+          <Labels cam={cam} />
+          <PlanBadges t={t} cam={cam} />
+        </AbsoluteFill>
         <DoorPin t={t} cam={cam} />
-        <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(251,243,228,.95) 0%, rgba(251,243,228,.88) 48%, rgba(251,243,228,0) 66%)", opacity: veil }} />
-        <AbsoluteFill style={{ background: "#C0392B", mixBlendMode: "multiply", opacity: red * 0.45 }} />
-        <AbsoluteFill style={{ background: "rgba(251,243,228,.6)", opacity: red }} />
+        <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(246,246,242,.92) 0%, rgba(246,246,242,.7) 26%, rgba(246,246,242,0) 40%)", opacity: topVeil }} />
+        <AbsoluteFill style={{ background: "#C0392B", mixBlendMode: "multiply", opacity: red * 0.4 }} />
+        <AbsoluteFill style={{ background: "rgba(248,246,242,.7)", opacity: red }} />
       </Shake>
-      <Ticks cam={cam} t={t} />
-
-      <TruckXray t={t} />
-      <DoorsReveal t={t} />
-      <ShipSail t={t} />
-      <PortPopUp t={t} />
-      <HandoffChain t={t} />
-      <LastMile t={t} />
+      <Attribution t={t} />
+      <CompassButton t={t} cam={cam} />
+      <NavBanner t={t} />
+      <Sheet t={t} />
+      <Loader t={t} kind="truck" />
+      <Loader t={t} kind="container" />
+      <LastMileSheet t={t} />
 
       <HfOverlay clip="e03-hook" from={0} durationInFrames={sec(4)} fallback={null} />
       <HfOverlay clip="e03-ftl" from={sec(4)} durationInFrames={sec(10)} fallback={null} />
