@@ -19,22 +19,12 @@ import { SfxCue, SoundLayer } from "../shared/SoundLayer";
  * orbit the glowing ring; for the end card the ring flies into the logo's G (HyperFrames clip e01-logo).
  *
  * R (Remotion): background, ring decor, carousel, orbit, chapter titles, ring placement, captions, brand frame, audio.
- * H (HyperFrames): e01-hook, e01-medallion, e01-declare, e01-lanes, e01-ugc-logo, e01-rolled, e01-team, e01-logo.
+ * H (HyperFrames): e01-hook, e01-medallion, e01-s01…s06 + e01-declare (one moment per handoff), e01-lanes, e01-ugc-logo, e01-rolled, e01-team, e01-logo.
  */
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const ep = getEpisode("E01");
 const beats = beatsOf(ep);
-const vo = MANIFEST.voBeats?.e01 ?? [];
-
-/** Start time (s) of a word inside a beat's VO, from the real VO duration. */
-const wordAt = (beatIndex: number, word: string) => {
-  const b = ep.beats[beatIndex];
-  const words = b[4].split(/\s+/);
-  const idx = Math.max(0, words.findIndex((w) => w.replace(/[^\w/]/g, "").toLowerCase() === word.toLowerCase()));
-  const dur = vo.find((v) => v.start === b[0])?.duration ?? b[1] - b[0] - 0.5;
-  return b[0] + (dur * idx) / words.length;
-};
 
 // Keep in sync with hyperframes/e01-medallion (same VO-derived times).
 const T = {
@@ -46,8 +36,8 @@ const T = {
   noInspection: 22.35,
   flagged: 24.93,
   loaded: 29.0,
-  arrived: wordAt(4, "Six"),
-  delivered: wordAt(4, "Seven"),
+  arrived: 31.8, // whisper on b04: "Six" 2.79 s, "Seven" 4.63 s after 29.0
+  delivered: 33.6,
   stuck: 36.0,
   ugc: 41.0,
   orbit: 43.0, // logo reveal on "UGC Logistics" (hf/e01-ugc-logo), then the G becomes the ring of the orbit on "the baton"
@@ -352,7 +342,13 @@ export const E01ExportRelay: React.FC = () => {
       ) : null}
 
       <HfOverlay clip="e01-hook" from={0} durationInFrames={sec(4)} fallback={null} />
+      {/* one moment per handoff (scripts/e01-hf.mjs) */}
+      <HfOverlay clip="e01-s01" from={sec(4.3)} durationInFrames={sec(5.5)} fallback={null} />
+      <HfOverlay clip="e01-s02" from={sec(10.2)} durationInFrames={sec(3.0)} fallback={null} />
+      <HfOverlay clip="e01-s03" from={sec(13.3)} durationInFrames={sec(3.6)} fallback={null} />
       <HfOverlay clip="e01-declare" from={sec(17.9)} durationInFrames={sec(4.4)} fallback={null} />
+      <HfOverlay clip="e01-s05" from={sec(29.1)} durationInFrames={sec(2.65)} fallback={null} />
+      <HfOverlay clip="e01-s06" from={sec(T.arrived)} durationInFrames={sec(4.0)} fallback={null} />
       <HfOverlay clip="e01-lanes" from={sec(T.noInspection)} durationInFrames={sec(T.loaded) - sec(T.noInspection)} fallback={null} />
       <HfOverlay clip="e01-rolled" from={sec(T.stuck)} durationInFrames={sec(T.ugc - T.stuck)} fallback={null} />
       <HfOverlay clip="e01-ugc-logo" from={sec(T.ugc)} durationInFrames={sec(2.4)} fallback={null} />
