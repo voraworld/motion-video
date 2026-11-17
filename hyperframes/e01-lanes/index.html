@@ -5,42 +5,47 @@
     <meta name="viewport" content="width=1080, height=1920" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <!--
-      E01 customs card (placed at 22.6 s for 3.4 s): the second on-screen line "GREEN: GO · RED: CHECK"
-      as two signal chips that whip in when the VO says "Green lane" and "Red lane".
+      E01 customs card (placed at 22.35 s for 6.65 s, until "loaded"): the two outcomes after the export declaration
+      (PEB) is registered, in neutral brand tones (no green/red: export rules use the system responses, not lanes).
+        no inspection  → respons NPE (export approval)
+        flagged (risk) → respons PPB, physical inspection first; NPE after a matching result
+      Rows land on the VO words "No inspection" (22.44 s) and "Flagged" (24.93 s).
       Transparent WebM → remotion/public/hf/e01-lanes.webm.
     -->
     <style>
-      :root { --green: #2e8b57; --red: #c8331e; --ink: #ffffff; --font-display: "Archivo Black", sans-serif; }
+      :root { --ink: #2b1c15; --orange: #f26a1f; --deep: #c8471a; --font-display: "Archivo Black", sans-serif; }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
       #root { position: relative; width: 100%; height: 100%; font-family: var(--font-display); }
-      #lanes-row { position: absolute; left: 90px; width: 870px; top: 1170px; display: flex; justify-content: center; align-items: center; gap: 22px; }
-      .chip { display: flex; flex-shrink: 0; white-space: nowrap; align-items: center; gap: 14px; padding: 14px 22px 14px 16px; border-radius: 20px; color: var(--ink); font-size: 44px; line-height: 1; box-shadow: 0 16px 34px rgba(0,0,0,.25); }
-      .dot { width: 34px; height: 34px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 6px rgba(255,255,255,.35); }
-      #lanes-green { background: var(--green); }
-      #lanes-red { background: var(--red); }
-      #lanes-sep { color: #2b1c15; font-size: 50px; }
+      .row { position: absolute; left: 110px; width: 860px; height: 92px; display: flex; align-items: center; gap: 18px; padding: 0 26px 0 18px; border-radius: 22px; font-size: 38px; line-height: 1; white-space: nowrap; box-shadow: 0 16px 34px rgba(43,28,21,.22); }
+      #row-ok { top: 1130px; background: var(--ink); color: #fff; }
+      #row-flag { top: 1240px; background: #fff; color: var(--ink); border: 3px solid var(--ink); }
+      .ico { width: 56px; height: 56px; flex-shrink: 0; }
+      .arrow { color: var(--orange); }
+      .tag { margin-left: auto; font-size: 30px; padding: 8px 14px; border-radius: 12px; }
+      #row-ok .tag { background: var(--orange); color: #fff; }
+      #row-flag .tag { background: var(--ink); color: #fff; }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="e01-lanes" data-start="0" data-duration="3.4" data-width="1080" data-height="1920">
-      <div id="lanes-row" class="clip" data-start="0" data-duration="3.4" data-track-index="0">
-        <div class="chip" id="lanes-green"><span class="dot"></span><span>GREEN: GO</span></div>
-        <span id="lanes-sep">·</span>
-        <div class="chip" id="lanes-red"><span class="dot"></span><span>RED: CHECK</span></div>
+    <div id="root" data-composition-id="e01-lanes" data-start="0" data-duration="6.65" data-width="1080" data-height="1920">
+      <div id="row-ok" class="row clip" data-start="0" data-duration="6.65" data-track-index="0">
+        <svg class="ico" viewBox="0 0 256 256"><circle cx="128" cy="128" r="104" fill="#f26a1f" /><path d="M84 132l30 30 60-64" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        <span>NO INSPECTION</span><span class="arrow">→</span><span>APPROVAL</span><span class="tag">NPE</span>
+      </div>
+      <div id="row-flag" class="row clip" data-start="0" data-duration="6.65" data-track-index="1">
+        <svg class="ico" viewBox="0 0 256 256"><circle cx="112" cy="112" r="64" fill="none" stroke="#2b1c15" stroke-width="22" /><path d="M158 158l52 52" stroke="#2b1c15" stroke-width="24" stroke-linecap="round" /></svg>
+        <span>FLAGGED</span><span class="arrow">→</span><span>INSPECTION FIRST</span>
       </div>
     </div>
     <script>
       window.__timelines = window.__timelines || {};
       const tl = gsap.timeline({ paused: true });
-      // Whip in from the left with a horizontal smear, land sharp.
-      tl.fromTo("#lanes-green", { x: -700, opacity: 0, filter: "blur(16px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.26, ease: "power3.out" }, 0.0);
-      tl.fromTo("#lanes-sep", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 1.4);
-      tl.fromTo("#lanes-red", { x: 700, opacity: 0, filter: "blur(16px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.26, ease: "power3.out" }, 1.5);
-      // Signal pulses: green first, then red.
-      tl.fromTo("#lanes-green .dot", { scale: 1 }, { scale: 1.35, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, 0.3);
-      tl.fromTo("#lanes-red .dot", { scale: 1 }, { scale: 1.35, duration: 0.12, ease: "power2.out", yoyo: true, repeat: 1 }, 1.8);
-      tl.fromTo("#lanes-row", { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(10px)", duration: 0.18, ease: "power2.in" }, 3.2);
+      tl.fromTo("#row-ok", { x: -120, opacity: 0, filter: "blur(12px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, 0.08);
+      tl.fromTo("#row-ok .ico", { scale: 0.4, rotation: -30 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2)" }, 0.2);
+      tl.fromTo("#row-flag", { x: 120, opacity: 0, filter: "blur(12px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, 2.55);
+      tl.fromTo("#row-flag .ico", { scale: 0.4 }, { scale: 1, duration: 0.5, ease: "back.out(2)" }, 2.67);
+      tl.to(["#row-ok", "#row-flag"], { opacity: 0, y: 24, filter: "blur(8px)", duration: 0.3, ease: "power2.in", stagger: 0.05 }, 6.25);
       window.__timelines["e01-lanes"] = tl;
     </script>
   </body>

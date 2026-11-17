@@ -2,7 +2,7 @@
 // One file per beat, so every line starts exactly on its beat. If a line runs longer than its beat,
 // it is re-generated slightly faster (up to 1.3×).
 //
-// Usage: node scripts/vo.mjs E01 [voice=af_heart] [speed=1.06]
+// Usage: [ONLY=0,3] node scripts/vo.mjs E01 [voice=af_heart] [speed=1.06]
 // Output: remotion/public/audio/vo/e01/b00.wav … and remotion/src/generated/vo/e01.json (durations per beat)
 import fs from "node:fs";
 import path from "node:path";
@@ -25,8 +25,19 @@ const tts = (text, file, speed) =>
     stdio: ["ignore", "ignore", "inherit"],
   });
 
+// ONLY=0,3 regenerates just those beats and keeps the others from the existing meta file.
+const only = process.env.ONLY ? process.env.ONLY.split(",").map(Number) : null;
+const metaPath = path.join(root, "remotion", "src", "generated", "vo", `${lc}.json`);
+const prev = only && fs.existsSync(metaPath) ? JSON.parse(fs.readFileSync(metaPath, "utf8")).beats : [];
 const beats = [];
 for (const [i, [a, b, , , vo]] of ep.beats.entries()) {
+  if (only && !only.includes(i)) {
+    const keep = prev.find((x) => x.index === i);
+    if (keep) {
+      beats.push(keep);
+      continue;
+    }
+  }
   const file = path.join(outDir, `b${String(i).padStart(2, "0")}.wav`);
   const room = b - a - 0.25; // leave a breath before the next beat
   let speed = Number(speedArg);

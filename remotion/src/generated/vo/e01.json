@@ -6,7 +6,7 @@
       "index": 0,
       "start": 0,
       "file": "audio/vo/e01/b00.wav",
-      "duration": 3.392,
+      "duration": 2.923,
       "speed": 1.06,
       "fits": true
     },
@@ -30,13 +30,13 @@
       "index": 3,
       "start": 17,
       "file": "audio/vo/e01/b03.wav",
-      "duration": 8.661,
-      "speed": 1.27,
+      "duration": 10.517,
+      "speed": 1.06,
       "fits": true
     },
     {
       "index": 4,
-      "start": 26,
+      "start": 29,
       "file": "audio/vo/e01/b04.wav",
       "duration": 5.675,
       "speed": 1.06,
@@ -44,7 +44,7 @@
     },
     {
       "index": 5,
-      "start": 33,
+      "start": 36,
       "file": "audio/vo/e01/b05.wav",
       "duration": 3.179,
       "speed": 1.06,
@@ -52,7 +52,7 @@
     },
     {
       "index": 6,
-      "start": 38,
+      "start": 41,
       "file": "audio/vo/e01/b06.wav",
       "duration": 8.533,
       "speed": 1.06,
@@ -60,7 +60,7 @@
     },
     {
       "index": 7,
-      "start": 48,
+      "start": 51,
       "file": "audio/vo/e01/b07.wav",
       "duration": 4.352,
       "speed": 1.06,

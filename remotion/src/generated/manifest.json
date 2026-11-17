@@ -47,7 +47,7 @@
       {
         "start": 0,
         "file": "audio/vo/e01/b00.wav",
-        "duration": 3.392
+        "duration": 2.923
       },
       {
         "start": 4,
@@ -62,25 +62,25 @@
       {
         "start": 17,
         "file": "audio/vo/e01/b03.wav",
-        "duration": 8.661
+        "duration": 10.517
       },
       {
-        "start": 26,
+        "start": 29,
         "file": "audio/vo/e01/b04.wav",
         "duration": 5.675
       },
       {
-        "start": 33,
+        "start": 36,
         "file": "audio/vo/e01/b05.wav",
         "duration": 3.179
       },
       {
-        "start": 38,
+        "start": 41,
         "file": "audio/vo/e01/b06.wav",
         "duration": 8.533
       },
       {
-        "start": 48,
+        "start": 51,
         "file": "audio/vo/e01/b07.wav",
         "duration": 4.352
       }
@@ -176,6 +176,7 @@
     "e03": "audio/music/e03.wav"
   },
   "hf": {
+    "e01-declare": "hf/e01-declare.webm",
     "e01-hook": "hf/e01-hook.webm",
     "e01-lanes": "hf/e01-lanes.webm",
     "e01-logo": "hf/e01-logo.webm",

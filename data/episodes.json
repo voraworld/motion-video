@@ -3,7 +3,7 @@
   "id": "E01",
   "pillar": "Journey",
   "title": "The Export Relay",
-  "dur": 55,
+  "dur": 58,
   "svc": "Global Freight Forwarding · export docs",
   "tile": "t01",
   "tileLbl": "isometric",
@@ -28,7 +28,7 @@
     4,
     "hook",
     "H",
-    "Seven handoffs. Drop one, and your cargo misses the ship.",
+    "Seven handoffs. Drop one, and your export stalls.",
     "7 HANDOFFS. / DROP ONE?"
    ],
    [
@@ -49,52 +49,52 @@
    ],
    [
     17,
-    26,
+    29,
     "edu",
     "R+H",
-    "Four: customs. The export declaration, the PEB, is filed before the container enters the port. Green lane: NPE issued. Red lane: inspection first.",
-    "04 PEB → NPE / GREEN: GO · RED: CHECK"
+    "Four: customs. The export declaration is filed before the container enters the port. No inspection: export approval. Flagged: inspection first, then approval.",
+    "04 EXPORT DECLARATION (PEB) / NO INSPECTION → APPROVAL (NPE) · FLAGGED → INSPECTION"
    ],
    [
-    26,
-    33,
+    29,
+    36,
     "edu",
     "R",
     "Five: loaded, and the bill of lading is issued. Six: destination port. Seven: your buyer.",
     "05 LOADED · B/L / 06 ARRIVED / 07 DELIVERED"
    ],
    [
-    33,
-    38,
+    36,
+    41,
     "stuck",
     "H",
     "Miss one cut-off, and your container rolls to the next ship.",
     "ROLLED."
    ],
    [
-    38,
-    48,
+    41,
+    51,
     "ugc",
     "R+H",
     "UGC Logistics carries the baton from stuffing to B/L. Ocean, air, and every export document, handled by one team.",
     "ONE TEAM. ALL 7 HANDOFFS."
    ],
    [
-    48,
-    55,
+    51,
+    58,
     "cta",
     "R",
     "Planning an export? Talk to UGC Logistics. We care what we deliver.",
     "PLAN YOUR EXPORT ROUTE"
    ]
   ],
-  "learn": "The seven handoffs of an export shipment, and why cut-offs and the PEB-to-NPE step decide whether cargo makes the ship.",
+  "learn": "The seven handoffs of an export shipment, and why cut-offs and the export declaration step decide whether cargo makes the ship.",
   "promo": "One team holds the whole chain, so no handoff falls between two vendors.",
   "music": {
    "bpm": 124,
    "style": "Cinematic pop-orchestral relay anthem",
-   "prompt": "Epic, upbeat and cheerful cinematic pop-orchestral track, 124 BPM, major key. Opens on a huge sub-bass boom and taiko hit, then marching snare and handclaps drive a steady build. Bright brass stabs on every handoff, soaring strings. Tension drop with a reverse cymbal at 0:33, then a euphoric full-band lift at 0:38. Clean button ending at 0:55. Instrumental, no vocals.",
-   "cues": "0:00 boom · 0:04 groove in · 0:33 drop out · 0:38 full lift · 0:53 button"
+   "prompt": "Epic, upbeat and cheerful cinematic pop-orchestral track, 124 BPM, major key. Opens on a huge sub-bass boom and taiko hit, then marching snare and handclaps drive a steady build. Bright brass stabs on every handoff, soaring strings. Tension drop with a reverse cymbal at 0:36, then a euphoric full-band lift at 0:41. Clean button ending at 0:58. Instrumental, no vocals.",
+   "cues": "0:00 boom · 0:04 groove in · 0:36 drop out · 0:41 full lift · 0:56 button"
   },
   "facts": [
    [
@@ -111,7 +111,7 @@
     ]
    ],
    [
-    "Export lanes in CEISA 4.0: green lane gets the NPE without physical inspection; red lane gets a physical inspection before the NPE is issued.",
+    "After the PEB is registered, goods not selected for physical inspection get the NPE (export approval) straight away; goods selected by risk management get a PPB (inspection notice), are inspected, and get the NPE when the result matches (PER-9/BC/2023 Art. 14, 20). Some DJBC export rules call these the green and red lanes.",
     [
      [
       "Bea Cukai Surakarta: Ekspor",

@@ -11,7 +11,7 @@ import { DecorArc } from "../shared/Ring";
 import { SfxCue, SoundLayer } from "../shared/SoundLayer";
 
 /**
- * E01 · The Export Relay (55 s)
+ * E01 · The Export Relay (58 s)
  *
  * The thread is the UGC ring (HyperFrames clip e01-medallion): seven gradient segments from the logo, one per
  * handoff, around a disc whose icon swaps at each handoff. Stations ride a 3D carousel of white cards carrying
@@ -19,7 +19,7 @@ import { SfxCue, SoundLayer } from "../shared/SoundLayer";
  * orbit the glowing ring; for the end card the ring flies into the logo's G (HyperFrames clip e01-logo).
  *
  * R (Remotion): background, ring decor, carousel, orbit, chapter titles, ring placement, captions, brand frame, audio.
- * H (HyperFrames): e01-hook, e01-medallion, e01-lanes, e01-rolled, e01-team, e01-logo.
+ * H (HyperFrames): e01-hook, e01-medallion, e01-declare, e01-lanes, e01-rolled, e01-team, e01-logo.
  */
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -42,20 +42,22 @@ const T = {
   stuffed: 10.0,
   trucked: wordAt(2, "Three"),
   customs: 17.0,
-  green: wordAt(3, "Green"),
-  loaded: 26.0,
+  // beat 4 VO word times (whisper on audio/vo/e01/b03.wav): "No inspection" 5.44 s, "Flagged" 7.93 s after 17.0
+  noInspection: 22.35,
+  flagged: 24.93,
+  loaded: 29.0,
   arrived: wordAt(4, "Six"),
   delivered: wordAt(4, "Seven"),
-  stuck: 33.0,
-  ugc: 38.0,
-  cta: 48.0,
+  stuck: 36.0,
+  ugc: 41.0,
+  cta: 51.0,
 };
 
 const STEPS = [
   { at: T.booking, n: "01", title: "BOOKING · CUT-OFF SET" },
   { at: T.stuffed, n: "02", title: "STUFFED + WEIGHED (VGM)" },
   { at: T.trucked, n: "03", title: "TRUCKED" },
-  { at: T.customs, n: "04", title: "PEB → NPE" },
+  { at: T.customs, n: "04", title: "EXPORT DECLARATION (PEB)" },
   { at: T.loaded, n: "05", title: "LOADED · B/L" },
   { at: T.arrived, n: "06", title: "ARRIVED" },
   { at: T.delivered, n: "07", title: "DELIVERED" },
@@ -343,7 +345,8 @@ export const E01ExportRelay: React.FC = () => {
       ) : null}
 
       <HfOverlay clip="e01-hook" from={0} durationInFrames={sec(4)} fallback={null} />
-      <HfOverlay clip="e01-lanes" from={sec(T.green) - 3} durationInFrames={sec(T.loaded) - sec(T.green) + 3} fallback={null} />
+      <HfOverlay clip="e01-declare" from={sec(17.9)} durationInFrames={sec(4.4)} fallback={null} />
+      <HfOverlay clip="e01-lanes" from={sec(T.noInspection)} durationInFrames={sec(T.loaded) - sec(T.noInspection)} fallback={null} />
       <HfOverlay clip="e01-rolled" from={sec(T.stuck)} durationInFrames={sec(T.ugc - T.stuck)} fallback={null} />
       <HfOverlay clip="e01-team" from={sec(T.ugc)} durationInFrames={sec(T.cta - T.ugc)} fallback={null} />
       <HfOverlay clip="e01-logo" from={sec(T.cta)} durationInFrames={sec(ep.dur - T.cta)} fallback={null} />
