@@ -20,11 +20,11 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="e01-team" data-start="0" data-duration="10" data-width="1080" data-height="1920">
-      <div id="team-l1" class="line clip" data-start="0" data-duration="10" data-track-index="0">
+    <div id="root" data-composition-id="e01-team" data-start="0" data-duration="7.8" data-width="1080" data-height="1920">
+      <div id="team-l1" class="line clip" data-start="0" data-duration="7.8" data-track-index="0">
         <span class="w" id="team-w1">ONE</span> <span class="w" id="team-w2">TEAM.</span>
       </div>
-      <div id="team-l2" class="line clip" data-start="0.35" data-duration="9.65" data-track-index="1">
+      <div id="team-l2" class="line clip" data-start="0.35" data-duration="7.45" data-track-index="1">
         <span class="w" id="team-w3">ALL</span> <span class="w" id="team-w4">7</span> <span class="w" id="team-w5">HANDOFFS.</span>
       </div>
     </div>
@@ -34,7 +34,7 @@
       const slam = (sel, at) => tl.fromTo(sel, { scale: 2.2, opacity: 0, filter: "blur(14px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "expo.out" }, at);
       slam("#team-w1", 0.03); slam("#team-w2", 0.13);
       slam("#team-w3", 0.4); slam("#team-w4", 0.5); slam("#team-w5", 0.6);
-      tl.fromTo(["#team-l1 .w", "#team-l2 .w"], { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(10px)", duration: 0.18, ease: "power2.in", stagger: 0.02 }, 9.7);
+      tl.fromTo(["#team-l1 .w", "#team-l2 .w"], { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(10px)", duration: 0.18, ease: "power2.in", stagger: 0.02 }, 7.5);
       window.__timelines["e01-team"] = tl;
     </script>
   </body>

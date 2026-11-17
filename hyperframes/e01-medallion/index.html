@@ -97,7 +97,7 @@
         tl.fromTo(`#med-i-${name}`, { scale: 0.72, opacity: 0, svgOrigin: "128 128" }, { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.6)", svgOrigin: "128 128", immediateRender: false }, at + (current ? 0.2 : 0));
         current = name;
       };
-      const T = { booking: 4.0, stuffed: 10.0, trucked: 13.33, customs: 17.0, loaded: 29.0, bl: 30.51, arrived: 32.41, delivered: 33.54, stuck: 36.0, ugc: 41.0, cta: 51.0 };
+      const T = { booking: 4.0, stuffed: 10.0, trucked: 13.33, customs: 17.0, loaded: 29.0, bl: 30.51, arrived: 32.41, delivered: 33.54, stuck: 36.0, ugc: 41.0, orbit: 43.0, cta: 51.0 };
       const tl = gsap.timeline({ paused: true });
       const draw = (i, at, dur = 0.45, ease = "power3.out") => {
         tl.fromTo(segs[i], { strokeDashoffset: segLen }, { strokeDashoffset: 0, duration: dur, ease }, at);
@@ -133,13 +133,13 @@
       tl.to(segs[4], { x: -30, y: 520, rotation: -50, svgOrigin: "139 702", opacity: 0, duration: 0.95, ease: "power2.in" }, T.stuck + 0.8);
       tl.to(glows[4], { opacity: 0, duration: 0.2 }, T.stuck + 0.8);
 
-      // UGC: the missing segment comes back, the ring glows, the icon becomes a check.
-      tl.set(segs[4], { x: 0, y: 0, rotation: 0, opacity: 1, strokeDashoffset: segLen }, T.ugc);
-      tl.set(glows[4], { opacity: 1 }, T.ugc);
-      draw(4, T.ugc + 0.15, 0.5);
-      swap("check", T.ugc + 0.2);
-      tl.fromTo("#med-glow", { opacity: 0 }, { opacity: 0.85, duration: 0.6, ease: "power2.out" }, T.ugc + 0.5);
-      tl.to("#med-glow", { opacity: 0.45, duration: 0.8, ease: "sine.inOut", yoyo: true, repeat: 5 }, T.ugc + 1.2);
+      // UGC (from the orbit, after the logo reveal hands the G back to the ring): the missing segment comes back, the ring glows, the icon becomes a check.
+      tl.set(segs[4], { x: 0, y: 0, rotation: 0, opacity: 1, strokeDashoffset: segLen }, T.orbit);
+      tl.set(glows[4], { opacity: 1 }, T.orbit);
+      draw(4, T.orbit + 0.15, 0.5);
+      swap("check", T.orbit + 0.2);
+      tl.fromTo("#med-glow", { opacity: 0 }, { opacity: 0.85, duration: 0.6, ease: "power2.out" }, T.orbit + 0.5);
+      tl.to("#med-glow", { opacity: 0.45, duration: 0.8, ease: "sine.inOut", yoyo: true, repeat: 5 }, T.orbit + 1.2);
       // End card hand-off: icon and disc leave, the bare ring flies into the logo's G (Remotion moves it).
       tl.to("#med-icon", { opacity: 0, scale: 0.6, duration: 0.25, ease: "power2.in", transformOrigin: "50% 50%" }, T.cta - 0.3);
       tl.to("#med-disc", { opacity: 0, scale: 0.85, duration: 0.3, ease: "power2.in" }, T.cta - 0.2);

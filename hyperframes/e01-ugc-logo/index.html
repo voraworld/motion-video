@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <!--
+      E01 UGC beat opener (placed at 41.0 s for 2.4 s), transparent WebM → remotion/public/hf/e01-ugc-logo.webm.
+      On "UGC Logistics": the medallion ring (Remotion) flies from the bottom into the logo's G (lands at 0.5 s);
+      the G draws from it, U and C assemble from the sides, LO / GIS / TICS rise, the tagline wipes in.
+      At 1.6 s ("carries the baton") the logo breaks apart around its G: U, C and the wordmark blur away and the G
+      hands over to the medallion ring, which Remotion then grows into the orbit of the seven handoff cards.
+      Same logo box as e01-logo: centre (540, 800), scale 0.788; G centre on screen (436, 777). Slices of the
+      official logo file only (no redrawn letters).
+    -->
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+      #root { position: relative; width: 100%; height: 100%; }
+      #logo-box { position: absolute; left: 166px; top: 640px; width: 747px; height: 320px; }
+      #logo-glow { position: absolute; left: -120px; top: -160px; width: 760px; height: 640px; border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(242,106,31,.55), rgba(245,166,35,.18) 55%, rgba(245,166,35,0)); opacity: 0; }
+      .slice { position: absolute; left: -7px; top: -9px; width: 536px; height: 252px; }
+      .slice img { width: 100%; height: 100%; display: block; }
+      #logo-u { clip-path: inset(0 340px 0 0); }
+      #logo-g { clip-path: inset(0 173px 0 197px); --sweep: 0; -webkit-mask-image: conic-gradient(from 0deg at 277px 126px, #000 calc(var(--sweep) * 1deg), transparent 0); mask-image: conic-gradient(from 0deg at 277px 126px, #000 calc(var(--sweep) * 1deg), transparent 0); }
+      #logo-c { clip-path: inset(0 0 0 362px); }
+      .row { position: absolute; left: 548px; width: 197px; overflow: hidden; }
+      .row img { width: 100%; height: 100%; display: block; }
+      #logo-lo { top: 11px; height: 67px; }
+      #logo-gis { top: 86px; height: 71px; }
+      #logo-tics { top: 165px; height: 71px; }
+      #logo-tag { position: absolute; left: 1px; top: 273px; width: 752px; height: 53px; clip-path: inset(0 100% 0 0); }
+      #logo-tag img { width: 100%; height: 100%; display: block; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="e01-ugc-logo" data-start="0" data-duration="2.4" data-width="1080" data-height="1920">
+      <div id="logo-box" class="clip" data-start="0" data-duration="2.4" data-track-index="0" data-layout-allow-overlap data-layout-allow-overflow>
+        <div id="logo-glow"></div>
+        <div id="logo-u" class="slice"><img src="assets/logo-mark.png" alt="" /></div>
+        <div id="logo-g" class="slice"><img src="assets/logo-mark.png" alt="" /></div>
+        <div id="logo-c" class="slice"><img src="assets/logo-mark.png" alt="" /></div>
+        <div id="logo-lo" class="row"><img src="assets/logo-lo.png" alt="" /></div>
+        <div id="logo-gis" class="row"><img src="assets/logo-gis.png" alt="" /></div>
+        <div id="logo-tics" class="row"><img src="assets/logo-tics.png" alt="" /></div>
+        <div id="logo-tag"><img src="assets/logo-tagline.png" alt="UGC Logistics, We care what we deliver" /></div>
+      </div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      gsap.set(["#logo-u", "#logo-c"], { opacity: 0 });
+      // 1. The ring lands on the G (0.5 s) and the G draws from it; U and C assemble with a ripple.
+      tl.fromTo("#logo-g", { "--sweep": 0 }, { "--sweep": 361, duration: 0.42, ease: "power2.inOut" }, 0.42);
+      tl.fromTo("#logo-u", { x: -560, opacity: 0, filter: "blur(14px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.7, ease: "power4.out", immediateRender: false }, 0.55);
+      tl.fromTo("#logo-c", { x: 560, opacity: 0, filter: "blur(14px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.7, ease: "power4.out", immediateRender: false }, 0.62);
+      tl.fromTo("#logo-glow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1.15, duration: 0.4, ease: "power2.out" }, 0.95);
+      ["#logo-lo img", "#logo-gis img", "#logo-tics img"].forEach((sel, i) => tl.fromTo(sel, { yPercent: 105 }, { yPercent: 0, duration: 0.42, ease: "power3.out" }, 0.9 + i * 0.07));
+      tl.to("#logo-tag", { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "power2.inOut" }, 1.1);
+      // 2. Break apart around the G: U and C spin out, the wordmark lifts away, the G hands over to the ring.
+      tl.to("#logo-u", { x: -300, y: 70, rotation: -20, opacity: 0, filter: "blur(12px)", duration: 0.36, ease: "power2.in" }, 1.6);
+      tl.to("#logo-c", { x: 300, y: 70, rotation: 20, opacity: 0, filter: "blur(12px)", duration: 0.36, ease: "power2.in" }, 1.62);
+      tl.to([".row", "#logo-tag"], { y: -50, opacity: 0, filter: "blur(10px)", duration: 0.3, ease: "power2.in", stagger: 0.025 }, 1.6);
+      tl.to("#logo-glow", { opacity: 0, scale: 1.8, duration: 0.4, ease: "power2.out" }, 1.6);
+      tl.to("#logo-g", { opacity: 0, scale: 1.2, duration: 0.22, ease: "power2.in", transformOrigin: "277px 126px" }, 1.88);
+      window.__timelines["e01-ugc-logo"] = tl;
+    </script>
+  </body>
+</html>

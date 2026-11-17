@@ -84,7 +84,7 @@
       {
         "start": 41,
         "file": "audio/vo/e01/b06.wav",
-        "duration": 8.533
+        "duration": 8.896
       },
       {
         "start": 51,
@@ -190,6 +190,7 @@
     "e01-medallion": "hf/e01-medallion.webm",
     "e01-rolled": "hf/e01-rolled.webm",
     "e01-team": "hf/e01-team.webm",
+    "e01-ugc-logo": "hf/e01-ugc-logo.webm",
     "e02-door": "hf/e02-door.webm",
     "e02-hook": "hf/e02-hook.webm",
     "e02-lanes": "hf/e02-lanes.webm",

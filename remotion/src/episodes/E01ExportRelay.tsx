@@ -19,7 +19,7 @@ import { SfxCue, SoundLayer } from "../shared/SoundLayer";
  * orbit the glowing ring; for the end card the ring flies into the logo's G (HyperFrames clip e01-logo).
  *
  * R (Remotion): background, ring decor, carousel, orbit, chapter titles, ring placement, captions, brand frame, audio.
- * H (HyperFrames): e01-hook, e01-medallion, e01-declare, e01-lanes, e01-rolled, e01-team, e01-logo.
+ * H (HyperFrames): e01-hook, e01-medallion, e01-declare, e01-lanes, e01-ugc-logo, e01-rolled, e01-team, e01-logo.
  */
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -50,6 +50,7 @@ const T = {
   delivered: wordAt(4, "Seven"),
   stuck: 36.0,
   ugc: 41.0,
+  orbit: 43.0, // logo reveal on "UGC Logistics" (hf/e01-ugc-logo), then the G becomes the ring of the orbit on "the baton"
   cta: 51.0,
 };
 
@@ -261,20 +262,20 @@ const Carousel: React.FC<{ t: number; frame: number }> = ({ t, frame }) => {
 // ---------- UGC orbit ----------
 const ORBIT_C = { x: 540, y: 950 };
 const Orbit: React.FC<{ t: number }> = ({ t }) => {
-  if (t < T.ugc - 0.1 || t > T.cta + 0.8) return null;
+  if (t < T.orbit - 0.1 || t > T.cta + 0.8) return null;
   const out = interpolate(t, [T.cta - 0.35, T.cta + 0.4], [0, 1], { ...clamp, easing: Easing.in(Easing.cubic) });
   return (
     <AbsoluteFill>
       {CARDS.map((c, i) => {
-        const k = interpolate(t, [T.ugc + 0.15 + i * 0.07, T.ugc + 1.2 + i * 0.07], [0, 1], { ...clamp, easing: Easing.bezier(0.2, 0.9, 0.3, 1.15) });
-        const theta = -Math.PI / 2 + (i * 2 * Math.PI) / 7 + (t - T.ugc) * 0.22;
+        const k = interpolate(t, [T.orbit + 0.15 + i * 0.07, T.orbit + 1.2 + i * 0.07], [0, 1], { ...clamp, easing: Easing.bezier(0.2, 0.9, 0.3, 1.15) });
+        const theta = -Math.PI / 2 + (i * 2 * Math.PI) / 7 + (t - T.orbit) * 0.22;
         const rx = 410 + out * 500;
         const ry = 400 + out * 600;
         const x = ORBIT_C.x + Math.cos(theta) * rx * k;
         const y = ORBIT_C.y + Math.sin(theta) * ry * k;
         const depth = (Math.sin(theta) + 1) / 2; // lower cards come forward
         const scale = (0.28 + 0.06 * depth) * (0.4 + 0.6 * k);
-        const check = interpolate(t, [T.ugc + 1.6 + i * 0.12, T.ugc + 1.9 + i * 0.12], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2)) });
+        const check = interpolate(t, [T.orbit + 1.6 + i * 0.12, T.orbit + 1.9 + i * 0.12], [0, 1], { ...clamp, easing: Easing.out(Easing.back(2)) });
         return (
           <div key={c.key} style={{ position: "absolute", left: x - (CARD_W * scale) / 2, top: y - (CARD_H * scale) / 2, zIndex: Math.round(depth * 10), opacity: k * (1 - out) }}>
             <Card i={i} t={t} w={CARD_W * scale} h={CARD_H * scale} check={check} />
@@ -292,7 +293,9 @@ const RING_KEYS: [number, number, number, number][] = [
   [3.45, 540, 960, 820],
   [4.2, 540, 1470, 300],
   [T.ugc, 540, 1470, 300],
-  [T.ugc + 1.2, ORBIT_C.x, ORBIT_C.y, 560],
+  [T.ugc + 0.5, 436, 777, 249], // into the logo's G (hf/e01-ugc-logo draws the G from it)
+  [T.orbit, 436, 777, 249],
+  [T.orbit + 1.0, ORBIT_C.x, ORBIT_C.y, 560],
   [T.cta - 0.3, ORBIT_C.x, ORBIT_C.y, 560],
   [T.cta + 0.25, 436, 777, 249], // onto the logo's G (see hyperframes/e01-logo)
 ];
@@ -301,7 +304,7 @@ const ringAt = (t: number) => {
   const e = Easing.bezier(0.65, 0, 0.35, 1);
   return {
     x: interpolate(t, ts, RING_KEYS.map((k) => k[1]), { ...clamp, easing: e }),
-    y: interpolate(t, ts, RING_KEYS.map((k) => k[2]), { ...clamp, easing: e }) + (t > T.ugc + 1.2 && t < T.cta - 0.3 ? Math.sin(t * 1.6) * 6 : 0),
+    y: interpolate(t, ts, RING_KEYS.map((k) => k[2]), { ...clamp, easing: e }) + (t > T.orbit + 1.0 && t < T.cta - 0.3 ? Math.sin(t * 1.6) * 6 : 0),
     size: interpolate(t, ts, RING_KEYS.map((k) => k[3]), { ...clamp, easing: e }),
   };
 };
@@ -310,7 +313,9 @@ export const E01ExportRelay: React.FC = () => {
   const frame = useCurrentFrame();
   const t = frame / 30;
   const ring = ringAt(t);
-  const ringFade = interpolate(t, [T.cta + 0.2, T.cta + 0.5], [1, 0], clamp);
+  const ringFade =
+    interpolate(t, [T.cta + 0.2, T.cta + 0.5], [1, 0], clamp) *
+    interpolate(t, [T.ugc + 0.42, T.ugc + 0.62, T.orbit - 0.14, T.orbit + 0.04], [1, 0, 0, 1], clamp);
   const themeAt = (f: number): FrameTheme => (f < sec(4.1) ? "dark" : "light");
   const hits = [sec(0.45), sec(2.25), sec(T.stuck + 0.8)];
   const sfx: SfxCue[] = [
@@ -323,6 +328,8 @@ export const E01ExportRelay: React.FC = () => {
     { at: sec(T.stuck), name: "glitch", volume: 0.7 },
     { at: sec(T.stuck + 0.8), name: "crunch", volume: 0.55 },
     { at: sec(T.ugc + 0.1), name: "whoosh", volume: 0.5 },
+    { at: sec(T.ugc + 0.55), name: "boom", volume: 0.35 },
+    { at: sec(T.orbit), name: "whoosh", volume: 0.45 },
     { at: sec(T.cta + 0.1), name: "sonic-logo", volume: 0.8 },
   ];
 
@@ -348,7 +355,8 @@ export const E01ExportRelay: React.FC = () => {
       <HfOverlay clip="e01-declare" from={sec(17.9)} durationInFrames={sec(4.4)} fallback={null} />
       <HfOverlay clip="e01-lanes" from={sec(T.noInspection)} durationInFrames={sec(T.loaded) - sec(T.noInspection)} fallback={null} />
       <HfOverlay clip="e01-rolled" from={sec(T.stuck)} durationInFrames={sec(T.ugc - T.stuck)} fallback={null} />
-      <HfOverlay clip="e01-team" from={sec(T.ugc)} durationInFrames={sec(T.cta - T.ugc)} fallback={null} />
+      <HfOverlay clip="e01-ugc-logo" from={sec(T.ugc)} durationInFrames={sec(2.4)} fallback={null} />
+      <HfOverlay clip="e01-team" from={sec(T.orbit + 0.2)} durationInFrames={sec(T.cta - T.orbit - 0.2)} fallback={null} />
       <HfOverlay clip="e01-logo" from={sec(T.cta)} durationInFrames={sec(ep.dur - T.cta)} fallback={null} />
 
       <Captions beats={beats} accent={BRAND.orange} ep="e01" themeAt={themeAt} />
