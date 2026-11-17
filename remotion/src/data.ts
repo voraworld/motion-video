@@ -66,7 +66,7 @@ type Manifest = {
   logo: string | null;
   assets: Record<string, Record<string, string>>;
   vo: Record<string, string>;
-  voBeats: Record<string, { start: number; file: string; duration: number }[]>;
+  voBeats: Record<string, { start: number; file: string; duration: number; pauses?: { word: number; at: number; len: number }[] }[]>;
   music: Record<string, string>;
   hf: Record<string, string>;
   sfx: Record<string, string>;

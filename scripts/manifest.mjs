@@ -24,7 +24,7 @@ for (const f of list(path.join(pub, "audio", "vo")).filter((f) => isFile(path.jo
 const voMeta = path.join(root, "remotion", "src", "generated", "vo");
 for (const f of list(voMeta).filter((f) => f.endsWith(".json"))) {
   const meta = JSON.parse(fs.readFileSync(path.join(voMeta, f), "utf8"));
-  manifest.voBeats[stem(f)] = meta.beats.map((b) => ({ start: b.start, file: b.file, duration: b.duration }));
+  manifest.voBeats[stem(f)] = meta.beats.map((b) => ({ start: b.start, file: b.file, duration: b.duration, ...(b.pauses ? { pauses: b.pauses } : {}) }));
 }
 for (const f of list(path.join(pub, "audio", "music"))) manifest.music[stem(f)] = `audio/music/${f}`;
 for (const f of list(path.join(pub, "hf")).filter((f) => f.endsWith(".webm"))) manifest.hf[stem(f)] = `hf/${f}`;

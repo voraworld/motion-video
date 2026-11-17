@@ -40,7 +40,7 @@ const wordAt = (beatIndex: number, word: string) => {
 const T = {
   booking: 4.0,
   stuffed: 10.0,
-  trucked: wordAt(2, "Three"),
+  trucked: 13.33, // "Three" starts 3.3 s into beat 2 (data/vo-pauses.json)
   customs: 17.0,
   // beat 4 VO word times (whisper on audio/vo/e01/b03.wav): "No inspection" 5.44 s, "Flagged" 7.93 s after 17.0
   noInspection: 22.35,

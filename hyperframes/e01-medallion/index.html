@@ -11,7 +11,7 @@
       back.out), so the ready-made icons (Phosphor Icons 2.1.1, fill, MIT) are always shown intact. Ring after conic-progress-ring.
       Remotion places and scales this clip: big around the 07 board in the hook, under the carousel for the
       stations, centred for the UGC orbit, and into the logo's G for the end card.
-      Times come from the E01 VO (scripts/vo.mjs): stuffed 10.0, trucked 12.25, customs 17.0, loaded 29.0,
+      Times come from the E01 VO (scripts/vo.mjs): stuffed 10.0, trucked 13.33, customs 17.0, loaded 29.0,
       B/L 30.51, arrived 32.41, delivered 33.54, stuck 36.0, ugc 41.0, end card 51.0 (customs beat is 12 s long).
     -->
     <style>
@@ -97,7 +97,7 @@
         tl.fromTo(`#med-i-${name}`, { scale: 0.72, opacity: 0, svgOrigin: "128 128" }, { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.6)", svgOrigin: "128 128", immediateRender: false }, at + (current ? 0.2 : 0));
         current = name;
       };
-      const T = { booking: 4.0, stuffed: 10.0, trucked: 12.25, customs: 17.0, loaded: 29.0, bl: 30.51, arrived: 32.41, delivered: 33.54, stuck: 36.0, ugc: 41.0, cta: 51.0 };
+      const T = { booking: 4.0, stuffed: 10.0, trucked: 13.33, customs: 17.0, loaded: 29.0, bl: 30.51, arrived: 32.41, delivered: 33.54, stuck: 36.0, ugc: 41.0, cta: 51.0 };
       const tl = gsap.timeline({ paused: true });
       const draw = (i, at, dur = 0.45, ease = "power3.out") => {
         tl.fromTo(segs[i], { strokeDashoffset: segLen }, { strokeDashoffset: 0, duration: dur, ease }, at);
